@@ -14,7 +14,7 @@ const config = defineConfig({
     viteReact(),
   ],
   server: {
-    port: Number(process.env.APP_PORT ?? 3000),
+    port: Number(process.env.APP_PORT),
   },
 })
 

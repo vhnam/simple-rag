@@ -29,9 +29,9 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     environment:
       NODE_ENV: ${NODE_ENV}
-      VITE_APP_TITLE: ${VITE_APP_TITLE:-Simple RAG}
-      VITE_API_URL: ${VITE_API_URL:-http://localhost:4000}
-      SERVER_URL: ${SERVER_URL:-http://localhost:4000}
+      VITE_APP_TITLE: ${VITE_APP_TITLE}
+      VITE_API_URL: ${VITE_API_URL}
+      SERVER_URL: ${SERVER_URL}
     depends_on:
       - api
     restart: unless-stopped

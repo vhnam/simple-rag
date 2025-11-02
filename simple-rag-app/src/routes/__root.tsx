@@ -4,7 +4,10 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import type { QueryClient } from '@tanstack/react-query'
-import appCss from '../styles.css?url'
+import appCss from '@/styles.css?url'
+import { Layout } from '@/layouts'
+import { PropsWithChildren } from 'react'
+import { env } from 'process'
 
 interface RootContext {
   queryClient: QueryClient
@@ -21,7 +24,7 @@ export const Route = createRootRouteWithContext<RootContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Simple RAG',
+        title: import.meta.env.VITE_APP_TITLE,
       },
     ],
     links: [
@@ -35,14 +38,14 @@ export const Route = createRootRouteWithContext<RootContext>()({
   shellComponent: RootDocument,
 })
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children }: PropsWithChildren) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
       <body>
-        {children}
+        <Layout>{children}</Layout>
         <Scripts />
       </body>
     </html>
