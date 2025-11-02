@@ -1,98 +1,173 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Simple RAG
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A simple Retrieval-Augmented Generation (RAG) application built with NestJS and React. This project demonstrates a full-stack RAG implementation with vector database support using PostgreSQL with `pgvector`.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Architecture
 
-## Description
+The project is organized as a monorepo with two main components:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **simple-rag-api**: NestJS backend API that handles RAG queries using LangChain and PostgreSQL with `pgvector`
+- **simple-rag-app**: React frontend built with TanStack Router, React Query, and Tailwind CSS
 
-## Project setup
+## Tech Stack
 
-```bash
-$ pnpm install
+### Backend
+
+- **NestJS** - Progressive Node.js framework
+- **LangChain** - LLM application framework
+- **PostgreSQL + pgvector** - Vector database for embeddings
+- **TypeScript** - Type-safe development
+
+### Frontend
+
+- **React 19** - UI library
+- **TanStack Router** - Type-safe routing
+- **TanStack Query** - Data fetching and state management
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Build tool and dev server
+
+### Infrastructure
+
+- **Docker Compose** - Container orchestration
+- **pnpm workspaces** - Monorepo package management
+
+## Prerequisites
+
+- **Node.js** (v22 or higher)
+- **pnpm** (v10 or higher)
+- **Docker** and **Docker Compose** (for containerized deployment)
+
+## Getting Started
+
+### Local Development
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd simple-rag
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+
+   Create a `.env` file in the root directory:
+
+   ```env
+   # API Configuration
+   NODE_ENV=development
+   API_PORT=4000
+
+   # Database Configuration
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=postgres
+   DB_NAME=ragdb
+
+   # Frontend Configuration
+   APP_PORT=3000
+   VITE_APP_TITLE=Simple RAG
+   VITE_API_URL=http://localhost:4000
+   ```
+
+4. **Start the database**
+
+   ```bash
+   docker compose up db -d
+   ```
+
+5. **Run the API server**
+
+   ```bash
+   pnpm --filter simple-rag-api start:dev
+   ```
+
+   Or from the root:
+
+   ```bash
+   pnpm dev
+   ```
+
+6. **Run the frontend (in a new terminal)**
+
+   ```bash
+   cd simple-rag-app
+   pnpm dev
+   ```
+
+   The application will be available at:
+
+   - Frontend: http://localhost:3000
+   - API: http://localhost:4000
+
+### Docker Compose
+
+To run the entire stack with Docker Compose:
+
+1. **Create `.env` file** (see environment variables above)
+
+2. **Start all services**
+
+   ```bash
+   docker compose up -d
+   ```
+
+3. **View logs**
+
+   ```bash
+   docker compose logs -f
+   ```
+
+4. **Stop services**
+   ```bash
+   docker compose down
+   ```
+
+## Project Structure
+
+```
+simple-rag/
+├── simple-rag-api/          # NestJS backend
+│   ├── src/
+│   │   ├── rag/            # RAG module (controller, service)
+│   │   ├── config/         # Configuration schemas
+│   │   └── main.ts         # Application entry point
+│   └── package.json
+├── simple-rag-app/          # React frontend
+│   ├── src/
+│   │   ├── components/     # UI components
+│   │   ├── modules/        # Feature modules
+│   │   └── routes/         # TanStack Router routes
+│   └── package.json
+├── compose.yml              # Docker Compose configuration
+├── pnpm-workspace.yaml     # pnpm workspace config
+└── package.json            # Root package.json
 ```
 
-## Compile and run the project
+## Development
 
-```bash
-# development
-$ pnpm run start
+### Available Scripts
 
-# watch mode
-$ pnpm run start:dev
+**Root level:**
 
-# production mode
-$ pnpm run start:prod
-```
+- `pnpm dev` - Start the API in development mode
 
-## Run tests
+**API (`simple-rag-api`):**
 
-```bash
-# unit tests
-$ pnpm run test
+- `pnpm start` - Start the API
+- `pnpm start:dev` - Start in watch mode
+- `pnpm build` - Build for production
+- `pnpm test` - Run unit tests
+- `pnpm test:e2e` - Run end-to-end tests
 
-# e2e tests
-$ pnpm run test:e2e
+**Frontend (`simple-rag-app`):**
 
-# test coverage
-$ pnpm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm serve` - Preview production build
