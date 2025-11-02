@@ -1,0 +1,64 @@
+services:
+  api:
+    build:
+      context: ./simple-rag-api
+      dockerfile: Dockerfile
+    container_name: rag_api
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      API_PORT: ${API_PORT}
+      DB_HOST: db
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+  app:
+    build:
+      context: ./simple-rag-app
+      dockerfile: Dockerfile
+    container_name: rag_app
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      VITE_APP_TITLE: ${VITE_APP_TITLE:-Simple RAG}
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:4000}
+      SERVER_URL: ${SERVER_URL:-http://localhost:4000}
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - rag-network
+    volumes:
+      - ./simple-rag-app:/app
+      - /app/node_modules
+
+  db:
+    image: ankane/pgvector
+    container_name: rag_pgvector
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - rag-network
+
+volumes:
+  pgdata:
+
+networks:
+  rag-network:
+    driver: bridge

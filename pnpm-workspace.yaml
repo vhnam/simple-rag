@@ -1,0 +1,7 @@
+packages:
+  - simple-rag-api
+  - simple-rag-app
+
+onlyBuiltDependencies:
+  - esbuild
+  - unrs-resolver

@@ -1,0 +1,11 @@
+{
+  "name": "simple-rag",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "pnpm --filter simple-rag-api start:dev"
+  }
+}
+
