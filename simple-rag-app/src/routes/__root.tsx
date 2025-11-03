@@ -7,7 +7,10 @@ import type { QueryClient } from '@tanstack/react-query'
 import appCss from '@/styles.css?url'
 import { Layout } from '@/layouts'
 import { PropsWithChildren } from 'react'
-import { env } from 'process'
+
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
 
 interface RootContext {
   queryClient: QueryClient

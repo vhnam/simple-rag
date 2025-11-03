@@ -1,4 +1,3 @@
-import Combobox from '@/components/Combobox'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -15,7 +14,14 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import useAIRecipeFormActions from './AIRecipeForm.actions'
+import useAIRecipeFormActions from './ai-recipe-form.actions'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 const categories = [
   'MÓN DÙNG NƯỚC (NƯỚC, CANH, XÚP)',
@@ -55,16 +61,30 @@ const AIRecipeForm = () => {
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-                    <Combobox
+                    {/* <Combobox
                       id="category"
-                      className="w-full"
                       options={categories.map((category) => ({
                         value: category,
                         label: category,
                       }))}
                       value={field.state.value}
                       onChange={(value) => field.handleChange(value)}
-                    />
+                    /> */}
+                    <Select
+                      value={field.state.value}
+                      onValueChange={(value) => field.handleChange(value)}
+                    >
+                      <SelectTrigger className="w-full" id={field.name}>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}

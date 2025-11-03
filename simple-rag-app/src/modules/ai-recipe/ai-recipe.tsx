@@ -1,4 +1,4 @@
-import AIRecipeForm from './AIRecipeForm'
+import AIRecipeForm from './ai-recipe-form'
 
 const AIRecipe = () => {
   return (

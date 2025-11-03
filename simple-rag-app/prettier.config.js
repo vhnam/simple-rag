@@ -2,9 +2,19 @@
 
 /** @type {import('prettier').Config} */
 const config = {
-  semi: false,
+  semi: true,
   singleQuote: true,
-  trailingComma: "all",
-};
+  trailingComma: 'es5',
+  tabWidth: 2,
+  useTabs: false,
+  insertPragma: false,
+  requirePragma: false,
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
+  plugins: [
+    '@trivago/prettier-plugin-sort-imports',
+    'prettier-plugin-tailwindcss',
+  ],
+}
 
-export default config;
+export default config

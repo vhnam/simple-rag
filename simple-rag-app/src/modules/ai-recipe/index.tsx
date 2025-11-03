@@ -1,1 +1,1 @@
-export { default as AIRecipe } from './AIRecipe'
+export { default as AIRecipe } from './ai-recipe'

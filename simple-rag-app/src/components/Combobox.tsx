@@ -23,7 +23,6 @@ interface ComboboxOptionProps {
 }
 
 interface ComboboxProps {
-  className?: string
   id?: string
   emptyMessage?: string
   placeholder?: string
@@ -33,7 +32,6 @@ interface ComboboxProps {
 }
 
 const Combobox = ({
-  className,
   id,
   emptyMessage = 'No options found',
   placeholder = 'Select an option',
@@ -61,7 +59,7 @@ const Combobox = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn('w-[200px] justify-between', className)}
+          className={cn('justify-between w-full')}
         >
           {value
             ? options.find((option) => option.value === value)?.label
@@ -80,7 +78,9 @@ const Combobox = ({
                   key={option.value}
                   value={option.value}
                   onSelect={(currentValue) => {
-                    handleValueChange(currentValue === value ? '' : currentValue)
+                    handleValueChange(
+                      currentValue === value ? '' : currentValue,
+                    )
                     setOpen(false)
                   }}
                 >
