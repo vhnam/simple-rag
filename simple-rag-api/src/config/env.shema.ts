@@ -10,6 +10,7 @@ export const EnvSchema = z.object({
   DB_PASSWORD: z.string(),
   DB_NAME: z.string(),
   DB_PORT: z.string(),
+  OPENAI_API_KEY: z.string(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
