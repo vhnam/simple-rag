@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// Zod schemas for validation
 export const askRecipeSchema = z.object({
   ingredients: z.string().min(1, 'Ingredients cannot be empty').trim(),
 });
@@ -12,18 +11,17 @@ export const addRecipeSchema = z.object({
 });
 
 export const recipeSchema = z.object({
-  id: z.string().uuid('Invalid UUID format'),
+  id: z.uuid('Invalid UUID format'),
   name: z.string(),
   ingredients: z.string(),
   instructions: z.string(),
 });
 
 export const addRecipeResponseSchema = z.object({
-  id: z.string().uuid('Invalid UUID format'),
+  id: z.uuid('Invalid UUID format'),
   message: z.string(),
 });
 
-// Standardized RAG Response Schema
 export const recipeMetaSchema = z.object({
   retrievedCount: z.number().nullable().optional(),
   embeddingModel: z.string().optional(),
@@ -48,7 +46,6 @@ export const askRecipeResponseSchema = z.object({
   error: errorDetailSchema.optional(),
 });
 
-// TypeScript types inferred from Zod schemas
 export type AskRecipeDto = z.infer<typeof askRecipeSchema>;
 export type AddRecipeDto = z.infer<typeof addRecipeSchema>;
 export type RecipeDto = z.infer<typeof recipeSchema>;

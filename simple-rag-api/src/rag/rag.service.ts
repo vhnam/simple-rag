@@ -3,6 +3,7 @@ import {
   OnModuleInit,
   OnModuleDestroy,
   Logger,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
@@ -74,10 +75,9 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Queries vector store for similar recipes using cosine distance
-   * @param queryEmbedding - Embedding vector of the search query
-   * @param limit - Maximum number of results to return
-   * @returns Array of similar recipes
+   * Queries vector store for similar recipes using cosine distance.
+   * Returns [] when index/table is empty or missing.
+   * Throws only when connection or query fails.
    */
   private async queryVectorStore(
     queryEmbedding: number[],
@@ -86,55 +86,63 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
     // Convert embedding array to PostgreSQL vector format: "[1,2,3]"
     const embeddingString = `[${queryEmbedding.join(',')}]`;
 
-    // Use cosine distance (<=>) operator for similarity search
-    // Other operators available: <-> (L2/Euclidean), <#> (Inner product)
     const query = `
-      SELECT 
-        id,
-        name,
-        ingredients,
-        instructions
-      FROM recipes
-      WHERE embedding IS NOT NULL
-      AND (1 - (embedding <=> $1)) > 0.75 
-      ORDER BY embedding <=> $1
-      LIMIT $2
-    `;
+    SELECT 
+      id,
+      name,
+      ingredients,
+      instructions
+    FROM recipes
+    WHERE embedding IS NOT NULL
+    ORDER BY embedding <=> $1
+    LIMIT $2
+  `;
 
     try {
-      this.logger.log(
-        `Querying vector store with embedding dimension: ${queryEmbedding.length}`,
-      );
-      this.logger.log(`Executing SQL query: ${query.substring(0, 100)}...`);
-      this.logger.log(
-        `With parameters: embeddingString length=${embeddingString.length}, limit=${limit}`,
+      this.logger.debug(
+        `Running vector similarity search (dimension=${queryEmbedding.length}, limit=${limit})`,
       );
 
-      // TypeORM's query method returns any, cast to RecipeRow[] for type safety
       const result = (await this.dataSource.query(query, [
         embeddingString,
         limit,
       ])) as unknown as RecipeRow[];
 
-      this.logger.log(
-        `Vector store query completed, returned ${result.length} results`,
+      this.logger.debug(
+        `Vector store query completed — returned ${result.length} results`,
       );
       if (result.length > 0) {
-        this.logger.log(`First result: ${result[0].name}`);
+        this.logger.verbose(`Top match: ${result[0].name}`);
       }
+
       return result;
     } catch (error) {
-      this.logger.error('Error querying vector store', error);
+      const msg = error instanceof Error ? error.message : String(error);
+      this.logger.error('Error querying vector store', msg);
 
-      // If the recipes table doesn't exist, return empty array
-      if (error instanceof Error && error.message.includes('does not exist')) {
+      // Case 1 — table/index missing → treat as empty index
+      if (
+        msg.includes('does not exist') ||
+        msg.includes('relation "recipes" does not exist')
+      ) {
         this.logger.warn(
-          'Recipes table does not exist. Returning empty results.',
+          'Recipes table or embedding index not found — treating as empty vector store.',
         );
         return [];
       }
 
-      // Re-throw error to be handled by ask() method
+      // Case 2 — connection errors → propagate as ServiceUnavailable
+      if (
+        msg.includes('ECONNREFUSED') ||
+        msg.includes('timeout') ||
+        msg.includes('connect')
+      ) {
+        throw new ServiceUnavailableException(
+          'Cannot connect to vector store. Please try again later.',
+        );
+      }
+
+      // Case 3 — other SQL/unknown errors → rethrow for upper layer to catch
       throw error;
     }
   }
@@ -208,32 +216,19 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
       this.logger.log(`Query took ${durationMs.toFixed(1)}ms`);
       this.logger.log(`Found ${results.length} similar recipes in database`);
 
-      // Step 3: Handle empty results
+      // Step 3: Handle empty results (retrieval succeeded but no matches)
       if (!results || results.length === 0) {
-        this.logger.warn('No vector results — RAG index may be empty.');
-        return {
-          status: 'no_data',
-          query,
-          answer: null,
-          recipes: [],
-          message:
-            'Currently the system does not have recipe data to suggest. Please add data first.',
-          meta: {
-            retrievedCount: 0,
-            retrievalStatus: 'empty_index',
-            embeddingModel,
-            llmModel,
-            durationMs,
-          },
-          timestamp: new Date().toISOString(),
-        };
+        this.logger.warn(
+          'No vector results — RAG index may be empty or no matches found.',
+        );
       }
 
       // Step 4: Build context from recipe metadata
       const context = results
-        .map((recipe) => {
-          return `Recipe: ${recipe.name}\nIngredients: ${recipe.ingredients}\nInstructions: ${recipe.instructions}`;
-        })
+        .map(
+          (recipe) =>
+            `Recipe: ${recipe.name}\nIngredients: ${recipe.ingredients}\nInstructions: ${recipe.instructions}`,
+        )
         .join('\n\n');
 
       // Step 5: Generate answer using LLM with context
@@ -261,10 +256,10 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
       };
     } catch (error: unknown) {
       this.logger.error('Error in RAG query', error);
-
       const durationMs = performance.now() - start;
+
+      // Step 6: Structured error handling
       const errorDetail: ErrorDetail = (() => {
-        // Handle connection errors
         if (
           error instanceof Error &&
           (error.message.includes('ECONNREFUSED') ||
@@ -288,11 +283,10 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
         };
       })();
 
-      const errorResponse: AskRecipeResponseDto = {
+      return {
         status: 'error',
         query,
         answer: null,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         error: errorDetail,
         meta: {
           retrievedCount: null,
@@ -302,7 +296,6 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
         },
         timestamp: new Date().toISOString(),
       };
-      return errorResponse;
     }
   }
 
