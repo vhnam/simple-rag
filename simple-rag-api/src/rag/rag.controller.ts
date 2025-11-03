@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Query,
   Body,
   HttpCode,
   HttpStatus,
@@ -51,24 +50,6 @@ export class RagController {
     }
   }
 
-  @Get('ask')
-  async askGet(@Query('q') q: string): Promise<RecipeResponseDto> {
-    if (!q || q.trim().length === 0) {
-      throw new BadRequestException('Query parameter "q" cannot be empty');
-    }
-
-    try {
-      const answer = await this.ragService.ask(q);
-      return { answer };
-    } catch (error) {
-      throw new BadRequestException(
-        error instanceof Error
-          ? error.message
-          : 'Failed to generate recipe suggestions',
-      );
-    }
-  }
-
   @Post('recipes')
   @HttpCode(HttpStatus.CREATED)
   async addRecipe(@Body() body: AddRecipeDto): Promise<AddRecipeResponseDto> {
@@ -106,6 +87,17 @@ export class RagController {
     } catch (error) {
       throw new BadRequestException(
         error instanceof Error ? error.message : 'Failed to fetch recipes',
+      );
+    }
+  }
+
+  @Get('status')
+  async getStatus(): Promise<{ ready: boolean; count: number }> {
+    try {
+      return await this.ragService.getStatus();
+    } catch (error) {
+      throw new BadRequestException(
+        error instanceof Error ? error.message : 'Failed to get RAG status',
       );
     }
   }

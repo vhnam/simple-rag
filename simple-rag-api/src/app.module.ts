@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RagModule } from './rag/rag.module';
+import { DatabaseModule } from './database/database.module';
 import { EnvSchema } from './config/env.shema';
 
 @Module({
@@ -11,6 +12,7 @@ import { EnvSchema } from './config/env.shema';
       isGlobal: true,
       validate: (config) => EnvSchema.parse(config),
     }),
+    DatabaseModule,
     RagModule,
   ],
   controllers: [AppController],
