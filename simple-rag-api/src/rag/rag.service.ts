@@ -3,7 +3,6 @@ import {
   OnModuleInit,
   OnModuleDestroy,
   Logger,
-  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
@@ -11,6 +10,11 @@ import { Repository, DataSource } from 'typeorm';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { ChatOpenAI } from '@langchain/openai';
 import { Recipe } from './entities/recipe.entity';
+import {
+  AskRecipeResponseDto,
+  RecipeDto,
+  ErrorDetail,
+} from './dto/ask-recipe.dto';
 
 interface RecipeRow {
   id: string;
@@ -122,18 +126,6 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
     } catch (error) {
       this.logger.error('Error querying vector store', error);
 
-      // Handle connection errors
-      if (
-        error instanceof Error &&
-        (error.message.includes('ECONNREFUSED') ||
-          error.message.includes('timeout') ||
-          error.message.includes('connect'))
-      ) {
-        throw new ServiceUnavailableException(
-          'Cannot connect to vector store. Please try again later.',
-        );
-      }
-
       // If the recipes table doesn't exist, return empty array
       if (error instanceof Error && error.message.includes('does not exist')) {
         this.logger.warn(
@@ -142,6 +134,7 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
         return [];
       }
 
+      // Re-throw error to be handled by ask() method
       throw error;
     }
   }
@@ -191,9 +184,13 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
   /**
    * Main RAG method to answer queries based on recipe database
    * @param query - User query about ingredients or recipes
-   * @returns AI-generated answer with recipe suggestions
+   * @returns Standardized response with status, answer, recipes, and metadata
    */
-  public async ask(query: string): Promise<string> {
+  public async ask(query: string): Promise<AskRecipeResponseDto> {
+    const start = performance.now();
+    const embeddingModel = 'text-embedding-3-small';
+    const llmModel = 'gpt-5-nano';
+
     try {
       this.logger.log(`Processing RAG query: ${query}`);
 
@@ -205,19 +202,31 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
       );
 
       // Step 2: Query vector store for similar recipes
-      const start = performance.now();
       this.logger.debug('Querying database vector store...');
       const results = await this.queryVectorStore(queryEmbedding, 5);
-      this.logger.log(`Query took ${(performance.now() - start).toFixed(1)}ms`);
+      const durationMs = performance.now() - start;
+      this.logger.log(`Query took ${durationMs.toFixed(1)}ms`);
       this.logger.log(`Found ${results.length} similar recipes in database`);
 
-      // Step 3: Handle empty results with early return
+      // Step 3: Handle empty results
       if (!results || results.length === 0) {
         this.logger.warn('No vector results — RAG index may be empty.');
-        this.logger.warn(
-          'Returning early without calling LLM - database has no recipes',
-        );
-        return 'Currently the system does not have recipe data to suggest. Please add data first.';
+        return {
+          status: 'no_data',
+          query,
+          answer: null,
+          recipes: [],
+          message:
+            'Currently the system does not have recipe data to suggest. Please add data first.',
+          meta: {
+            retrievedCount: 0,
+            retrievalStatus: 'empty_index',
+            embeddingModel,
+            llmModel,
+            durationMs,
+          },
+          timestamp: new Date().toISOString(),
+        };
       }
 
       // Step 4: Build context from recipe metadata
@@ -230,23 +239,70 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
       // Step 5: Generate answer using LLM with context
       const answer = await this.generateAnswer(query, context);
 
-      return answer;
-    } catch (error) {
+      const recipes: RecipeDto[] = results.map((recipe) => ({
+        id: recipe.id,
+        name: recipe.name,
+        ingredients: recipe.ingredients,
+        instructions: recipe.instructions,
+      }));
+
+      return {
+        status: 'success',
+        query,
+        answer,
+        recipes,
+        meta: {
+          retrievedCount: results.length,
+          embeddingModel,
+          llmModel,
+          durationMs: performance.now() - start,
+        },
+        timestamp: new Date().toISOString(),
+      };
+    } catch (error: unknown) {
       this.logger.error('Error in RAG query', error);
 
-      // Handle connection errors
-      if (
-        error instanceof Error &&
-        (error.message.includes('ECONNREFUSED') ||
-          error.message.includes('timeout') ||
-          error.message.includes('connect'))
-      ) {
-        throw new ServiceUnavailableException(
-          'Cannot connect to vector store. Please try again later.',
-        );
-      }
+      const durationMs = performance.now() - start;
+      const errorDetail: ErrorDetail = (() => {
+        // Handle connection errors
+        if (
+          error instanceof Error &&
+          (error.message.includes('ECONNREFUSED') ||
+            error.message.includes('timeout') ||
+            error.message.includes('connect'))
+        ) {
+          return {
+            code: 'VECTOR_STORE_UNAVAILABLE',
+            message: 'Cannot connect to vector store. Please try again later.',
+          };
+        }
+        if (error instanceof Error) {
+          return {
+            code: 'RAG_SERVICE_ERROR',
+            message: error.message,
+          };
+        }
+        return {
+          code: 'UNKNOWN_ERROR',
+          message: 'Unknown error occurred',
+        };
+      })();
 
-      throw error;
+      const errorResponse: AskRecipeResponseDto = {
+        status: 'error',
+        query,
+        answer: null,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        error: errorDetail,
+        meta: {
+          retrievedCount: null,
+          embeddingModel,
+          llmModel,
+          durationMs,
+        },
+        timestamp: new Date().toISOString(),
+      };
+      return errorResponse;
     }
   }
 

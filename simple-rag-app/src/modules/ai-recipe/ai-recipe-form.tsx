@@ -14,25 +14,35 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import useAIRecipeFormActions from './ai-recipe-form.actions'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Spinner } from '@/components/ui/spinner'
+import { type AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema'
+import { type ReactFormExtendedApi } from '@tanstack/react-form'
+import { FormEvent } from 'react'
 
-const categories = [
-  'MÓN DÙNG NƯỚC (NƯỚC, CANH, XÚP)',
-  'MÓN CHÁO',
-  'MÓN CHẾ BIẾN KHÔ (KHO, RÁN, XÀO, NƯỚNG)',
-  'MÓN TRỘN, CUỐN, HẤP & CƠM (ĐỊNH DẠNG ĐẶC BIỆT)',
-  'MÓN KHẨU PHẦN ĐẶC BIỆT VÀ MỤC ĐÍCH SỬ DỤNG',
-]
+interface AIRecipeFormProps {
+  form: ReactFormExtendedApi<
+    AIRecipeFormSchema,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any,
+    any
+  >
+  isCreatingRecipe: boolean
+}
 
-const AIRecipeForm = () => {
-  const { form } = useAIRecipeFormActions()
+const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    e.stopPropagation()
+    form.handleSubmit()
+  }
 
   return (
     <Card>
@@ -43,66 +53,21 @@ const AIRecipeForm = () => {
         </CardDescription>
       </CardHeader>
 
-      <form
-        className="space-y-6"
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
-      >
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <CardContent>
           <FieldGroup>
             <form.Field
-              name="category"
+              name="ingredients"
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Category</FieldLabel>
-                    {/* <Combobox
-                      id="category"
-                      options={categories.map((category) => ({
-                        value: category,
-                        label: category,
-                      }))}
-                      value={field.state.value}
-                      onChange={(value) => field.handleChange(value)}
-                    /> */}
-                    <Select
-                      value={field.state.value}
-                      onValueChange={(value) => field.handleChange(value)}
-                    >
-                      <SelectTrigger className="w-full" id={field.name}>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                )
-              }}
-            />
-            <form.Field
-              name="description"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Ingredients</FieldLabel>
                     <Textarea
+                      disabled={isCreatingRecipe}
                       id={field.name}
-                      placeholder="Enter description"
+                      placeholder="Enter ingredients"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
@@ -116,10 +81,23 @@ const AIRecipeForm = () => {
           </FieldGroup>
         </CardContent>
         <CardFooter className="flex justify-end gap-4">
-          <Button variant="outline" type="button" onClick={() => form.reset()}>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={() => form.reset()}
+            disabled={isCreatingRecipe}
+          >
             Clear
           </Button>
-          <Button type="submit">Generate</Button>
+          <Button type="submit" disabled={isCreatingRecipe}>
+            {isCreatingRecipe ? (
+              <>
+                <Spinner /> Generating...
+              </>
+            ) : (
+              'Generate'
+            )}
+          </Button>
         </CardFooter>
       </form>
     </Card>

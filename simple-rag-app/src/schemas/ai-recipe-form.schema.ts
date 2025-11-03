@@ -1,11 +1,10 @@
 import { z } from 'zod'
 
 export const aiRecipeFormSchema = z.object({
-  category: z.string().min(1, 'Category is required'),
-  description: z
+  ingredients: z
     .string()
-    .min(1, 'Description is required')
-    .max(100, 'Description must be at most 100 characters.'),
+    .min(1, 'Ingredients are required')
+    .max(100, 'Ingredients must be at most 100 characters.'),
 })
 
 export type AIRecipeFormSchema = z.infer<typeof aiRecipeFormSchema>

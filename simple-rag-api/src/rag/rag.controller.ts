@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import { RagService } from './rag.service';
 import {
-  RecipeResponseDto,
   RecipeDto,
   AddRecipeResponseDto,
+  AskRecipeResponseDto,
   askRecipeSchema,
   addRecipeSchema,
   AddRecipeDto,
@@ -24,7 +24,7 @@ export class RagController {
 
   @Post('ask')
   @HttpCode(HttpStatus.OK)
-  async ask(@Body() body: AskRecipeDto): Promise<RecipeResponseDto> {
+  async ask(@Body() body: AskRecipeDto): Promise<AskRecipeResponseDto> {
     const validationResult = askRecipeSchema.safeParse(body);
     if (!validationResult.success) {
       const errors = validationResult.error.issues
@@ -35,19 +35,9 @@ export class RagController {
 
     const askRecipeDto = validationResult.data;
 
-    try {
-      const answer = await this.ragService.ask(askRecipeDto.ingredients);
-      return { answer };
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw error;
-      }
-      throw new BadRequestException(
-        error instanceof Error
-          ? error.message
-          : 'Failed to generate recipe suggestions',
-      );
-    }
+    // RagService now returns standardized response format
+    // All error handling is done inside the service, returning error status
+    return await this.ragService.ask(askRecipeDto.ingredients);
   }
 
   @Post('recipes')
