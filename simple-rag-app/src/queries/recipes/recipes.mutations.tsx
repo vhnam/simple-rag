@@ -1,19 +1,19 @@
-import { useMutation } from '@tanstack/react-query'
-import { useQueryClient } from '@tanstack/react-query'
+import { AskRecipeResponse } from './recipes.typings';
+import { apiClient } from '@/lib/axios';
+import { useMutation } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const useCreateRecipeMutation = () => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (ingredients: string) =>
-      fetch(`${import.meta.env.VITE_API_URL}/rag/ask`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ingredients }),
-      }),
+      apiClient
+        .post<AskRecipeResponse>('/rag/ask', {
+          ingredients,
+        })
+        .then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['recipes'] })
+      queryClient.invalidateQueries({ queryKey: ['recipes'] });
     },
-  })
-}
+  });
+};

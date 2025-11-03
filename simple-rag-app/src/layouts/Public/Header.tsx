@@ -1,13 +1,13 @@
-import Logo from '@/components/Logo'
-import { Button } from '@/components/ui/button'
+import Logo from '@/components/Logo';
+import { Button } from '@/components/ui/button';
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from '@/components/ui/navigation-menu'
-import { env } from '@/env'
-import { Link } from '@tanstack/react-router'
+} from '@/components/ui/navigation-menu';
+import { env } from '@/env';
+import { Link } from '@tanstack/react-router';
 
 const menu = [
   {
@@ -18,14 +18,14 @@ const menu = [
     label: 'AI Recipe',
     to: '/ai-recipe',
   },
-]
+];
 
 const Header = () => {
   return (
-    <header className="p-4 border-b">
+    <header className="bg-background fixed top-0 right-0 left-0 z-50 border-b p-4">
       <div className="flex items-center justify-between">
         <div>
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl">
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold">
             <Logo width={32} height={32} />
             <span>{import.meta.env.VITE_APP_TITLE}</span>
           </Link>
@@ -68,7 +68,7 @@ const Header = () => {
         </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

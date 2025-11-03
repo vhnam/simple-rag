@@ -1,29 +1,36 @@
-import { useForm } from '@tanstack/react-form'
+import { useCreateRecipeMutation } from '@/queries/recipes';
 import {
   type AIRecipeFormSchema,
   aiRecipeFormSchema,
-} from '@/schemas/ai-recipe-form.schema'
-import { useCreateRecipeMutation } from '@/queries/recipes'
-import { toast } from 'sonner'
+} from '@/schemas/ai-recipe-form.schema';
+import { useForm } from '@tanstack/react-form';
+import { toast } from 'sonner';
 
 const defaultValues: AIRecipeFormSchema = {
   ingredients: '',
-}
+};
 
 const useAIRecipeFormActions = () => {
-  const { mutate: createRecipe, isPending: isCreatingRecipe } =
-    useCreateRecipeMutation()
+  const {
+    mutate: createRecipe,
+    data: recipeData,
+    isPending: isCreatingRecipe,
+  } = useCreateRecipeMutation();
 
   const handleSubmit = ({ value }: { value: AIRecipeFormSchema }) => {
     createRecipe(value.ingredients, {
-      onSuccess: () => {
-        toast.success('Recipe generated successfully')
+      onSuccess: ({ status }) => {
+        if (status === 'success') {
+          toast.success('Recipe generated successfully');
+        } else {
+          toast.error('Failed to generate recipe');
+        }
       },
       onError: (error) => {
-        toast.error(error.message)
+        toast.error(error.message);
       },
-    })
-  }
+    });
+  };
 
   const form = useForm({
     defaultValues,
@@ -31,12 +38,13 @@ const useAIRecipeFormActions = () => {
       onSubmit: aiRecipeFormSchema,
     },
     onSubmit: handleSubmit,
-  })
+  });
 
   return {
     form,
     isCreatingRecipe,
-  }
-}
+    recipeData,
+  };
+};
 
-export default useAIRecipeFormActions
+export default useAIRecipeFormActions;

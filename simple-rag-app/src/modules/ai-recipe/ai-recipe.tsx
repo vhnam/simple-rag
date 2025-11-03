@@ -1,16 +1,18 @@
-import AIRecipeForm from './ai-recipe-form'
-import useAIRecipeFormActions from './ai-recipe-form.actions'
-import AIRecipeResults from './ai-recipe-results'
+import AIRecipeForm from './ai-recipe-form';
+import useAIRecipeFormActions from './ai-recipe-form.actions';
+import AIRecipeResults from './ai-recipe-results';
 
 const AIRecipe = () => {
-  const { form, isCreatingRecipe } = useAIRecipeFormActions()
+  const { form, isCreatingRecipe, recipeData } = useAIRecipeFormActions();
 
   return (
-    <div className="w-full max-w-2xl mx-auto my-10">
+    <div className="mx-auto py-10 w-full max-w-2xl">
       <AIRecipeForm form={form} isCreatingRecipe={isCreatingRecipe} />
-      <AIRecipeResults />
+      {recipeData && recipeData.status === 'success' && (
+        <AIRecipeResults results={recipeData} />
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default AIRecipe
+export default AIRecipe;
