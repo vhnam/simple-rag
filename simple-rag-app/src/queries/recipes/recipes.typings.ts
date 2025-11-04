@@ -16,17 +16,25 @@ export type RecipeMeta = {
 export type RecipeStatus = 'no_data' | 'success' | 'error';
 
 export type ErrorDetail = {
-  code: 'VECTOR_STORE_UNAVAILABLE' | 'RAG_SERVICE_ERROR' | 'UNKNOWN_ERROR';
+  code: 'INVALID_INPUT' | 'UNKNOWN_ERROR';
   message: string;
 };
 
+export type Dish = {
+  name: string;
+  description: string;
+  usedIngredients: Array<string>;
+  extraIngredients: Array<string>;
+  steps: Array<string>;
+};
+
 export type AskRecipeResponse = {
-  status: RecipeStatus;
+  answer: {
+    dishes: Array<Dish>;
+    error?: ErrorDetail;
+  };
   query: string;
-  answer: string | null;
-  recipes: Array<Recipe>;
-  message?: string;
+  status: RecipeStatus;
   meta?: RecipeMeta;
   timestamp?: string;
-  error?: ErrorDetail;
 };

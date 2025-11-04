@@ -39,7 +39,7 @@ export const askRecipeResponseSchema = z.object({
   status: z.enum(['success', 'no_data', 'error']),
   query: z.string(),
   timestamp: z.string(),
-  answer: z.string().nullable(),
+  answer: z.object().nullable(),
   recipes: z.array(recipeSchema).optional(),
   message: z.string().optional(),
   meta: recipeMetaSchema.optional(),

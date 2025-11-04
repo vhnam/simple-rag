@@ -1,6 +1,19 @@
-import type { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+import type { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
+import { BookmarkIcon, LinkIcon } from 'lucide-react';
 
 interface AIRecipeResultsProps {
   results: AskRecipeResponse;
@@ -9,23 +22,62 @@ interface AIRecipeResultsProps {
 const AIRecipeResults = ({ results }: AIRecipeResultsProps) => {
   return (
     <div className="space-y-6">
-      <div>{results.answer}</div>
-      {results.recipes.length > 0 && (
-        <div className="space-y-6">
+      {results.answer.dishes.length > 0 && (
+        <div className="mt-6 space-y-6">
           <h2 className="text-2xl font-bold">Suggested Recipes</h2>
           <div className="space-y-6">
-            {results.recipes.map((recipe) => (
-              <Card key={recipe.id}>
+            {results.answer.dishes.map((dish) => (
+              <Card key={dish.name}>
                 <CardHeader>
-                  <CardTitle>{recipe.name}</CardTitle>
+                  <CardTitle>{dish.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="font-medium text-gray-500">Ingredients:</p>
-                  <p>{recipe.ingredients}</p>
+                  <p className="whitespace-pre-wrap">
+                    {dish.usedIngredients.join(', ')}
+                  </p>
+                  <Separator className="my-2" />
+                  <p className="font-medium text-gray-500">
+                    Extra Ingredients:
+                  </p>
+                  <p className="whitespace-pre-wrap">
+                    {dish.extraIngredients.join(', ')}
+                  </p>
                   <Separator className="my-2" />
                   <p className="font-medium text-gray-500">Instructions:</p>
-                  <p>{recipe.instructions}</p>
+                  <ol className="list-inside list-decimal">
+                    {dish.steps.map((step, index) => (
+                      <li
+                        key={`${dish.name}__step--${index}`}
+                        className="text-base"
+                      >
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
                 </CardContent>
+                <CardFooter className="flex justify-end gap-4">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <BookmarkIcon />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Bookmark this recipe</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="outline" size="icon">
+                        <LinkIcon />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Share this recipe</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </CardFooter>
               </Card>
             ))}
           </div>

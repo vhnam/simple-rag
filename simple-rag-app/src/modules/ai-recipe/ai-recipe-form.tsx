@@ -1,6 +1,3 @@
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
-import type { FormEvent } from 'react';
-import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -16,8 +13,11 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
-import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
+import { Textarea } from '@/components/ui/textarea';
+import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
+import type { FormEvent } from 'react';
 
 interface AIRecipeFormProps {
   form: ReactFormExtendedApi<
@@ -35,13 +35,22 @@ interface AIRecipeFormProps {
     any
   >;
   isCreatingRecipe: boolean;
+  onReset: () => void;
 }
 
-const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
+const AIRecipeForm = ({
+  form,
+  isCreatingRecipe,
+  onReset,
+}: AIRecipeFormProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
     form.handleSubmit();
+  };
+
+  const handleClear = () => {
+    onReset();
   };
 
   return (
@@ -84,7 +93,7 @@ const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
           <Button
             variant="outline"
             type="button"
-            onClick={() => form.reset()}
+            onClick={handleClear}
             disabled={isCreatingRecipe}
           >
             Clear

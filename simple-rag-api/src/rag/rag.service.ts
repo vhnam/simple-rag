@@ -3,7 +3,6 @@ import {
   OnModuleInit,
   OnModuleDestroy,
   Logger,
-  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
@@ -16,12 +15,18 @@ import {
   RecipeDto,
   ErrorDetail,
 } from './dto/ask-recipe.dto';
+import {
+  RAG_EMBEDDING_MODEL,
+  RAG_LLM_MODEL,
+  RAG_SIMILARITY_THRESHOLD,
+} from '../constants/rag.constants';
 
 interface RecipeRow {
   id: string;
   name: string;
   ingredients: string;
   instructions: string;
+  similarity?: number;
 }
 
 @Injectable()
@@ -52,10 +57,11 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
 
     this.llm = new ChatOpenAI({
       openAIApiKey: openAiApiKey,
-      modelName: 'gpt-5-nano',
+      modelName: RAG_LLM_MODEL,
       temperature: 1,
-      maxTokens: 600,
     });
+
+    this.logger.log('RAG service initialized');
   }
 
   onModuleDestroy(): void {
@@ -64,125 +70,182 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Converts text to embedding vector
+   * Converts ingredients list to a search query embedding
    */
-  private async embedText(text: string): Promise<number[]> {
+  private async getQueryEmbedding(query: string): Promise<number[]> {
     if (!this.embeddings) {
       throw new Error('Embeddings not initialized');
     }
-    const embedding = await this.embeddings.embedQuery(text);
+    const embedding = await this.embeddings.embedQuery(query);
     return embedding;
   }
 
   /**
-   * Queries vector store for similar recipes using cosine distance.
-   * Returns [] when index/table is empty or missing.
-   * Throws only when connection or query fails.
+   * Searches for recipes similar to the ingredients query using vector similarity
    */
-  private async queryVectorStore(
+  private async searchSimilarRecipes(
     queryEmbedding: number[],
     limit: number = 5,
+    similarityThreshold: number = RAG_SIMILARITY_THRESHOLD,
   ): Promise<RecipeRow[]> {
-    // Convert embedding array to PostgreSQL vector format: "[1,2,3]"
     const embeddingString = `[${queryEmbedding.join(',')}]`;
 
     const query = `
-    SELECT 
-      id,
-      name,
-      ingredients,
-      instructions
-    FROM recipes
-    WHERE embedding IS NOT NULL
-    ORDER BY embedding <=> $1
-    LIMIT $2
-  `;
+      SELECT 
+        id,
+        name,
+        ingredients,
+        instructions,
+        1 - (embedding <=> $1::vector) AS similarity
+      FROM recipes
+      WHERE embedding IS NOT NULL
+      ORDER BY embedding <=> $1::vector
+      LIMIT $2
+    `;
 
     try {
-      this.logger.debug(
-        `Running vector similarity search (dimension=${queryEmbedding.length}, limit=${limit})`,
-      );
-
       const result = (await this.dataSource.query(query, [
         embeddingString,
         limit,
       ])) as unknown as RecipeRow[];
 
-      this.logger.debug(
-        `Vector store query completed — returned ${result.length} results`,
+      const filtered = result.filter(
+        (recipe: RecipeRow) =>
+          (recipe.similarity as number) >= similarityThreshold,
       );
-      if (result.length > 0) {
-        this.logger.verbose(`Top match: ${result[0].name}`);
-      }
 
-      return result;
+      return filtered;
     } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      this.logger.error('Error querying vector store', msg);
-
-      // Case 1 — table/index missing → treat as empty index
-      if (
-        msg.includes('does not exist') ||
-        msg.includes('relation "recipes" does not exist')
-      ) {
+      this.logger.error('Error searching for recipes', error);
+      if (error instanceof Error && error.message.includes('does not exist')) {
         this.logger.warn(
-          'Recipes table or embedding index not found — treating as empty vector store.',
+          'Recipes table does not exist. Returning empty results.',
         );
         return [];
       }
-
-      // Case 2 — connection errors → propagate as ServiceUnavailable
-      if (
-        msg.includes('ECONNREFUSED') ||
-        msg.includes('timeout') ||
-        msg.includes('connect')
-      ) {
-        throw new ServiceUnavailableException(
-          'Cannot connect to vector store. Please try again later.',
-        );
-      }
-
-      // Case 3 — other SQL/unknown errors → rethrow for upper layer to catch
       throw error;
     }
   }
 
   /**
-   * Generates answer using LLM with recipe context
+   * Generates recipe suggestions using LLM based on ingredients and similar recipes
    */
-  private async generateAnswer(
-    query: string,
-    context: string,
-  ): Promise<string> {
+  private async generateSuggestions(
+    ingredients: string,
+    similarRecipes: RecipeRow[],
+  ): Promise<object> {
     if (!this.llm) {
       throw new Error('LLM not initialized');
     }
 
-    const prompt = `
-    You are a helpful cooking assistant.
-    User asks: "${query}"
-    
-    Here are related recipes from the database:
-    ${context}
-    
-    Based only on the provided recipes, suggest 1-2 dishes that best match the user's request.
-    If no recipe fits, say: "I don't have a matching recipe yet."
-    `;
+    const recipeContext = similarRecipes
+      .map(
+        (recipe, index) => `
+Recipe ${index + 1}: ${recipe.name}
+Ingredients: ${recipe.ingredients}
+Instructions: ${recipe.instructions}
+`,
+      )
+      .join('\n---\n');
+
+    const recipeContextText =
+      similarRecipes.length > 0
+        ? recipeContext
+        : 'No similar recipes found in the database. Use your cooking knowledge to suggest dishes.';
+
+    const fullPrompt = `
+        You are a helpful Vietnamese cooking assistant AI.
+        Your goal is to suggest realistic home-style Vietnamese dishes based on the user's available ingredients
+        and optionally using related recipes from the database.
+        
+        ---
+        
+        User's ingredients:
+        ${ingredients}
+        
+        Similar recipes from database:
+        ${recipeContextText || '(none)'}
+        
+        ---
+        
+        TASK:
+        1. First, check if the user's input is related to food, ingredients, cooking, or drinks.
+          - If the input is **not related to cooking or ingredients** (for example, it's about weather, feelings, or other topics), 
+            then respond with JSON:
+            {
+              "dishes": [],
+              "error": {
+                "code": "INVALID_INPUT",
+                "message": "The input is not related to cooking or ingredients."
+              }
+            }
+        2. Otherwise, continue normally:
+          - Suggest 2-3 dishes the user can cook.
+          - Each dish must be realistic, Vietnamese-style, and easy for home cooking.
+          - If no recipes are found in the database, you may invent creative but reasonable dishes based on the ingredients.
+        3. Only output valid JSON. Do not include any explanation, introduction, markdown, or text outside the JSON.
+        
+        ---
+        
+        OUTPUT FORMAT (strict JSON, no markdown, no explanation, no text outside the JSON):
+        {
+          "dishes": [
+            {
+              "name": "string",
+              "description": "string",
+              "usedIngredients": ["string", "string"],
+              "extraIngredients": ["string", "string"],
+              "steps": ["string", "string", "string"]
+            }
+          ]
+        }
+        
+        Rules:
+        - Always respond in Vietnamese.
+        - Do NOT include introductions, summaries, or follow-up questions.
+        - Do NOT include backticks, markdown code fences, or any explanation.
+        - Begin output directly with '{' and end with '}'.
+        - Each dish should have 3-5 clear steps.
+        `;
 
     try {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const response = await this.llm.invoke(prompt);
+      const response = await this.llm.invoke(fullPrompt);
+
+      let text = '';
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (response && typeof response.content === 'string') {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-        return response.content;
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (response && response.content) {
+      if (Array.isArray(response.content)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        text = response.content
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
+          .map((contentPart: { text: string }) => contentPart.text ?? '')
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          .join('')
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          .trim();
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        return String(response.content);
+      } else if (typeof response.content === 'string') {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        text = response.content.trim();
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        text = String(response.content ?? '').trim();
       }
-      throw new Error('Unexpected response format from LLM');
+
+      // Parse JSON safely
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const json = JSON.parse(text);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return json;
+      } catch {
+        this.logger.warn(
+          'Model did not return valid JSON, returning raw text.',
+        );
+        return {
+          dishes: [],
+        };
+      }
     } catch (error) {
       this.logger.error('Error generating answer from LLM', error);
       throw error;
@@ -190,51 +253,37 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
   }
 
   /**
-   * Main RAG method to answer queries based on recipe database
-   * @param query - User query about ingredients or recipes
-   * @returns Standardized response with status, answer, recipes, and metadata
+   * Main method to suggest recipes based on ingredients
+   * @param ingredients - Comma-separated list of ingredients the user has (already validated by controller)
+   * @returns AI-generated recipe suggestions with recipes and metadata
    */
-  public async ask(query: string): Promise<AskRecipeResponseDto> {
+  public async ask(ingredients: string): Promise<AskRecipeResponseDto> {
     const start = performance.now();
-    const embeddingModel = 'text-embedding-3-small';
-    const llmModel = 'gpt-5-nano';
+    const embeddingModel = RAG_EMBEDDING_MODEL;
+    const llmModel = RAG_LLM_MODEL;
 
     try {
-      this.logger.log(`Processing RAG query: ${query}`);
-
-      // Step 1: Create embedding for the query
-      this.logger.debug('Generating embedding for query...');
-      const queryEmbedding = await this.embedText(query);
-      this.logger.debug(
-        `Embedding generated, dimension: ${queryEmbedding.length}`,
+      this.logger.log(
+        `Processing recipe request for ingredients: ${ingredients}`,
       );
 
-      // Step 2: Query vector store for similar recipes
-      this.logger.debug('Querying database vector store...');
-      const results = await this.queryVectorStore(queryEmbedding, 5);
-      const durationMs = performance.now() - start;
-      this.logger.log(`Query took ${durationMs.toFixed(1)}ms`);
-      this.logger.log(`Found ${results.length} similar recipes in database`);
+      // Step 1: Create embedding for the ingredients query
+      const queryEmbedding = await this.getQueryEmbedding(ingredients);
 
-      // Step 3: Handle empty results (retrieval succeeded but no matches)
-      if (!results || results.length === 0) {
-        this.logger.warn(
-          'No vector results — RAG index may be empty or no matches found.',
-        );
-      }
+      // Step 2: Search for similar recipes in the database
+      const similarRecipes = await this.searchSimilarRecipes(queryEmbedding);
 
-      // Step 4: Build context from recipe metadata
-      const context = results
-        .map(
-          (recipe) =>
-            `Recipe: ${recipe.name}\nIngredients: ${recipe.ingredients}\nInstructions: ${recipe.instructions}`,
-        )
-        .join('\n\n');
+      this.logger.log(
+        `Found ${similarRecipes.length} similar recipes in database`,
+      );
 
-      // Step 5: Generate answer using LLM with context
-      const answer = await this.generateAnswer(query, context);
+      // Step 3: Generate AI suggestions based on ingredients and similar recipes
+      const suggestions = await this.generateSuggestions(
+        ingredients,
+        similarRecipes,
+      );
 
-      const recipes: RecipeDto[] = results.map((recipe) => ({
+      const recipes: RecipeDto[] = similarRecipes.map((recipe) => ({
         id: recipe.id,
         name: recipe.name,
         ingredients: recipe.ingredients,
@@ -243,11 +292,11 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
 
       return {
         status: 'success',
-        query,
-        answer,
+        query: ingredients,
+        answer: suggestions as Record<string, never>,
         recipes,
         meta: {
-          retrievedCount: results.length,
+          retrievedCount: similarRecipes.length,
           embeddingModel,
           llmModel,
           durationMs: performance.now() - start,
@@ -255,10 +304,10 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
         timestamp: new Date().toISOString(),
       };
     } catch (error: unknown) {
-      this.logger.error('Error in RAG query', error);
+      this.logger.error('Error generating recipe suggestions', error);
       const durationMs = performance.now() - start;
 
-      // Step 6: Structured error handling
+      // Structured error handling
       const errorDetail: ErrorDetail = (() => {
         if (
           error instanceof Error &&
@@ -285,7 +334,7 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
 
       return {
         status: 'error',
-        query,
+        query: ingredients,
         answer: null,
         error: errorDetail,
         meta: {
@@ -317,14 +366,10 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
 
     try {
       // Generate embedding for the ingredients
-      const textForEmbedding = `${name}\nIngredients: ${ingredients}\nInstructions: ${instructions}`;
-      const embedding = await this.embedText(textForEmbedding);
-      // Convert to PostgreSQL vector format: "[1,2,3]"
+      const embedding = await this.getQueryEmbedding(ingredients);
       const embeddingString = `[${embedding.join(',')}]`;
 
-      // Insert recipe with embedding using raw query for vector type
-      // Cast to vector type explicitly for pgvector compatibility
-      // TypeORM's query method returns any, cast to typed result for safety
+      // Insert recipe with embedding (UUID will be auto-generated by database)
       const result = (await this.dataSource.query(
         `
         INSERT INTO recipes (name, ingredients, instructions, embedding)
@@ -335,9 +380,6 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
       )) as unknown as Array<{ id: string }>;
 
       const recipeId = result[0]?.id;
-      if (!recipeId) {
-        throw new Error('Failed to insert recipe: no ID returned');
-      }
       this.logger.log(`Recipe "${name}" added with ID: ${recipeId}`);
       return recipeId;
     } catch (error) {
@@ -351,18 +393,20 @@ export class RagService implements OnModuleInit, OnModuleDestroy {
    */
   public async getAllRecipes(): Promise<RecipeRow[]> {
     try {
-      const recipes = await this.recipeRepository.find({
-        order: {
-          created_at: 'DESC',
-        },
-        select: ['id', 'name', 'ingredients', 'instructions'],
-      });
+      const result = (await this.dataSource.query(
+        'SELECT id, name, ingredients, instructions FROM recipes ORDER BY created_at DESC',
+      )) as unknown as Array<{
+        id: string;
+        name: string;
+        ingredients: string;
+        instructions: string;
+      }>;
 
-      return recipes.map((recipe) => ({
-        id: recipe.id,
-        name: recipe.name,
-        ingredients: recipe.ingredients,
-        instructions: recipe.instructions,
+      return result.map((row) => ({
+        id: row.id,
+        name: row.name,
+        ingredients: row.ingredients,
+        instructions: row.instructions,
       }));
     } catch (error) {
       this.logger.error('Error fetching recipes', error);

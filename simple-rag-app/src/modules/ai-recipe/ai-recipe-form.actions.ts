@@ -1,27 +1,32 @@
-import { useForm } from '@tanstack/react-form';
-import { toast } from 'sonner';
-import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { useCreateRecipeMutation } from '@/queries/recipes';
+import { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
+import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { aiRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+import { useForm } from '@tanstack/react-form';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 const defaultValues: AIRecipeFormSchema = {
   ingredients: '',
 };
 
 const useAIRecipeFormActions = () => {
-  const {
-    mutate: createRecipe,
-    data: recipeData,
-    isPending: isCreatingRecipe,
-  } = useCreateRecipeMutation();
+  const [recipeData, setRecipeData] = useState<AskRecipeResponse>();
+
+  const { mutate: createRecipe, isPending: isCreatingRecipe } =
+    useCreateRecipeMutation();
 
   const handleSubmit = ({ value }: { value: AIRecipeFormSchema }) => {
     createRecipe(value.ingredients, {
-      onSuccess: ({ status }) => {
-        if (status === 'success') {
+      onSuccess: (data) => {
+        setRecipeData(data);
+
+        if (data.answer.error?.code === 'INVALID_INPUT') {
+          toast.error(data.answer.error.message);
+        } else if (data.status === 'success') {
           toast.success('Recipe generated successfully');
         } else {
-          toast.error('Failed to generate recipe');
+          toast.error('Failed to generate recipe. Please try again.');
         }
       },
       onError: (error) => {
@@ -38,10 +43,16 @@ const useAIRecipeFormActions = () => {
     onSubmit: handleSubmit,
   });
 
+  const handleResetForm = () => {
+    setRecipeData(undefined);
+    form.reset();
+  };
+
   return {
     form,
     isCreatingRecipe,
     recipeData,
+    onReset: handleResetForm,
   };
 };
 
