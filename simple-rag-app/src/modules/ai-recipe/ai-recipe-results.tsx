@@ -1,6 +1,6 @@
+import type { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
 
 interface AIRecipeResultsProps {
   results: AskRecipeResponse;
@@ -10,7 +10,7 @@ const AIRecipeResults = ({ results }: AIRecipeResultsProps) => {
   return (
     <div className="space-y-6">
       <div>{results.answer}</div>
-      {results.recipes && results.recipes.length > 0 && (
+      {results.recipes.length > 0 && (
         <div className="space-y-6">
           <h2 className="text-2xl font-bold">Suggested Recipes</h2>
           <div className="space-y-6">

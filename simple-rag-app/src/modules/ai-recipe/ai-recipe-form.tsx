@@ -1,23 +1,23 @@
-import { Button } from '@/components/ui/button'
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
+import type { FormEvent } from 'react';
+import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+import { Button } from '@/components/ui/button';
 import {
   Card,
-  CardTitle,
-  CardHeader,
-  CardDescription,
   CardContent,
+  CardDescription,
   CardFooter,
-} from '@/components/ui/card'
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-} from '@/components/ui/field'
-import { Textarea } from '@/components/ui/textarea'
-import { Spinner } from '@/components/ui/spinner'
-import { type AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema'
-import { type ReactFormExtendedApi } from '@tanstack/react-form'
-import { FormEvent } from 'react'
+} from '@/components/ui/field';
+import { Textarea } from '@/components/ui/textarea';
+import { Spinner } from '@/components/ui/spinner';
 
 interface AIRecipeFormProps {
   form: ReactFormExtendedApi<
@@ -33,16 +33,16 @@ interface AIRecipeFormProps {
     any,
     any,
     any
-  >
-  isCreatingRecipe: boolean
+  >;
+  isCreatingRecipe: boolean;
 }
 
 const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    e.stopPropagation()
-    form.handleSubmit()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    form.handleSubmit();
+  };
 
   return (
     <Card>
@@ -60,7 +60,7 @@ const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
               name="ingredients"
               children={(field) => {
                 const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid
+                  field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Ingredients</FieldLabel>
@@ -75,7 +75,7 @@ const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
                       <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
-                )
+                );
               }}
             />
           </FieldGroup>
@@ -101,7 +101,7 @@ const AIRecipeForm = ({ form, isCreatingRecipe }: AIRecipeFormProps) => {
         </CardFooter>
       </form>
     </Card>
-  )
-}
+  );
+};
 
-export default AIRecipeForm
+export default AIRecipeForm;

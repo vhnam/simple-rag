@@ -1,34 +1,33 @@
-import { cn } from '@/lib/utils'
-
-import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react';
+import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from '@/components/ui/popover';
 import {
   Command,
-  CommandInput,
-  CommandList,
   CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
-} from '@/components/ui/command'
+  CommandList,
+} from '@/components/ui/command';
 
 interface ComboboxOptionProps {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
 interface ComboboxProps {
-  id?: string
-  emptyMessage?: string
-  placeholder?: string
-  options: ComboboxOptionProps[]
-  value?: string
-  onChange?: (value: string) => void
+  id?: string;
+  emptyMessage?: string;
+  placeholder?: string;
+  options: Array<ComboboxOptionProps>;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 const Combobox = ({
@@ -39,18 +38,18 @@ const Combobox = ({
   value: controlledValue,
   onChange,
 }: ComboboxProps) => {
-  const [open, setOpen] = useState<boolean>(false)
-  const [internalValue, setInternalValue] = useState<string>('')
+  const [open, setOpen] = useState<boolean>(false);
+  const [internalValue, setInternalValue] = useState<string>('');
 
-  const isControlled = controlledValue !== undefined
-  const value = isControlled ? controlledValue : internalValue
+  const isControlled = controlledValue !== undefined;
+  const value = isControlled ? controlledValue : internalValue;
 
   const handleValueChange = (newValue: string) => {
     if (!isControlled) {
-      setInternalValue(newValue)
+      setInternalValue(newValue);
     }
-    onChange?.(newValue)
-  }
+    onChange?.(newValue);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -59,7 +58,7 @@ const Combobox = ({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className={cn('justify-between w-full')}
+          className={cn('w-full justify-between')}
         >
           {value
             ? options.find((option) => option.value === value)?.label
@@ -79,15 +78,15 @@ const Combobox = ({
                   value={option.value}
                   onSelect={(currentValue) => {
                     handleValueChange(
-                      currentValue === value ? '' : currentValue,
-                    )
-                    setOpen(false)
+                      currentValue === value ? '' : currentValue
+                    );
+                    setOpen(false);
                   }}
                 >
                   <CheckIcon
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === option.value ? 'opacity-100' : 'opacity-0',
+                      value === option.value ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   {option.label}
@@ -98,7 +97,7 @@ const Combobox = ({
         </Command>
       </PopoverContent>
     </Popover>
-  )
-}
+  );
+};
 
-export default Combobox
+export default Combobox;

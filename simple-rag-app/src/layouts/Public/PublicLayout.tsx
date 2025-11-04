@@ -1,6 +1,6 @@
-import { PropsWithChildren } from 'react'
-import Header from './Header'
-import { Toaster } from 'sonner'
+import { Toaster } from 'sonner';
+import Header from './Header';
+import type { PropsWithChildren } from 'react';
 
 const PublicLayout = ({ children }: PropsWithChildren) => {
   return (
@@ -9,7 +9,7 @@ const PublicLayout = ({ children }: PropsWithChildren) => {
       <main className="mt-16">{children}</main>
       <Toaster />
     </>
-  )
-}
+  );
+};
 
-export default PublicLayout
+export default PublicLayout;

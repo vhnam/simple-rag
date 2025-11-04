@@ -2,18 +2,18 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-} from '@tanstack/react-router'
-import type { QueryClient } from '@tanstack/react-query'
-import appCss from '@/styles.css?url'
-import { Layout } from '@/layouts'
-import { PropsWithChildren } from 'react'
+} from '@tanstack/react-router';
+import type { PropsWithChildren } from 'react';
+import type { QueryClient } from '@tanstack/react-query';
+import appCss from '@/styles.css?url';
+import { Layout } from '@/layouts';
 
-import '@fontsource/inter/400.css'
-import '@fontsource/inter/600.css'
-import '@fontsource/inter/700.css'
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
 
 interface RootContext {
-  queryClient: QueryClient
+  queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<RootContext>()({
@@ -39,7 +39,7 @@ export const Route = createRootRouteWithContext<RootContext>()({
   }),
 
   shellComponent: RootDocument,
-})
+});
 
 function RootDocument({ children }: PropsWithChildren) {
   return (
@@ -52,5 +52,5 @@ function RootDocument({ children }: PropsWithChildren) {
         <Scripts />
       </body>
     </html>
-  )
+  );
 }

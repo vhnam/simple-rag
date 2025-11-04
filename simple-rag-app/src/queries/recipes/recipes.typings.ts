@@ -24,7 +24,7 @@ export type AskRecipeResponse = {
   status: RecipeStatus;
   query: string;
   answer: string | null;
-  recipes: Recipe[];
+  recipes: Array<Recipe>;
   message?: string;
   meta?: RecipeMeta;
   timestamp?: string;

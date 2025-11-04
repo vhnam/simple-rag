@@ -205,7 +205,7 @@ importers:
         version: 0.7.7
       axios:
         specifier: ^1.13.1
-        version: 1.13.1(debug@4.4.3)
+        version: 1.13.1
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -252,9 +252,6 @@ importers:
       '@testing-library/react':
         specifier: ^16.2.0
         version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@trivago/prettier-plugin-sort-imports':
-        specifier: ^5.2.2
-        version: 5.2.2(prettier@3.6.2)
       '@types/node':
         specifier: ^22.10.2
         version: 22.18.13
@@ -8941,6 +8938,7 @@ snapshots:
       prettier: 3.6.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@tsconfig/node10@1.0.11': {}
 
@@ -9633,6 +9631,14 @@ snapshots:
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.1.0
+
+  axios@1.13.1:
+    dependencies:
+      follow-redirects: 1.15.11
+      form-data: 4.0.4
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
 
   axios@1.13.1(debug@4.4.3):
     dependencies:
@@ -10613,6 +10619,8 @@ snapshots:
 
   flatted@3.3.3: {}
 
+  follow-redirects@1.15.11: {}
+
   follow-redirects@1.15.11(debug@4.4.3):
     optionalDependencies:
       debug: 4.4.3
@@ -11025,7 +11033,8 @@ snapshots:
     dependencies:
       '@isaacs/cliui': 8.0.2
 
-  javascript-natural-sort@0.7.1: {}
+  javascript-natural-sort@0.7.1:
+    optional: true
 
   jest-changed-files@29.7.0:
     dependencies:

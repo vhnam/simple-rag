@@ -1,4 +1,4 @@
-import { SVGProps } from 'react'
+import type { SVGProps } from 'react';
 
 const Logo = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -80,6 +80,6 @@ const Logo = (props: SVGProps<SVGSVGElement>) => (
       opacity={0.1}
     />
   </svg>
-)
+);
 
-export default Logo
+export default Logo;

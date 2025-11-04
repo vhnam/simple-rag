@@ -1,10 +1,8 @@
-import { useCreateRecipeMutation } from '@/queries/recipes';
-import {
-  type AIRecipeFormSchema,
-  aiRecipeFormSchema,
-} from '@/schemas/ai-recipe-form.schema';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner';
+import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+import { useCreateRecipeMutation } from '@/queries/recipes';
+import { aiRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 
 const defaultValues: AIRecipeFormSchema = {
   ingredients: '',

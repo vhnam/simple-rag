@@ -9,12 +9,7 @@ const config = {
   useTabs: false,
   insertPragma: false,
   requirePragma: false,
-  importOrderSeparation: true,
-  importOrderSortSpecifiers: true,
-  plugins: [
-    '@trivago/prettier-plugin-sort-imports',
-    'prettier-plugin-tailwindcss',
-  ],
-}
+  plugins: ['prettier-plugin-tailwindcss'],
+};
 
-export default config
+export default config;

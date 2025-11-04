@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,7 +8,6 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { env } from '@/env';
-import { Link } from '@tanstack/react-router';
 
 const menu = [
   {
