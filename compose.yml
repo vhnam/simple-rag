@@ -30,9 +30,11 @@ services:
       - "${APP_PORT}:${APP_PORT}"
     environment:
       NODE_ENV: ${NODE_ENV}
+      SERVER_URL: ${SERVER_URL}
       VITE_APP_TITLE: ${VITE_APP_TITLE}
       VITE_API_URL: ${VITE_API_URL}
-      SERVER_URL: ${SERVER_URL}
+      VITE_AUTH0_DOMAIN: ${VITE_AUTH0_DOMAIN}
+      VITE_AUTH0_CLIENT_ID: ${VITE_AUTH0_CLIENT_ID}
     depends_on:
       - api
     restart: unless-stopped

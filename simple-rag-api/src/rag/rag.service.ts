@@ -217,7 +217,6 @@ Instructions: ${recipe.instructions}
       if (Array.isArray(response.content)) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         text = response.content
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
           .map((contentPart: { text: string }) => contentPart.text ?? '')
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           .join('')
