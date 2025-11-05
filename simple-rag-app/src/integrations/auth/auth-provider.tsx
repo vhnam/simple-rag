@@ -1,17 +1,19 @@
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import { Auth0Provider, useAuth0, User } from '@auth0/auth0-react';
 import { createContext, PropsWithChildren, useContext } from 'react';
 
-interface Auth0ContextType {
+export type Auth0User = User;
+
+export interface AuthContextType {
   isAuthenticated: boolean;
-  user: any;
+  user?: Auth0User;
+  isLoading: boolean;
   login: (options?: { screen_hint?: 'signup' }) => void;
   logout: () => void;
-  isLoading: boolean;
 }
 
-const Auth0Context = createContext<Auth0ContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const Auth0Wrapper = ({ children }: PropsWithChildren) => {
+export const AuthWrapper = ({ children }: PropsWithChildren) => {
   const redirectUri =
     typeof window !== 'undefined'
       ? window.location.origin
@@ -27,12 +29,12 @@ export const Auth0Wrapper = ({ children }: PropsWithChildren) => {
       useRefreshTokens={true}
       cacheLocation="localstorage"
     >
-      <Auth0ContextProvider>{children}</Auth0ContextProvider>
+      <AuthContextProvider>{children}</AuthContextProvider>
     </Auth0Provider>
   );
 };
 
-const Auth0ContextProvider = ({ children }: PropsWithChildren) => {
+const AuthContextProvider = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, user, loginWithRedirect, logout, isLoading } =
     useAuth0();
 
@@ -58,16 +60,14 @@ const Auth0ContextProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <Auth0Context.Provider value={contextValue}>
-      {children}
-    </Auth0Context.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
-export function useAuth0Context() {
-  const context = useContext(Auth0Context);
+export function useAuthContext() {
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth0Context must be used within Auth0Wrapper');
+    throw new Error('useAuthContext must be used within AuthWrapper');
   }
   return context;
 }

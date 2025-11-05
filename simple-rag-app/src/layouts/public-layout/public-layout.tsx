@@ -1,5 +1,5 @@
 import { Toaster } from 'sonner';
-import Header from './Header';
+import Header from './public-header';
 import type { PropsWithChildren } from 'react';
 
 const PublicLayout = ({ children }: PropsWithChildren) => {

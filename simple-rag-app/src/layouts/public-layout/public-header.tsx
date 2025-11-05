@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,7 +6,10 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
-import { useAuth0Context } from '@/integrations/auth0/auth-provider';
+import { useAuthContext } from '@/integrations/auth/auth-provider';
+import { Link } from '@tanstack/react-router';
+import PublicMenuUser from './public-menu-user';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const menu = [
   {
@@ -20,8 +22,8 @@ const menu = [
   },
 ];
 
-const Header = () => {
-  const { isAuthenticated, user, login, logout, isLoading } = useAuth0Context();
+const PublicHeader = () => {
+  const { isAuthenticated, user, login, logout, isLoading } = useAuthContext();
 
   if (isLoading) {
     return (
@@ -33,7 +35,9 @@ const Header = () => {
               <span>{import.meta.env.VITE_APP_TITLE}</span>
             </Link>
           </div>
-          <div className="text-muted-foreground text-sm">Loading...</div>
+          <div className="text-muted-foreground text-sm">
+            <Skeleton className="size-8" />
+          </div>
         </div>
       </header>
     );
@@ -52,7 +56,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <div className="flex items-center">
             <NavigationMenu viewport={false}>
-              <NavigationMenuList>
+              <NavigationMenuList className="space-x-2">
                 {menu.map((item) => (
                   <NavigationMenuItem key={item.to}>
                     <NavigationMenuLink asChild>
@@ -67,14 +71,7 @@ const Header = () => {
           </div>
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
-              <>
-                <span className="text-muted-foreground text-sm">
-                  {user?.email || user?.name}
-                </span>
-                <Button variant="outline" size="sm" onClick={() => logout()}>
-                  Logout
-                </Button>
-              </>
+              <PublicMenuUser user={user!} onLogout={logout} />
             ) : (
               <>
                 <Button variant="outline" size="sm" onClick={() => login()}>
@@ -95,4 +92,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default PublicHeader;

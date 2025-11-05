@@ -9,12 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AiRecipeRouteImport } from './routes/ai-recipe'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -40,11 +47,18 @@ const AuthLoginRoute = AuthLoginRouteImport.update({
   path: '/auth/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-recipe': typeof AiRecipeRoute
   '/chat': typeof ChatRoute
+  '/profile': typeof ProfileRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
 }
@@ -52,6 +66,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-recipe': typeof AiRecipeRoute
   '/chat': typeof ChatRoute
+  '/profile': typeof ProfileRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
 }
@@ -60,19 +76,37 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ai-recipe': typeof AiRecipeRoute
   '/chat': typeof ChatRoute
+  '/profile': typeof ProfileRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ai-recipe' | '/chat' | '/auth/login' | '/auth/register'
+  fullPaths:
+    | '/'
+    | '/ai-recipe'
+    | '/chat'
+    | '/profile'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/auth/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ai-recipe' | '/chat' | '/auth/login' | '/auth/register'
+  to:
+    | '/'
+    | '/ai-recipe'
+    | '/chat'
+    | '/profile'
+    | '/auth/callback'
+    | '/auth/login'
+    | '/auth/register'
   id:
     | '__root__'
     | '/'
     | '/ai-recipe'
     | '/chat'
+    | '/profile'
+    | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
   fileRoutesById: FileRoutesById
@@ -81,12 +115,21 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiRecipeRoute: typeof AiRecipeRoute
   ChatRoute: typeof ChatRoute
+  ProfileRoute: typeof ProfileRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat': {
       id: '/chat'
       path: '/chat'
@@ -122,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -129,6 +179,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiRecipeRoute: AiRecipeRoute,
   ChatRoute: ChatRoute,
+  ProfileRoute: ProfileRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
 }
