@@ -50,6 +50,7 @@
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.6",
     "tw-animate-css": "^1.3.6",
+    "validator": "^13.15.20",
     "vite-tsconfig-paths": "^5.1.4",
     "zod": "^4.1.11"
   },
@@ -60,6 +61,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@types/validator": "^13.15.4",
     "@vitejs/plugin-react": "^5.0.4",
     "dotenv": "^17.2.3",
     "jsdom": "^27.0.0",

@@ -9,7 +9,7 @@ import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { ChatOpenAI } from '@langchain/openai';
-import { Recipe } from './entities/recipe.entity';
+import { Recipe } from '../entities/recipe.entity';
 import {
   AskRecipeResponseDto,
   RecipeDto,

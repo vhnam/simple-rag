@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Recipe } from '../rag/entities/recipe.entity';
+import { Recipe } from '../entities/recipe.entity';
+import { User } from '../entities/user.entity';
+import { Role } from '../entities/role.entity';
+import { UserRole } from '../entities/user-role.entity';
+import { Permission } from '../entities/permission.entity';
+import { RolePermission } from '../entities/role-permission.entity';
 import { MigrationService } from './migration.service';
 
 @Module({
@@ -17,7 +22,7 @@ import { MigrationService } from './migration.service';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Recipe],
+        entities: [Recipe, User, Role, UserRole, Permission, RolePermission],
         synchronize: false, // We'll use migrations
         logging: ['query', 'error'],
         extra: {
@@ -27,7 +32,7 @@ import { MigrationService } from './migration.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Recipe]),
+    TypeOrmModule.forFeature([Recipe, User]),
   ],
   providers: [MigrationService],
   exports: [TypeOrmModule],

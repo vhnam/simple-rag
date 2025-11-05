@@ -9,6 +9,7 @@ export interface AuthContextType {
   isLoading: boolean;
   login: (options?: { screen_hint?: 'signup' }) => void;
   logout: () => void;
+  getAccessTokenSilently: () => Promise<string>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,8 +37,14 @@ export const AuthWrapper = ({ children }: PropsWithChildren) => {
 };
 
 const AuthContextProvider = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated, user, loginWithRedirect, logout, isLoading } =
-    useAuth0();
+  const {
+    isAuthenticated,
+    user,
+    loginWithRedirect,
+    logout,
+    isLoading,
+    getAccessTokenSilently,
+  } = useAuth0();
 
   const contextValue = {
     isAuthenticated,
@@ -58,6 +65,7 @@ const AuthContextProvider = ({ children }: PropsWithChildren) => {
         },
       }),
     isLoading,
+    getAccessTokenSilently,
   };
 
   return (

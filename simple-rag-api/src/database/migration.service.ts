@@ -73,6 +73,25 @@ export class MigrationService implements OnModuleInit {
         this.logger.warn('Could not create text search index');
       }
 
+      // Create users table if it doesn't exist
+      const usersTableExists = (await queryRunner.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_name = 'users'
+        );
+      `)) as Array<{ exists: boolean }>;
+
+      if (!usersTableExists[0]?.exists) {
+        await this.createUsersTable(queryRunner);
+        this.logger.log('Created users table with UUID schema');
+      } else {
+        // Check if auth0Id column exists with wrong case and fix it
+        await this.migrateAuth0IdColumn(queryRunner);
+      }
+
+      // Create RBAC tables
+      await this.createRbacTables(queryRunner);
+
       this.logger.log('Database schema initialized successfully');
     } finally {
       await queryRunner.release();
@@ -182,5 +201,275 @@ export class MigrationService implements OnModuleInit {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
+  }
+
+  /**
+   * Migrates auth0Id column to preserve case if needed
+   */
+  private async migrateAuth0IdColumn(queryRunner: QueryRunner): Promise<void> {
+    try {
+      // Check if column exists (case-insensitive check)
+      const columnCheck = (await queryRunner.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'users' 
+        AND LOWER(column_name) = 'auth0id';
+      `)) as Array<{ column_name: string }>;
+
+      if (columnCheck.length === 0) {
+        // Column doesn't exist, add it
+        this.logger.log('Adding auth0Id column to users table...');
+        await queryRunner.query(`
+          ALTER TABLE users 
+          ADD COLUMN "auth0Id" VARCHAR(255) NOT NULL UNIQUE;
+        `);
+        this.logger.log('Successfully added auth0Id column');
+        return;
+      }
+
+      // Column exists, check if it needs to be renamed
+      const existingColumnName = columnCheck[0].column_name;
+      if (existingColumnName !== 'auth0Id') {
+        this.logger.log(
+          `Migrating ${existingColumnName} column to auth0Id (preserve case)...`,
+        );
+        // Rename the column to preserve case
+        await queryRunner.query(`
+          ALTER TABLE users 
+          RENAME COLUMN "${existingColumnName}" TO "auth0Id";
+        `);
+        this.logger.log('Successfully migrated auth0id to auth0Id');
+      }
+    } catch (error) {
+      this.logger.error('Error migrating auth0Id column', error);
+      // Don't throw - allow app to continue
+    }
+  }
+
+  /**
+   * Creates the users table with UUID schema
+   */
+  private async createUsersTable(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`
+      CREATE TABLE users (
+        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+        "auth0Id" VARCHAR(255) NOT NULL UNIQUE,
+        email VARCHAR(255),
+        name VARCHAR(255) NOT NULL,
+        avatar VARCHAR(500),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+  }
+
+  /**
+   * Creates all RBAC-related tables
+   */
+  private async createRbacTables(queryRunner: QueryRunner): Promise<void> {
+    // Create roles table
+    const rolesTableExists = (await queryRunner.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'roles'
+      );
+    `)) as Array<{ exists: boolean }>;
+
+    if (!rolesTableExists[0]?.exists) {
+      await queryRunner.query(`
+        CREATE TABLE roles (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name VARCHAR(255) NOT NULL UNIQUE,
+          description VARCHAR(255),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      this.logger.log('Created roles table');
+    }
+
+    // Create permissions table
+    const permissionsTableExists = (await queryRunner.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'permissions'
+      );
+    `)) as Array<{ exists: boolean }>;
+
+    if (!permissionsTableExists[0]?.exists) {
+      await queryRunner.query(`
+        CREATE TABLE permissions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name VARCHAR(255) NOT NULL UNIQUE,
+          description VARCHAR(255),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      this.logger.log('Created permissions table');
+    }
+
+    // Create role_permissions join table
+    const rolePermissionsTableExists = (await queryRunner.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'role_permissions'
+      );
+    `)) as Array<{ exists: boolean }>;
+
+    if (!rolePermissionsTableExists[0]?.exists) {
+      await queryRunner.query(`
+        CREATE TABLE role_permissions (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          role_id UUID NOT NULL,
+          permission_id UUID NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+          FOREIGN KEY (permission_id) REFERENCES permissions(id) ON DELETE CASCADE,
+          UNIQUE(role_id, permission_id)
+        );
+      `);
+      this.logger.log('Created role_permissions table');
+    }
+
+    // Create user_roles join table
+    const userRolesTableExists = (await queryRunner.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_name = 'user_roles'
+      );
+    `)) as Array<{ exists: boolean }>;
+
+    if (!userRolesTableExists[0]?.exists) {
+      await queryRunner.query(`
+        CREATE TABLE user_roles (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL,
+          role_id UUID NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+          UNIQUE(user_id, role_id)
+        );
+      `);
+      this.logger.log('Created user_roles table');
+    }
+
+    // Seed default roles and permissions if they don't exist
+    await this.seedRbacData(queryRunner);
+  }
+
+  /**
+   * Seeds default RBAC data (roles and permissions)
+   */
+  private async seedRbacData(queryRunner: QueryRunner): Promise<void> {
+    try {
+      // Check if viewer role exists
+      const viewerRoleExists = (await queryRunner.query(`
+        SELECT COUNT(*) as count FROM roles WHERE name = 'viewer';
+      `)) as Array<{ count: string }>;
+
+      if (parseInt(viewerRoleExists[0].count, 10) === 0) {
+        await queryRunner.query(`
+          INSERT INTO roles (name, description)
+          VALUES ('viewer', 'Can view recipes');
+        `);
+        this.logger.log('Created viewer role');
+      }
+
+      // Check if admin role exists
+      const adminRoleExists = (await queryRunner.query(`
+        SELECT COUNT(*) as count FROM roles WHERE name = 'admin';
+      `)) as Array<{ count: string }>;
+
+      if (parseInt(adminRoleExists[0].count, 10) === 0) {
+        await queryRunner.query(`
+          INSERT INTO roles (name, description)
+          VALUES ('admin', 'Full access to all features');
+        `);
+        this.logger.log('Created admin role');
+      }
+
+      // Create permissions
+      const permissions = [
+        { name: 'recipes:read', description: 'Can read recipes' },
+        { name: 'recipes:create', description: 'Can create recipes' },
+        { name: 'recipes:update', description: 'Can update recipes' },
+        { name: 'recipes:delete', description: 'Can delete recipes' },
+        {
+          name: 'recipes:all',
+          description: 'Full access to all recipe operations',
+        },
+      ];
+
+      for (const permission of permissions) {
+        const permissionExists = (await queryRunner.query(
+          `SELECT COUNT(*) as count FROM permissions WHERE name = '${permission.name}';`,
+        )) as Array<{ count: string }>;
+
+        if (parseInt(permissionExists[0].count, 10) === 0) {
+          await queryRunner.query(`
+            INSERT INTO permissions (name, description)
+            VALUES ('${permission.name}', '${permission.description}');
+          `);
+        }
+      }
+
+      // Assign permissions to roles
+      // Viewer role gets read permission
+      const viewerRole = (await queryRunner.query(`
+        SELECT id FROM roles WHERE name = 'viewer';
+      `)) as Array<{ id: string }>;
+
+      const readPermission = (await queryRunner.query(`
+        SELECT id FROM permissions WHERE name = 'recipes:read';
+      `)) as Array<{ id: string }>;
+
+      if (viewerRole.length > 0 && readPermission.length > 0) {
+        const rolePermissionExists = (await queryRunner.query(
+          `SELECT COUNT(*) as count FROM role_permissions 
+          WHERE role_id = '${viewerRole[0].id}' AND permission_id = '${readPermission[0].id}';`,
+        )) as Array<{ count: string }>;
+
+        if (parseInt(rolePermissionExists[0].count, 10) === 0) {
+          await queryRunner.query(`
+            INSERT INTO role_permissions (role_id, permission_id)
+            VALUES ('${viewerRole[0].id}', '${readPermission[0].id}');
+          `);
+          this.logger.log('Assigned recipes:read permission to viewer role');
+        }
+      }
+
+      // Admin role gets all permissions
+      const adminRole = (await queryRunner.query(`
+        SELECT id FROM roles WHERE name = 'admin';
+      `)) as Array<{ id: string }>;
+
+      if (adminRole.length > 0) {
+        const allPermissions = (await queryRunner.query(`
+          SELECT id FROM permissions;
+        `)) as Array<{ id: string }>;
+
+        for (const permission of allPermissions) {
+          const rolePermissionExists = (await queryRunner.query(
+            `SELECT COUNT(*) as count FROM role_permissions 
+            WHERE role_id = '${adminRole[0].id}' AND permission_id = '${permission.id}';`,
+          )) as Array<{ count: string }>;
+
+          if (parseInt(rolePermissionExists[0].count, 10) === 0) {
+            await queryRunner.query(`
+              INSERT INTO role_permissions (role_id, permission_id)
+              VALUES ('${adminRole[0].id}', '${permission.id}');
+            `);
+          }
+        }
+        this.logger.log('Assigned all permissions to admin role');
+      }
+    } catch (error) {
+      this.logger.error('Error seeding RBAC data', error);
+      // Don't throw - allow app to continue
+    }
   }
 }

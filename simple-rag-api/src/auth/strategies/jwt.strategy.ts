@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private configService: ConfigService) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super({
       secretOrKeyProvider: passportJwtSecret({
         cache: true,
@@ -15,7 +14,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         jwksRequestsPerMinute: 5,
         jwksUri: `${configService.get<string>('AUTH0_ISSUER_URL')}/.well-known/jwks.json`,
       }),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       audience: configService.get<string>('AUTH0_AUDIENCE'),
       issuer: `${configService.get<string>('AUTH0_ISSUER_URL')}/`,

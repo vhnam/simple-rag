@@ -18,7 +18,9 @@ import {
   AddRecipeDto,
   AskRecipeDto,
 } from './dto/ask-recipe.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { PermissionsGuard } from 'src/rbac/guards/permissions.guard';
+import { Permissions } from 'src/rbac/decorators/permissions.decorator';
 
 @Controller('rag')
 export class RagController {
@@ -42,7 +44,8 @@ export class RagController {
     return await this.ragService.ask(askRecipeDto.ingredients);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions('recipes:create')
   @Post('recipes')
   @HttpCode(HttpStatus.CREATED)
   async addRecipe(@Body() body: AddRecipeDto): Promise<AddRecipeResponseDto> {
@@ -73,7 +76,8 @@ export class RagController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtGuard, PermissionsGuard)
+  @Permissions('recipes:all')
   @Get('recipes')
   async getRecipes(): Promise<RecipeDto[]> {
     try {
@@ -85,7 +89,7 @@ export class RagController {
     }
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtGuard)
   @Get('status')
   async getStatus(): Promise<{ ready: boolean; count: number }> {
     try {
