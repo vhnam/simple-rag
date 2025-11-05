@@ -15,6 +15,8 @@ export const env = createEnv({
   client: {
     VITE_APP_TITLE: z.string().min(1),
     VITE_API_URL: z.url(),
+    VITE_AUTH0_DOMAIN: z.string().min(1),
+    VITE_AUTH0_CLIENT_ID: z.string().min(1),
   },
 
   /**
@@ -24,9 +26,12 @@ export const env = createEnv({
   runtimeEnv: {
     // Server-side variables (only available during SSR)
     SERVER_URL: import.meta.env.SERVER_URL ?? process.env.SERVER_URL,
+
     // Client-side variables (available in browser)
     VITE_APP_TITLE: import.meta.env.VITE_APP_TITLE,
     VITE_API_URL: import.meta.env.VITE_API_URL,
+    VITE_AUTH0_DOMAIN: import.meta.env.VITE_AUTH0_DOMAIN,
+    VITE_AUTH0_CLIENT_ID: import.meta.env.VITE_AUTH0_CLIENT_ID,
   },
 
   /**
