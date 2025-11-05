@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { RagModule } from './rag/rag.module';
 import { DatabaseModule } from './database/database.module';
 import { EnvSchema } from './config/env.shema';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { EnvSchema } from './config/env.shema';
     }),
     DatabaseModule,
     RagModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

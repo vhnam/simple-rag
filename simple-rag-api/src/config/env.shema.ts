@@ -11,6 +11,8 @@ export const EnvSchema = z.object({
   DB_NAME: z.string(),
   DB_PORT: z.string(),
   OPENAI_API_KEY: z.string(),
+  AUTH0_ISSUER_URL: z.string(),
+  AUTH0_AUDIENCE: z.string(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;
