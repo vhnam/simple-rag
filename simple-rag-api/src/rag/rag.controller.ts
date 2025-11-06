@@ -84,6 +84,7 @@ export class RagController {
 
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions('recipes:all')
+  @Permissions('recipes:read')
   @Get('recipes')
   async getRecipes(): Promise<RecipeDto[]> {
     try {

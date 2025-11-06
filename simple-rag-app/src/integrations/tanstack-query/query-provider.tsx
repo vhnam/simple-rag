@@ -6,7 +6,13 @@ interface ReactQueryContext extends PropsWithChildren {
 }
 
 export function getContext() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: 3,
+      },
+    },
+  });
   return {
     queryClient,
   };

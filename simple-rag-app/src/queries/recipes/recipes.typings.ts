@@ -38,3 +38,8 @@ export type AskRecipeResponse = {
   meta?: RecipeMeta;
   timestamp?: string;
 };
+
+export type RecipesResponse = {
+  recipes: Recipe[];
+  meta: RecipeMeta;
+};
