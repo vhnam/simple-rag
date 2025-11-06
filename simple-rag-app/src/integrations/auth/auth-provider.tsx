@@ -1,5 +1,6 @@
 import { Auth0Provider, useAuth0, User } from '@auth0/auth0-react';
-import { createContext, PropsWithChildren, useContext } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect } from 'react';
+import { authInterceptor } from '@/lib/axios';
 
 export type Auth0User = User;
 
@@ -45,6 +46,21 @@ const AuthContextProvider = ({ children }: PropsWithChildren) => {
     isLoading,
     getAccessTokenSilently,
   } = useAuth0();
+
+  useEffect(() => {
+    authInterceptor.setTokenCallback(async () => {
+      try {
+        if (isAuthenticated) {
+          const token = await getAccessTokenSilently();
+          return token;
+        }
+        return null;
+      } catch (error) {
+        console.debug('Could not retrieve Auth0 token:', error);
+        return null;
+      }
+    });
+  }, [isAuthenticated, getAccessTokenSilently]);
 
   const contextValue = {
     isAuthenticated,

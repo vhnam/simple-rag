@@ -3,23 +3,22 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
 } from '@/components/ui/sidebar';
 import ProtectedSidebarFooter from './protected-sidebar-footer';
-import { HomeIcon, NotepadTextIcon, CircleUserRoundIcon } from 'lucide-react';
-import Logo from '@/components/Logo';
+import { Activity, NotepadTextIcon, CircleUserRoundIcon } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import { ComponentProps } from 'react';
+import ProtectedSidebarHeader from './protected-sidebar-header';
 
 const items = [
   {
-    title: 'Home',
+    title: 'Dashboard',
     url: '/dashboard',
-    icon: HomeIcon,
+    icon: Activity,
   },
   {
     title: 'Recipes',
@@ -33,21 +32,13 @@ const items = [
   },
 ];
 
-const ProtectedSidebar = () => {
+const ProtectedSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-2">
-          <Logo width={32} height={32} />
-          <span className="text-lg font-bold">
-            {import.meta.env.VITE_APP_TITLE}
-          </span>
-        </div>
-      </SidebarHeader>
+    <Sidebar collapsible="icon" {...props}>
+      <ProtectedSidebarHeader />
       <SidebarSeparator />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
