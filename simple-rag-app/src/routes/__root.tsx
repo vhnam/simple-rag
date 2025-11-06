@@ -7,7 +7,7 @@ import type { PropsWithChildren } from 'react';
 import type { QueryClient } from '@tanstack/react-query';
 import appCss from '@/styles.css?url';
 import { Layout } from '@/layouts';
-import { NotFound } from '@/components/NotFound';
+import { NotFound } from '@/components/not-found';
 
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/600.css';
@@ -38,7 +38,6 @@ export const Route = createRootRouteWithContext<RootContext>()({
       },
     ],
   }),
-
   shellComponent: RootDocument,
   notFoundComponent: NotFound,
 });

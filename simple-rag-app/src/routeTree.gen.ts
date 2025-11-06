@@ -14,9 +14,12 @@ import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AiRecipeRouteImport } from './routes/ai-recipe'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
+import { Route as DashboardRecipesIndexRouteImport } from './routes/dashboard/recipes/index'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -43,6 +46,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardProfileRoute = DashboardProfileRouteImport.update({
+  id: '/dashboard/profile',
+  path: '/dashboard/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
@@ -58,6 +66,16 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
   path: '/auth/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardUsersIndexRoute = DashboardUsersIndexRouteImport.update({
+  id: '/dashboard/users/',
+  path: '/dashboard/users/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRecipesIndexRoute = DashboardRecipesIndexRouteImport.update({
+  id: '/dashboard/recipes/',
+  path: '/dashboard/recipes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -67,7 +85,10 @@ export interface FileRoutesByFullPath {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/recipes': typeof DashboardRecipesIndexRoute
+  '/dashboard/users': typeof DashboardUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,7 +98,10 @@ export interface FileRoutesByTo {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/recipes': typeof DashboardRecipesIndexRoute
+  '/dashboard/users': typeof DashboardUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,7 +112,10 @@ export interface FileRoutesById {
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
+  '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/recipes/': typeof DashboardRecipesIndexRoute
+  '/dashboard/users/': typeof DashboardUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -100,7 +127,10 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/profile'
     | '/dashboard'
+    | '/dashboard/recipes'
+    | '/dashboard/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -110,7 +140,10 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/profile'
     | '/dashboard'
+    | '/dashboard/recipes'
+    | '/dashboard/users'
   id:
     | '__root__'
     | '/'
@@ -120,7 +153,10 @@ export interface FileRouteTypes {
     | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
+    | '/dashboard/profile'
     | '/dashboard/'
+    | '/dashboard/recipes/'
+    | '/dashboard/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -131,7 +167,10 @@ export interface RootRouteChildren {
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
+  DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardRecipesIndexRoute: typeof DashboardRecipesIndexRoute
+  DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -171,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/profile': {
+      id: '/dashboard/profile'
+      path: '/dashboard/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof DashboardProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/register': {
       id: '/auth/register'
       path: '/auth/register'
@@ -192,6 +238,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/users/': {
+      id: '/dashboard/users/'
+      path: '/dashboard/users'
+      fullPath: '/dashboard/users'
+      preLoaderRoute: typeof DashboardUsersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/recipes/': {
+      id: '/dashboard/recipes/'
+      path: '/dashboard/recipes'
+      fullPath: '/dashboard/recipes'
+      preLoaderRoute: typeof DashboardRecipesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -203,7 +263,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCallbackRoute: AuthCallbackRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
+  DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardRecipesIndexRoute: DashboardRecipesIndexRoute,
+  DashboardUsersIndexRoute: DashboardUsersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

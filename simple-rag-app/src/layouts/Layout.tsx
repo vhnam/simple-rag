@@ -1,8 +1,27 @@
+import { useAuthContext } from '@/integrations/auth/auth-provider';
 import { PublicLayout } from './public-layout';
 import type { PropsWithChildren } from 'react';
+import { ProtectedLayout } from './protected-layout';
+import { Spinner } from '@/components/ui/spinner';
+import { useAuthStore } from '@/stores/auth.store';
 
 const Layout = ({ children }: PropsWithChildren) => {
-  return <PublicLayout>{children}</PublicLayout>;
+  const { isAuthenticated, isLoading } = useAuthContext();
+  const { role } = useAuthStore();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner className="size-24" />
+      </div>
+    );
+  }
+
+  return isAuthenticated && role.includes('admin') ? (
+    <ProtectedLayout>{children}</ProtectedLayout>
+  ) : (
+    <PublicLayout>{children}</PublicLayout>
+  );
 };
 
 export default Layout;

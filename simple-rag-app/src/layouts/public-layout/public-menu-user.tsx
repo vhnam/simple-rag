@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOutIcon, UserIcon } from 'lucide-react';
+import { LogOutIcon, SettingsIcon } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { User } from '@auth0/auth0-react';
 
@@ -42,7 +42,7 @@ const PublicMenuUser = ({ user, onLogout }: PublicMenuUserProps) => {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link to="/profile" className="w-full">
-            <UserIcon className="size-4" />
+            <SettingsIcon className="size-4" />
             Account
           </Link>
         </DropdownMenuItem>

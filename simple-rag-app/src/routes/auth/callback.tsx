@@ -2,6 +2,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { useAuthContext } from '@/integrations/auth/auth-provider';
 import { useSyncUserMutation } from '@/queries/auth';
 import { SyncUserRequest } from '@/queries/auth/auth.typings';
+import { authStore } from '@/stores/auth.store';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import isEmail from 'validator/lib/isEmail';
@@ -13,6 +14,7 @@ export const Route = createFileRoute('/auth/callback')({
 function CallbackPage() {
   const { getAccessTokenSilently, user } = useAuthContext();
   const { mutateAsync: syncUser } = useSyncUserMutation();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +34,7 @@ function CallbackPage() {
         const response = await syncUser(payload);
 
         if (response.role.includes('admin')) {
+          authStore.setState(response);
           navigate({ to: '/dashboard' });
         } else {
           navigate({ to: '/' });
