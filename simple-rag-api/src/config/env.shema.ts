@@ -13,6 +13,10 @@ export const EnvSchema = z.object({
   OPENAI_API_KEY: z.string(),
   AUTH0_ISSUER_URL: z.string(),
   AUTH0_AUDIENCE: z.string(),
+  ALLOWED_ORIGINS: z
+    .string()
+    .optional()
+    .default('http://localhost:3000,http://localhost:5173'),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

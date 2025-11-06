@@ -8,6 +8,7 @@ import {
   BadRequestException,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { RagService } from './rag.service';
 import {
   RecipeDto,
@@ -26,6 +27,11 @@ import { Permissions } from 'src/rbac/decorators/permissions.decorator';
 export class RagController {
   constructor(private readonly ragService: RagService) {}
 
+  // Stricter rate limit for public AI-powered endpoint (expensive operation)
+  @Throttle({
+    short: { limit: 3, ttl: 1000 },
+    medium: { limit: 10, ttl: 60000 },
+  })
   @Post('ask')
   @HttpCode(HttpStatus.OK)
   async ask(@Body() body: AskRecipeDto): Promise<AskRecipeResponseDto> {

@@ -9,6 +9,7 @@ services:
     environment:
       NODE_ENV: ${NODE_ENV}
       API_PORT: ${API_PORT}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
       DB_HOST: db
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
