@@ -7,6 +7,10 @@ A simple Retrieval-Augmented Generation (RAG) application built with NestJS and 
 - **AI Recipe Suggestions**: Get personalized recipe recommendations based on ingredients you have
 - **Vector Search**: Fast semantic search using PostgreSQL with pgvector extension
 - **Authentication**: Secure JWT-based authentication with Auth0
+- **Role-Based Access Control (RBAC)**: Fine-grained permissions system with roles (viewer, admin) and permissions
+- **Health Monitoring**: Built-in health check endpoints for database, memory, and disk monitoring
+- **Rate Limiting**: API rate limiting to prevent abuse
+- **Structured Logging**: Winston-based logging for better observability
 - **Modern UI**: Beautiful, responsive interface built with React 19 and Tailwind CSS
 - **Type-Safe**: End-to-end type safety with TypeScript
 
@@ -27,6 +31,9 @@ The project is organized as a monorepo with two main components:
 - **PostgreSQL + pgvector** - Vector database for embeddings
 - **TypeORM** - TypeScript ORM for database operations
 - **Auth0** - JWT authentication with Passport.js
+- **Winston** - Structured logging
+- **NestJS Terminus** - Health check endpoints
+- **NestJS Throttler** - Rate limiting
 - **TypeScript** - Type-safe development
 
 ### Frontend
@@ -75,6 +82,7 @@ The project is organized as a monorepo with two main components:
    # API Configuration
    NODE_ENV=development
    API_PORT=4000
+   ALLOWED_ORIGINS=http://localhost:3000
 
    # Database Configuration
    DB_HOST=localhost
@@ -134,6 +142,7 @@ The project is organized as a monorepo with two main components:
 
    - Frontend: http://localhost:3000
    - API: http://localhost:4000
+   - Health Check: http://localhost:4000/health
 
 ### Docker Compose
 
@@ -165,9 +174,12 @@ simple-rag/
 ├── simple-rag-api/          # NestJS backend
 │   ├── src/
 │   │   ├── rag/            # RAG module (controller, service, entities, DTOs)
-│   │   ├── auth/           # Authentication module (JWT strategy)
-│   │   ├── config/         # Configuration schemas (env validation)
+│   │   ├── auth/           # Authentication module (JWT strategy, user sync)
+│   │   ├── rbac/           # RBAC module (roles, permissions, guards)
+│   │   ├── health/         # Health check endpoints
+│   │   ├── config/         # Configuration schemas (env validation, CORS, logging, throttler)
 │   │   ├── database/       # Database module and migrations
+│   │   ├── entities/       # TypeORM entities (User, Role, Permission, Recipe, etc.)
 │   │   ├── constants/      # Application constants
 │   │   └── main.ts         # Application entry point
 │   ├── test/               # E2E tests
@@ -223,7 +235,47 @@ The application uses PostgreSQL with the `pgvector` extension for vector similar
 
 ### Running Migrations
 
-Database migrations are handled automatically by the application on startup. The `MigrationService` ensures the database schema is up to date.
+Database migrations are handled automatically by the application on startup. The `MigrationService` ensures the database schema is up to date, including:
+
+- Recipe entity tables
+- User and authentication tables
+- RBAC tables (roles, permissions, user-roles, role-permissions)
+- Default role and permission seeding (viewer and admin roles)
+
+## API Endpoints
+
+### Health Checks
+
+- `GET /health` - Comprehensive health check (database, memory, disk)
+- `GET /health/liveness` - Simple liveness probe
+- `GET /health/readiness` - Readiness check with database connectivity
+
+### Authentication
+
+- `POST /auth/sync` - Sync user from Auth0 (creates user if new, assigns default 'viewer' role)
+
+### RAG
+
+- `POST /rag/query` - Query recipes using RAG (requires authentication and appropriate permissions)
+
+## RBAC System
+
+The application includes a Role-Based Access Control (RBAC) system:
+
+### Default Roles
+
+- **viewer**: Can view recipes (default role for new users)
+- **admin**: Full access to all features
+
+### Permissions
+
+- `recipes:read` - Can read recipes
+- `recipes:create` - Can create recipes
+- `recipes:update` - Can update recipes
+- `recipes:delete` - Can delete recipes
+- `recipes:all` - Full access to all recipe operations (assigned to admin role)
+
+New users are automatically assigned the `viewer` role upon first authentication.
 
 ## Troubleshooting
 
@@ -240,3 +292,5 @@ Database migrations are handled automatically by the application on startup. The
 - Frontend hot-reloads automatically on file changes
 - Check Docker logs with `docker compose logs -f` for container issues
 - API logs will show detailed information about RAG queries and embeddings
+- Health check endpoints are useful for monitoring and debugging
+- RBAC permissions can be managed through the database or by modifying the migration service
