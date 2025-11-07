@@ -13,6 +13,7 @@ import { HealthModule } from './health/health.module';
 import { createThrottlerConfig } from './config/throttler.config';
 import { createLoggerConfig } from './config/logger.config';
 import { HttpLoggerMiddleware } from './common/middleware/http-logger.middleware';
+import { RecipesModule } from './recipes/recipes.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { HttpLoggerMiddleware } from './common/middleware/http-logger.middleware
     RagModule,
     AuthModule,
     HealthModule,
+    RecipesModule,
   ],
   controllers: [AppController],
   providers: [

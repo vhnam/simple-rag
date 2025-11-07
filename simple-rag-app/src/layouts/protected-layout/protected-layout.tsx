@@ -1,9 +1,5 @@
 import ProtectedSidebar from './protected-sidebar';
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import type { PropsWithChildren } from 'react';
 
 const ProtectedLayout = ({ children }: PropsWithChildren) => {
@@ -11,8 +7,7 @@ const ProtectedLayout = ({ children }: PropsWithChildren) => {
     <SidebarProvider>
       <ProtectedSidebar />
       <SidebarInset>
-        <SidebarTrigger />
-        {children}
+        <div className="flex flex-1 flex-col">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

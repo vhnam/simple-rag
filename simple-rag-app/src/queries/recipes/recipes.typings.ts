@@ -5,41 +5,16 @@ export type Recipe = {
   instructions: string;
 };
 
-export type RecipeMeta = {
-  retrievedCount: number;
-  retrievalStatus: 'empty_index' | 'success' | 'error';
-  embeddingModel: string;
-  llmModel: string;
-  durationMs: number;
-};
-
-export type RecipeStatus = 'no_data' | 'success' | 'error';
-
-export type ErrorDetail = {
-  code: 'INVALID_INPUT' | 'UNKNOWN_ERROR';
-  message: string;
-};
-
-export type Dish = {
-  name: string;
-  description: string;
-  usedIngredients: Array<string>;
-  extraIngredients: Array<string>;
-  steps: Array<string>;
-};
-
-export type AskRecipeResponse = {
-  answer: {
-    dishes: Array<Dish>;
-    error?: ErrorDetail;
-  };
-  query: string;
-  status: RecipeStatus;
-  meta?: RecipeMeta;
-  timestamp?: string;
+export type RecipesRequest = {
+  page: number;
+  limit: number;
+  search?: string;
 };
 
 export type RecipesResponse = {
-  recipes: Recipe[];
-  meta: RecipeMeta;
+  data: Recipe[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 };

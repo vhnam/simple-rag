@@ -22,6 +22,7 @@ import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
 import { Route as DashboardRolesIndexRouteImport } from './routes/dashboard/roles/index'
 import { Route as DashboardRecipesIndexRouteImport } from './routes/dashboard/recipes/index'
+import { Route as DashboardRecipesRecipeIdRouteImport } from './routes/dashboard/recipes/$recipeId'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -88,6 +89,12 @@ const DashboardRecipesIndexRoute = DashboardRecipesIndexRouteImport.update({
   path: '/recipes/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardRecipesRecipeIdRoute =
+  DashboardRecipesRecipeIdRouteImport.update({
+    id: '/recipes/$recipeId',
+    path: '/recipes/$recipeId',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
   '/dashboard/recipes': typeof DashboardRecipesIndexRoute
   '/dashboard/roles': typeof DashboardRolesIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
   '/dashboard/recipes': typeof DashboardRecipesIndexRoute
   '/dashboard/roles': typeof DashboardRolesIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
@@ -130,6 +139,7 @@ export interface FileRoutesById {
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
   '/dashboard/recipes/': typeof DashboardRecipesIndexRoute
   '/dashboard/roles/': typeof DashboardRolesIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
@@ -147,6 +157,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/dashboard/profile'
     | '/dashboard/'
+    | '/dashboard/recipes/$recipeId'
     | '/dashboard/recipes'
     | '/dashboard/roles'
     | '/dashboard/users'
@@ -161,6 +172,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/dashboard/profile'
     | '/dashboard'
+    | '/dashboard/recipes/$recipeId'
     | '/dashboard/recipes'
     | '/dashboard/roles'
     | '/dashboard/users'
@@ -176,6 +188,7 @@ export interface FileRouteTypes {
     | '/auth/register'
     | '/dashboard/profile'
     | '/dashboard/'
+    | '/dashboard/recipes/$recipeId'
     | '/dashboard/recipes/'
     | '/dashboard/roles/'
     | '/dashboard/users/'
@@ -285,12 +298,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRecipesIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/recipes/$recipeId': {
+      id: '/dashboard/recipes/$recipeId'
+      path: '/recipes/$recipeId'
+      fullPath: '/dashboard/recipes/$recipeId'
+      preLoaderRoute: typeof DashboardRecipesRecipeIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardRecipesRecipeIdRoute: typeof DashboardRecipesRecipeIdRoute
   DashboardRecipesIndexRoute: typeof DashboardRecipesIndexRoute
   DashboardRolesIndexRoute: typeof DashboardRolesIndexRoute
   DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
@@ -299,6 +320,7 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardRecipesRecipeIdRoute: DashboardRecipesRecipeIdRoute,
   DashboardRecipesIndexRoute: DashboardRecipesIndexRoute,
   DashboardRolesIndexRoute: DashboardRolesIndexRoute,
   DashboardUsersIndexRoute: DashboardUsersIndexRoute,

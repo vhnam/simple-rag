@@ -1,11 +1,14 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import useRecipes from '@/queries/recipes/recipes.queries';
-import { AlertCircleIcon } from 'lucide-react';
+import { AlertCircleIcon, PlusIcon } from 'lucide-react';
+import RecipesTable from './recipes-table';
+import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
+import { Button } from '@/components/ui/button';
+import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
+import TableSkeleton from '@/components/table-skeleton';
 
 const Recipes = () => {
   const { data, isLoading, error } = useRecipes();
-
-  if (isLoading) return <div>Loading...</div>;
 
   if (error)
     return (
@@ -16,18 +19,28 @@ const Recipes = () => {
       </Alert>
     );
 
-    console.log(data);
-
   return (
     <div>
-      <h1>Recipes</h1>
+      <ProtectedLayoutHeader title="Recipes">
+        <Button variant="default" size="sm" disabled={isLoading}>
+          <PlusIcon className="size-4" />
+          Add recipe
+        </Button>
+      </ProtectedLayoutHeader>
 
-      {data?.recipes?.length === 0 && <div>No recipes found</div>}
-
-      {data?.recipes && data?.recipes?.length > 0 &&
-        data?.recipes?.map((recipe) => (
-          <div key={recipe.id}>{recipe.name}</div>
-        ))}
+      <ProtectedLayoutContent>
+        {isLoading ? (
+          <TableSkeleton columns={4} rows={10} />
+        ) : (
+          <RecipesTable
+            data={data?.data ?? []}
+            total={data?.total ?? 0}
+            page={data?.page ?? 1}
+            limit={data?.limit ?? 10}
+            totalPages={data?.totalPages ?? 1}
+          />
+        )}
+      </ProtectedLayoutContent>
     </div>
   );
 };

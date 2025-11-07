@@ -1,4 +1,4 @@
-import { Sidebar, SidebarSeparator } from '@/components/ui/sidebar';
+import { Sidebar } from '@/components/ui/sidebar';
 import { type ComponentProps } from 'react';
 import ProtectedSidebarFooter from './protected-sidebar-footer';
 import ProtectedSidebarHeader from './protected-sidebar-header';
@@ -8,9 +8,7 @@ const ProtectedSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar collapsible="icon" {...props}>
       <ProtectedSidebarHeader />
-      <SidebarSeparator />
       <ProtectSidebarContent />
-      <SidebarSeparator />
       <ProtectedSidebarFooter />
     </Sidebar>
   );

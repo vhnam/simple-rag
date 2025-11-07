@@ -7,7 +7,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from '@tanstack/react-router';
-import { LogOutIcon, ChevronDownIcon, SettingsIcon } from 'lucide-react';
+import {
+  LogOutIcon,
+  ChevronDownIcon,
+  SettingsIcon,
+  ChevronsUpDownIcon,
+} from 'lucide-react';
 import {
   SidebarFooter,
   SidebarMenu,
@@ -40,7 +45,7 @@ const ProtectedSidebarFooter = () => {
                     Super Admin
                   </span>
                 </p>
-                <ChevronDownIcon className="ml-auto" />
+                <ChevronsUpDownIcon className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent

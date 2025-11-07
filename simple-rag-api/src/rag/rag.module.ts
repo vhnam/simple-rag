@@ -8,5 +8,6 @@ import { RbacModule } from '../rbac/rbac.module';
   imports: [DatabaseModule, RbacModule],
   providers: [RagService],
   controllers: [RagController],
+  exports: [RagService],
 })
 export class RagModule {}

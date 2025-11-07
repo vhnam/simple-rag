@@ -4,6 +4,9 @@ import DashboardAdditionalInfo from './dashboard-additional-info';
 import { useRagStatus } from '@/queries/rag';
 import DashboardRagService from './dashboard-rag-service';
 import DashboardOverview from './dashboard-overview';
+import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
+import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
+import { Button } from '@/components/ui/button';
 
 const Dashboard = () => {
   const {
@@ -26,39 +29,28 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container mx-auto space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            System Dashboard
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Monitor system health and RAG service status
-          </p>
-        </div>
-        <button
-          onClick={handleRefresh}
-          className="hover:bg-accent hover:text-accent-foreground inline-flex items-center gap-2 rounded-md border px-4 py-2 transition-colors"
-          aria-label="Refresh dashboard"
-        >
-          <RefreshCwIcon className="h-4 w-4" />
+    <div>
+      <ProtectedLayoutHeader title="System Dashboard">
+        <Button variant="default" size="sm" onClick={handleRefresh}>
+          <RefreshCwIcon className="size-4" />
           Refresh
-        </button>
-      </div>
+        </Button>
+      </ProtectedLayoutHeader>
+      <ProtectedLayoutContent>
+        <DashboardOverview
+          healthData={healthData ?? { status: 'unknown', details: {} }}
+          healthLoading={healthLoading}
+          healthError={healthError}
+        />
 
-      <DashboardOverview
-        healthData={healthData ?? { status: 'unknown', details: {} }}
-        healthLoading={healthLoading}
-        healthError={healthError}
-      />
+        <DashboardRagService
+          ragData={ragData ?? { ready: false, count: 0 }}
+          ragLoading={ragLoading}
+          ragError={ragError}
+        />
 
-      <DashboardRagService
-        ragData={ragData ?? { ready: false, count: 0 }}
-        ragLoading={ragLoading}
-        ragError={ragError}
-      />
-
-      <DashboardAdditionalInfo />
+        <DashboardAdditionalInfo />
+      </ProtectedLayoutContent>
     </div>
   );
 };
