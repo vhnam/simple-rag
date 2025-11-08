@@ -7,12 +7,15 @@ A simple Retrieval-Augmented Generation (RAG) application built with NestJS and 
 - **AI Recipe Suggestions**: Get personalized recipe recommendations based on ingredients you have
 - **Vector Search**: Fast semantic search using PostgreSQL with pgvector extension
 - **Authentication**: Secure JWT-based authentication with Auth0
-- **Role-Based Access Control (RBAC)**: Fine-grained permissions system with roles (viewer, admin) and permissions
+- **Role-Based Access Control (RBAC)**: Comprehensive permissions system with auto-discovery of permissions from decorators
+- **User Management**: Full CRUD operations for managing users with role-based access
+- **Role Management**: Create, update, and delete roles with customizable permissions
+- **Recipe Management**: Browse and create recipes with permission-based access control
 - **Health Monitoring**: Built-in health check endpoints for database, memory, and disk monitoring
 - **Rate Limiting**: API rate limiting to prevent abuse
 - **Structured Logging**: Winston-based logging for better observability
-- **Modern UI**: Beautiful, responsive interface built with React 19 and Tailwind CSS
-- **Type-Safe**: End-to-end type safety with TypeScript
+- **Modern UI**: Beautiful, responsive interface built with React 19, TanStack Router, and Tailwind CSS
+- **Type-Safe**: End-to-end type safety with TypeScript and Zod validation
 
 ## Architecture
 
@@ -25,26 +28,30 @@ The project is organized as a monorepo with two main components:
 
 ### Backend
 
-- **NestJS** - Progressive Node.js framework
-- **LangChain** - LLM application framework
+- **NestJS 11** - Progressive Node.js framework
+- **LangChain 1.0** - LLM application framework
 - **OpenAI** - Embeddings and LLM (GPT models)
 - **PostgreSQL + pgvector** - Vector database for embeddings
-- **TypeORM** - TypeScript ORM for database operations
+- **TypeORM 0.3** - TypeScript ORM for database operations
 - **Auth0** - JWT authentication with Passport.js
-- **Winston** - Structured logging
+- **Zod 4.1** - Schema validation for requests and responses
+- **Winston 3.18** - Structured logging
 - **NestJS Terminus** - Health check endpoints
 - **NestJS Throttler** - Rate limiting
-- **TypeScript** - Type-safe development
+- **TypeScript 5.7** - Type-safe development
 
 ### Frontend
 
 - **React 19** - UI library
-- **TanStack Router** - Type-safe routing
-- **TanStack Query** - Data fetching and state management
+- **TanStack Router 1.x** - Type-safe routing
+- **TanStack Query 5.x** - Data fetching and state management
+- **TanStack Table 8.x** - Powerful table/data grid library
 - **Auth0 React SDK** - Authentication integration
-- **Tailwind CSS** - Utility-first CSS framework
+- **Tailwind CSS 4.0** - Utility-first CSS framework
 - **Shadcn UI** - Re-usable component library built with Radix UI and Tailwind CSS
-- **Vite** - Build tool and dev server
+- **Zustand 5.0** - Lightweight state management
+- **Axios 1.13** - HTTP client
+- **Vite 7.1** - Build tool and dev server
 
 ### Infrastructure
 
@@ -53,8 +60,8 @@ The project is organized as a monorepo with two main components:
 
 ## Prerequisites
 
-- **Node.js** (v22 or higher)
-- **pnpm** (v10 or higher)
+- **Node.js** v22.17.0 or higher
+- **pnpm** v10.15.1 or higher
 - **Docker** and **Docker Compose** (for containerized deployment)
 
 ## Getting Started
@@ -175,12 +182,15 @@ simple-rag/
 │   ├── src/
 │   │   ├── rag/            # RAG module (controller, service, entities, DTOs)
 │   │   ├── auth/           # Authentication module (JWT strategy, user sync)
-│   │   ├── rbac/           # RBAC module (roles, permissions, guards)
+│   │   ├── rbac/           # RBAC module (roles, permissions, guards, decorators)
+│   │   ├── users/          # User management module (CRUD operations)
+│   │   ├── roles/          # Role management module (CRUD operations)
+│   │   ├── recipes/        # Recipe management module (CRUD operations)
 │   │   ├── health/         # Health check endpoints
 │   │   ├── config/         # Configuration schemas (env validation, CORS, logging, throttler)
 │   │   ├── database/       # Database module and migrations
 │   │   ├── entities/       # TypeORM entities (User, Role, Permission, Recipe, etc.)
-│   │   ├── constants/      # Application constants
+│   │   ├── common/         # Common interfaces and utilities
 │   │   └── main.ts         # Application entry point
 │   ├── test/               # E2E tests
 │   ├── Dockerfile          # Docker configuration
@@ -188,7 +198,7 @@ simple-rag/
 ├── simple-rag-app/          # React frontend
 │   ├── src/
 │   │   ├── components/     # Reusable UI components (Shadcn UI)
-│   │   ├── modules/        # Feature modules (ai-recipe, chat, landing)
+│   │   ├── modules/        # Feature modules (ai-recipe, users, roles, landing)
 │   │   ├── routes/         # TanStack Router routes
 │   │   ├── layouts/        # Layout components
 │   │   ├── integrations/  # Auth and query providers
@@ -258,22 +268,74 @@ Database migrations are handled automatically by the application on startup. The
 
 - `POST /rag/query` - Query recipes using RAG (requires authentication and appropriate permissions)
 
+### Users (Admin only)
+
+- `GET /users` - Get paginated list of users (requires `users:all` permission)
+- `GET /users/:id` - Get user details by ID (requires `users:read` permission)
+
+### Roles (Admin only)
+
+- `GET /roles` - Get paginated list of roles (requires `roles:all` permission)
+- `GET /roles/:id` - Get role details by ID (requires `roles:read` permission)
+- `POST /roles` - Create a new role (requires `roles:create` permission)
+- `PUT /roles/:id` - Update a role (requires `roles:update` permission)
+- `DELETE /roles/:id` - Delete a role (requires `roles:delete` permission)
+
+### Recipes
+
+- `GET /recipes` - Get paginated list of recipes (requires `recipes:all` permission)
+- `POST /recipes` - Create a new recipe (requires `recipes:create` permission)
+
 ## RBAC System
 
-The application includes a Role-Based Access Control (RBAC) system:
+The application includes a comprehensive Role-Based Access Control (RBAC) system with automatic permission discovery:
+
+### Key Features
+
+- **Automatic Permission Discovery**: Permissions are automatically discovered from `@Permissions()` decorators in controllers via the `PermissionSyncService`
+- **Dynamic Role Management**: Roles can be created, updated, and deleted dynamically through the API
+- **Fine-Grained Access Control**: Each endpoint is protected with specific permissions
+- **Default Roles**: Pre-configured viewer and admin roles with appropriate permissions
 
 ### Default Roles
 
-- **viewer**: Can view recipes (default role for new users)
+- **viewer**: Can view recipes and users (default role for new users)
+  - Permissions: `recipes:read`, `users:read`
 - **admin**: Full access to all features
+  - Permissions: All recipe, user, and role permissions (`recipes:all`, `users:all`, `roles:all`)
 
-### Permissions
+### Permission Categories
+
+**Recipe Permissions:**
 
 - `recipes:read` - Can read recipes
 - `recipes:create` - Can create recipes
 - `recipes:update` - Can update recipes
 - `recipes:delete` - Can delete recipes
-- `recipes:all` - Full access to all recipe operations (assigned to admin role)
+- `recipes:all` - Full access to all recipe operations
+
+**User Permissions:**
+
+- `users:read` - Can read users
+- `users:create` - Can create users
+- `users:update` - Can update users
+- `users:delete` - Can delete users
+- `users:all` - Full access to all user operations
+
+**Role Permissions:**
+
+- `roles:read` - Can read roles
+- `roles:create` - Can create roles
+- `roles:update` - Can update roles
+- `roles:delete` - Can delete roles
+- `roles:all` - Full access to all role operations
+
+### How It Works
+
+1. **User Authentication**: Users authenticate via Auth0 JWT
+2. **User Sync**: On first login, `/auth/sync` creates a user record and assigns the default `viewer` role
+3. **Permission Check**: The `PermissionsGuard` checks if the user has the required permissions for each endpoint
+4. **Auto-Discovery**: New permissions are automatically added to the database when controllers use the `@Permissions()` decorator
 
 New users are automatically assigned the `viewer` role upon first authentication.
 
@@ -293,4 +355,6 @@ New users are automatically assigned the `viewer` role upon first authentication
 - Check Docker logs with `docker compose logs -f` for container issues
 - API logs will show detailed information about RAG queries and embeddings
 - Health check endpoints are useful for monitoring and debugging
-- RBAC permissions can be managed through the database or by modifying the migration service
+- RBAC permissions are auto-discovered from controller decorators - just add `@Permissions()` decorator to new endpoints
+- Use the `/roles` API endpoints to manage roles and permissions dynamically
+- Test different permission levels by creating custom roles through the admin interface
