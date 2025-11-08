@@ -31,7 +31,6 @@ export class RecipesController {
 
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions('recipes:all')
-  @Permissions('recipes:read')
   @Get()
   async getRecipes(
     @Query() query: GetRecipesQueryDto,
@@ -47,7 +46,7 @@ export class RecipesController {
     const validatedQuery = validationResult.data;
 
     try {
-      return await this.recipesService.getAllRecipes(validatedQuery);
+      return await this.recipesService.getRecipes(validatedQuery);
     } catch (error) {
       throw new BadRequestException(
         error instanceof Error ? error.message : 'Failed to fetch recipes',

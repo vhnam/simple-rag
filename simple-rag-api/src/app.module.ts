@@ -14,6 +14,8 @@ import { createThrottlerConfig } from './config/throttler.config';
 import { createLoggerConfig } from './config/logger.config';
 import { HttpLoggerMiddleware } from './common/middleware/http-logger.middleware';
 import { RecipesModule } from './recipes/recipes.module';
+import { UsersModule } from './users/users.module';
+import { RbacModule } from './rbac/rbac.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { RecipesModule } from './recipes/recipes.module';
     AuthModule,
     HealthModule,
     RecipesModule,
+    UsersModule,
+    RbacModule,
   ],
   controllers: [AppController],
   providers: [

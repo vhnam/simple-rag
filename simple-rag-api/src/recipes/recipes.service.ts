@@ -21,7 +21,7 @@ export class RecipesService {
   /**
    * Gets all recipes from the database with optional filtering and pagination
    */
-  public async getAllRecipes(
+  public async getRecipes(
     query: GetRecipesQueryDto,
   ): Promise<Pagination<Recipe>> {
     try {

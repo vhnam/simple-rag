@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <ProtectedLayoutHeader title="System Dashboard">
+      <ProtectedLayoutHeader title="Dashboard">
         <Button variant="default" size="sm" onClick={handleRefresh}>
           <RefreshCwIcon className="size-4" />
           Refresh
