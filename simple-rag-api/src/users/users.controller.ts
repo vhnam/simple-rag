@@ -24,7 +24,6 @@ export class UsersController {
 
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions('users:all')
-  @Permissions('users:read')
   @Get()
   async getUsers(@Query() query: GetUsersQueryDto): Promise<Pagination<User>> {
     const validationResult = getUsersQuerySchema.safeParse(query);

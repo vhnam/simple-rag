@@ -1,6 +1,6 @@
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { User } from '@/queries/users/users.typings';
+import { type User } from '@/queries/users';
 import { Link, redirect } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
 

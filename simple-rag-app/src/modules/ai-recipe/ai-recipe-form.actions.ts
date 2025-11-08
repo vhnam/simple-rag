@@ -1,5 +1,5 @@
 import { useCreateRecipeMutation } from '@/queries/recipes';
-import { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
+import { AskRecipeResponse } from '@/queries/recipes/recipes.types';
 import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { aiRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { useForm } from '@tanstack/react-form';

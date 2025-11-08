@@ -1,4 +1,4 @@
-import { SyncUserResponse } from '@/queries/auth/auth.typings';
+import { SyncUserResponse } from '@/queries/auth/auth.types';
 import { create, useStore } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 

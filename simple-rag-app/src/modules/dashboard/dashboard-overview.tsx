@@ -14,7 +14,7 @@ import {
   MemoryStickIcon,
 } from 'lucide-react';
 import StatusBadge from './dashboard-status-badge';
-import { HealthCheckResponse } from '@/queries/health/health.typings';
+import { type HealthCheckResponse } from '@/queries/health';
 
 interface DashboardOverviewProps {
   healthData: HealthCheckResponse;

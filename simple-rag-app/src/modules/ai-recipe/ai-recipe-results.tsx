@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import type { AskRecipeResponse } from '@/queries/recipes/recipes.typings';
+import type { AskRecipeResponse } from '@/queries/recipes/recipes.types';
 import { BookmarkIcon, LinkIcon } from 'lucide-react';
 
 interface AIRecipeResultsProps {

@@ -1,7 +1,7 @@
 import { Spinner } from '@/components/ui/spinner';
 import { useAuthContext } from '@/integrations/auth/auth-provider';
 import { useSyncUserMutation } from '@/queries/auth';
-import { SyncUserRequest } from '@/queries/auth/auth.typings';
+import { SyncUserRequest } from '@/queries/auth/auth.types';
 import { authStore } from '@/stores/auth.store';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';

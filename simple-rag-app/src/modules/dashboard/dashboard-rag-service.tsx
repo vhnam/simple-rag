@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RagStatusResponse } from '@/queries/rag/rag.typings';
+import { RagStatusResponse } from '@/queries/rag/rag.types';
 import { AlertCircleIcon, BookOpenIcon, CheckCircle2Icon } from 'lucide-react';
 
 interface DashboardRagServiceProps {

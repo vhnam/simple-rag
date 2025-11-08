@@ -1,1 +1,2 @@
-export { useCreateRecipeMutation } from './recipes.mutations';
+export { default as useUsers } from './users.queries';
+export type { User } from './users.types';

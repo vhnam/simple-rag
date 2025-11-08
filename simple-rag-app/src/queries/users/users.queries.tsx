@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { UsersRequest } from './users.typings';
+import { UsersRequest } from './users.types';
 import { usersKeys } from './users.keys';
 import { getUsers } from './users.apis';
 

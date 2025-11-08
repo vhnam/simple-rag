@@ -1,6 +1,6 @@
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { Recipe } from '@/queries/recipes/recipes.typings';
+import { Recipe } from '@/queries/recipes/recipes.types';
 import { Link, redirect } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
 
