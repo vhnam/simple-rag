@@ -16,6 +16,7 @@ import { HttpLoggerMiddleware } from './common/middleware/http-logger.middleware
 import { RecipesModule } from './recipes/recipes.module';
 import { UsersModule } from './users/users.module';
 import { RbacModule } from './rbac/rbac.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { RbacModule } from './rbac/rbac.module';
     RecipesModule,
     UsersModule,
     RbacModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [

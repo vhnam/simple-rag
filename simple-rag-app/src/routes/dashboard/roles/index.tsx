@@ -1,9 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Roles } from '@/modules/roles';
+import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/dashboard/roles/')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  return <div>Hello "/dashboard/roles/"!</div>
-}
+  component: Roles,
+});

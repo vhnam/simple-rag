@@ -1,0 +1,65 @@
+import DataTable from '@/components/data-table';
+import { Button } from '@/components/ui/button';
+import { formatDate } from '@/lib/date';
+import { type Role } from '@/queries/roles';
+import { Link, redirect } from '@tanstack/react-router';
+import { ColumnDef } from '@tanstack/react-table';
+
+interface RolesTableProps {
+  data: Role[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+const columns: ColumnDef<Role>[] = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'description',
+    header: 'Description',
+  },
+  {
+    id: 'created_at',
+    header: 'Created At',
+    cell: ({ row }) => <span>{formatDate(row.original.created_at)}</span>,
+  },
+  {
+    id: 'actions',
+    header: '',
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <Link
+          to="/dashboard/roles/$roleId"
+          params={{ roleId: row.original.id }}
+        >
+          <Button variant="outline">View</Button>
+        </Link>
+      </div>
+    ),
+  },
+];
+
+const RolesTable = ({ data, totalPages }: RolesTableProps) => {
+  const handlePageChange = (page: number) => {
+    redirect({
+      href: `/dashboard/roles?page=${page}`,
+    });
+  };
+
+  return (
+    <div>
+      <DataTable
+        data={data}
+        columns={columns}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </div>
+  );
+};
+
+export default RolesTable;

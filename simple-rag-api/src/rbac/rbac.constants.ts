@@ -22,6 +22,13 @@ export const PERMISSIONS = {
   USERS_UPDATE: 'users:update',
   USERS_DELETE: 'users:delete',
   USERS_ALL: 'users:all',
+
+  // Role permissions
+  ROLES_READ: 'roles:read',
+  ROLES_CREATE: 'roles:create',
+  ROLES_UPDATE: 'roles:update',
+  ROLES_DELETE: 'roles:delete',
+  ROLES_ALL: 'roles:all',
 } as const;
 
 export type RoleName = (typeof ROLES)[keyof typeof ROLES];
@@ -91,6 +98,28 @@ export const PERMISSION_DEFINITIONS = [
     name: PERMISSIONS.USERS_ALL,
     description: 'Full access to all user operations',
   },
+
+  // Role permissions
+  {
+    name: PERMISSIONS.ROLES_READ,
+    description: 'Can read roles',
+  },
+  {
+    name: PERMISSIONS.ROLES_CREATE,
+    description: 'Can create roles',
+  },
+  {
+    name: PERMISSIONS.ROLES_UPDATE,
+    description: 'Can update roles',
+  },
+  {
+    name: PERMISSIONS.ROLES_DELETE,
+    description: 'Can delete roles',
+  },
+  {
+    name: PERMISSIONS.ROLES_ALL,
+    description: 'Full access to all role operations',
+  },
 ] as const;
 
 /**
@@ -110,5 +139,10 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.USERS_UPDATE,
     PERMISSIONS.USERS_DELETE,
     PERMISSIONS.USERS_ALL,
+    PERMISSIONS.ROLES_READ,
+    PERMISSIONS.ROLES_CREATE,
+    PERMISSIONS.ROLES_UPDATE,
+    PERMISSIONS.ROLES_DELETE,
+    PERMISSIONS.ROLES_ALL,
   ],
 } as const;

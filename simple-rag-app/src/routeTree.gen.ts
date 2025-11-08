@@ -23,6 +23,7 @@ import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/user
 import { Route as DashboardRolesIndexRouteImport } from './routes/dashboard/roles/index'
 import { Route as DashboardRecipesIndexRouteImport } from './routes/dashboard/recipes/index'
 import { Route as DashboardUsersUserIdRouteImport } from './routes/dashboard/users/$userId'
+import { Route as DashboardRolesRoleIdRouteImport } from './routes/dashboard/roles/$roleId'
 import { Route as DashboardRecipesRecipeIdRouteImport } from './routes/dashboard/recipes/$recipeId'
 
 const ProfileRoute = ProfileRouteImport.update({
@@ -95,6 +96,11 @@ const DashboardUsersUserIdRoute = DashboardUsersUserIdRouteImport.update({
   path: '/users/$userId',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardRolesRoleIdRoute = DashboardRolesRoleIdRouteImport.update({
+  id: '/roles/$roleId',
+  path: '/roles/$roleId',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardRecipesRecipeIdRoute =
   DashboardRecipesRecipeIdRouteImport.update({
     id: '/recipes/$recipeId',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
+  '/dashboard/roles/$roleId': typeof DashboardRolesRoleIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/recipes': typeof DashboardRecipesIndexRoute
   '/dashboard/roles': typeof DashboardRolesIndexRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
+  '/dashboard/roles/$roleId': typeof DashboardRolesRoleIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/recipes': typeof DashboardRecipesIndexRoute
   '/dashboard/roles': typeof DashboardRolesIndexRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
+  '/dashboard/roles/$roleId': typeof DashboardRolesRoleIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
   '/dashboard/recipes/': typeof DashboardRecipesIndexRoute
   '/dashboard/roles/': typeof DashboardRolesIndexRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/'
     | '/dashboard/recipes/$recipeId'
+    | '/dashboard/roles/$roleId'
     | '/dashboard/users/$userId'
     | '/dashboard/recipes'
     | '/dashboard/roles'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard'
     | '/dashboard/recipes/$recipeId'
+    | '/dashboard/roles/$roleId'
     | '/dashboard/users/$userId'
     | '/dashboard/recipes'
     | '/dashboard/roles'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/dashboard/profile'
     | '/dashboard/'
     | '/dashboard/recipes/$recipeId'
+    | '/dashboard/roles/$roleId'
     | '/dashboard/users/$userId'
     | '/dashboard/recipes/'
     | '/dashboard/roles/'
@@ -317,6 +329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardUsersUserIdRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/roles/$roleId': {
+      id: '/dashboard/roles/$roleId'
+      path: '/roles/$roleId'
+      fullPath: '/dashboard/roles/$roleId'
+      preLoaderRoute: typeof DashboardRolesRoleIdRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/recipes/$recipeId': {
       id: '/dashboard/recipes/$recipeId'
       path: '/recipes/$recipeId'
@@ -331,6 +350,7 @@ interface DashboardRouteChildren {
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardRecipesRecipeIdRoute: typeof DashboardRecipesRecipeIdRoute
+  DashboardRolesRoleIdRoute: typeof DashboardRolesRoleIdRoute
   DashboardUsersUserIdRoute: typeof DashboardUsersUserIdRoute
   DashboardRecipesIndexRoute: typeof DashboardRecipesIndexRoute
   DashboardRolesIndexRoute: typeof DashboardRolesIndexRoute
@@ -341,6 +361,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardRecipesRecipeIdRoute: DashboardRecipesRecipeIdRoute,
+  DashboardRolesRoleIdRoute: DashboardRolesRoleIdRoute,
   DashboardUsersUserIdRoute: DashboardUsersUserIdRoute,
   DashboardRecipesIndexRoute: DashboardRecipesIndexRoute,
   DashboardRolesIndexRoute: DashboardRolesIndexRoute,
