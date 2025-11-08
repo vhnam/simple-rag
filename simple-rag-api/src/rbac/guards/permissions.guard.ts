@@ -1,42 +1,26 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
-import { RbacService } from '../rbac.service';
-
-interface AuthenticatedRequest extends Request {
-  user?: {
-    id?: string;
-    sub?: string;
-  };
-}
+import { PERMISSIONS_KEY } from '../decorators/permissions.decorator';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private rbac: RbacService,
+    private usersService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const required = this.reflector.get<string[]>(
-      'permissions',
-      context.getHandler(),
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+      PERMISSIONS_KEY,
+      [context.getHandler(), context.getClass()],
     );
-    if (!required?.length) return true;
+    if (!requiredPermissions) return true;
 
-    const req = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    const userId: string | undefined = req.user?.id;
-    if (!userId) throw new ForbiddenException('Missing user');
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
 
-    const userPerms = await this.rbac.getUserPermissions(userId);
-    const has = required.every((p) => userPerms.includes(p));
-    if (!has) throw new ForbiddenException('Insufficient permissions');
-
-    return true;
+    const userPerms = await this.usersService.getUserPermissions(user.id);
+    return requiredPermissions.every((perm) => userPerms.includes(perm));
   }
 }

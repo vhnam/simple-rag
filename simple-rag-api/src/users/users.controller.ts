@@ -17,13 +17,14 @@ import {
   getUsersQuerySchema,
 } from './dto/get-users-query.dto';
 import { getUserSchema } from './dto/get-user.dto';
+import { PERMISSIONS } from 'src/rbac/rbac.constants';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions('users:all')
+  @Permissions(PERMISSIONS.USERS_ALL)
   @Get()
   async getUsers(@Query() query: GetUsersQueryDto): Promise<Pagination<User>> {
     const validationResult = getUsersQuerySchema.safeParse(query);
@@ -46,7 +47,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions('users:read')
+  @Permissions(PERMISSIONS.USERS_READ)
   @Get(':id')
   async getUser(@Param('id') id: string): Promise<User> {
     const validationResult = getUserSchema.safeParse({ id });

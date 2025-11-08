@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module';
 import { createCorsConfig } from './config/cors.config';
+import { Logger } from 'winston';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -10,7 +11,7 @@ async function bootstrap() {
   });
 
   // Use Winston logger for all application logs
-  const logger = app.get(WINSTON_MODULE_NEST_PROVIDER);
+  const logger = app.get<Logger>(WINSTON_MODULE_NEST_PROVIDER);
   app.useLogger(logger);
 
   const configService = app.get(ConfigService);
@@ -21,6 +22,15 @@ async function bootstrap() {
   const port = process.env.API_PORT ?? 4000;
   await app.listen(port, '0.0.0.0');
 
-  logger.log(`Application is running on: http://localhost:${port}`, 'Bootstrap');
+  logger.log(
+    `Application is running on: http://localhost:${port}`,
+    'Bootstrap',
+  );
 }
-bootstrap();
+
+try {
+  bootstrap();
+} catch (error: unknown) {
+  console.error('Failed to bootstrap application', error);
+  process.exit(1);
+}

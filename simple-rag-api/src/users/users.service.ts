@@ -14,6 +14,26 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
+  async getUserPermissions(userId: string): Promise<string[]> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: [
+        'userRoles',
+        'userRoles.role',
+        'userRoles.role.rolePermissions',
+        'userRoles.role.rolePermissions.permission',
+      ],
+    });
+
+    if (!user) return [];
+
+    return user.userRoles.flatMap((userRole) =>
+      userRole.role.rolePermissions.map(
+        (rolePermission) => rolePermission.permission.name,
+      ),
+    );
+  }
+
   async getUsers(query: GetUsersQueryDto): Promise<Pagination<User>> {
     try {
       const { search, page = 1, limit = 10 } = query;

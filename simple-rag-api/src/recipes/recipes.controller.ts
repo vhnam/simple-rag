@@ -24,13 +24,14 @@ import {
   addRecipeSchema,
 } from './dto/add-recipe.dto';
 import { Pagination } from 'src/common/interfaces/pagination.interface';
+import { PERMISSIONS } from 'src/rbac/rbac.constants';
 
 @Controller('recipes')
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions('recipes:all')
+  @Permissions(PERMISSIONS.RECIPES_ALL)
   @Get()
   async getRecipes(
     @Query() query: GetRecipesQueryDto,
@@ -55,7 +56,7 @@ export class RecipesController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions('recipes:create')
+  @Permissions(PERMISSIONS.RECIPES_CREATE)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createRecipe(
