@@ -48,9 +48,10 @@ export class UsersService {
       // Get total count for pagination
       const total = await this.usersRepository.count({ where });
 
-      // Get paginated results
+      // Get paginated results with roles
       const data = await this.usersRepository.find({
         where,
+        relations: ['userRoles', 'userRoles.role'],
         order: {
           created_at: 'DESC',
         },

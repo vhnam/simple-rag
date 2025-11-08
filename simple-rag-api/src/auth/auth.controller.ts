@@ -6,14 +6,14 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtGuard } from './guards/jwt.guard';
 import { AuthSyncUserDto, authSyncUserSchema } from './dto/auth.dto';
+import { JwtOptionalGuard } from './guards/jwt-optional.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(JwtGuard)
+  @UseGuards(JwtOptionalGuard)
   @Post('sync')
   async syncUser(@Body() body: AuthSyncUserDto) {
     const validationResult = authSyncUserSchema.safeParse(body);

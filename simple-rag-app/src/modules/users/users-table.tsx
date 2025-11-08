@@ -1,5 +1,7 @@
 import DataTable from '@/components/data-table';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { formatDate } from '@/lib/date';
 import { type User } from '@/queries/users';
 import { Link, redirect } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
@@ -22,26 +24,34 @@ const columns: ColumnDef<User>[] = [
     header: 'Email',
   },
   {
-    accessorKey: 'role',
+    id: 'role',
     header: 'Role',
+    cell: ({ row }) => (
+      <span>
+        {row.original.userRoles.map((userRole) => (
+          <Badge key={userRole.id}>{userRole.role.name}</Badge>
+        ))}
+      </span>
+    ),
   },
   {
-    accessorKey: 'created_at',
+    id: 'created_at',
     header: 'Created At',
+    cell: ({ row }) => <span>{formatDate(row.original.created_at)}</span>,
   },
   {
     id: 'actions',
     header: '',
-    cell: ({ row }) => {
-      return (
+    cell: ({ row }) => (
+      <div className="flex justify-end">
         <Link
           to="/dashboard/users/$userId"
           params={{ userId: row.original.id }}
         >
           <Button variant="outline">View</Button>
         </Link>
-      );
-    },
+      </div>
+    ),
   },
 ];
 

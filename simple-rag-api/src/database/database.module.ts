@@ -9,7 +9,6 @@ import { Permission } from '../entities/permission.entity';
 import { RolePermission } from '../entities/role-permission.entity';
 import { MigrationService } from './migration.service';
 import { SeedService } from './seed.service';
-import { PermissionSyncService } from '../rbac/permission-sync.service';
 
 @Module({
   imports: [
@@ -34,9 +33,9 @@ import { PermissionSyncService } from '../rbac/permission-sync.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Recipe, User, Permission]),
+    TypeOrmModule.forFeature([Recipe, User]),
   ],
-  providers: [MigrationService, SeedService, PermissionSyncService],
+  providers: [MigrationService, SeedService],
   exports: [TypeOrmModule],
 })
 export class DatabaseModule {}

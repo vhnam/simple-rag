@@ -6,7 +6,7 @@ export interface SyncUserRequest {
   accessToken: string;
 }
 
-type UserRole = {
+export type UserRole = {
   id: string;
   role: {
     id: string;

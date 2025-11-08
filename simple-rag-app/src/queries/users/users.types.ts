@@ -1,8 +1,10 @@
+import { UserRole } from '../auth/auth.types';
+
 export type User = {
   id: string;
   name: string;
   email: string;
-  role: string;
+  userRoles: Array<UserRole>;
   created_at: Date;
 };
 

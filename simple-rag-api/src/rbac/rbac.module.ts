@@ -1,5 +1,6 @@
-import { Module, OnModuleInit, forwardRef } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DiscoveryModule } from '@nestjs/core';
 import { RbacService } from './rbac.service';
 import { PermissionsGuard } from './guards/permissions.guard';
 import { User } from '../entities/user.entity';
@@ -7,12 +8,11 @@ import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Permission } from '../entities/permission.entity';
 import { PermissionSyncService } from 'src/rbac/permission-sync.service';
-import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    DiscoveryModule,
     TypeOrmModule.forFeature([User, Role, UserRole, Permission]),
-    forwardRef(() => UsersModule),
   ],
   providers: [RbacService, PermissionsGuard, PermissionSyncService],
   exports: [RbacService, PermissionsGuard, PermissionSyncService],
