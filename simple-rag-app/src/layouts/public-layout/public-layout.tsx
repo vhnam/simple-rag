@@ -1,4 +1,3 @@
-import { Toaster } from 'sonner';
 import Header from './public-header';
 import type { PropsWithChildren } from 'react';
 
@@ -7,7 +6,6 @@ const PublicLayout = ({ children }: PropsWithChildren) => {
     <>
       <Header />
       <main className="mt-16">{children}</main>
-      <Toaster />
     </>
   );
 };

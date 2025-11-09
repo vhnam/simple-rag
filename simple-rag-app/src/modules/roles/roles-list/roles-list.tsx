@@ -2,16 +2,22 @@ import TableSkeleton from '@/components/table-skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
 import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
-import { AlertCircleIcon } from 'lucide-react';
+import { AlertCircleIcon, PlusIcon } from 'lucide-react';
 import RolesTable from './roles-table';
 import { useRoles } from '@/queries/roles';
+import { Button } from '@/components/ui/button';
 
-const Roles = () => {
+const RolesList = () => {
   const { data, isLoading, error } = useRoles();
 
   return (
     <div>
-      <ProtectedLayoutHeader title="Roles" />
+      <ProtectedLayoutHeader title="Roles">
+        <Button variant="default" size="sm">
+          <PlusIcon className="size-4" />
+          Add role
+        </Button>
+      </ProtectedLayoutHeader>
 
       <ProtectedLayoutContent>
         {error && (
@@ -41,4 +47,4 @@ const Roles = () => {
   );
 };
 
-export default Roles;
+export default RolesList;

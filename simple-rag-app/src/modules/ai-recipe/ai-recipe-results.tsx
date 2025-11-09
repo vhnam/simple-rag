@@ -12,7 +12,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import type { AskRecipeResponse } from '@/queries/recipes/recipes.types';
+import { Dish } from '@/queries/rag/rag.types';
+import { type AskRecipeResponse } from '@/queries/rag/rag.types';
 import { BookmarkIcon, LinkIcon } from 'lucide-react';
 
 interface AIRecipeResultsProps {
@@ -26,7 +27,7 @@ const AIRecipeResults = ({ results }: AIRecipeResultsProps) => {
         <div className="mt-6 space-y-6">
           <h2 className="text-2xl font-bold">Suggested Recipes</h2>
           <div className="space-y-6">
-            {results.answer.dishes.map((dish) => (
+            {results.answer.dishes.map((dish: Dish) => (
               <Card key={dish.name}>
                 <CardHeader>
                   <CardTitle>{dish.name}</CardTitle>

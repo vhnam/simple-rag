@@ -1,9 +1,6 @@
+import { RoleDetails } from '@/modules/roles/role-details';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/dashboard/roles/$roleId')({
-  component: RouteComponent,
+  component: RoleDetails,
 });
-
-function RouteComponent() {
-  return <div>Hello "/dashboard/roles/$roleId"!</div>;
-}

@@ -1,10 +1,11 @@
 import { useCreateRecipeMutation } from '@/queries/recipes';
-import { AskRecipeResponse } from '@/queries/recipes/recipes.types';
+import { type AskRecipeResponse } from '@/queries/rag/rag.types';
 import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { aiRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 const defaultValues: AIRecipeFormSchema = {
   ingredients: '',
@@ -18,7 +19,7 @@ const useAIRecipeFormActions = () => {
 
   const handleSubmit = ({ value }: { value: AIRecipeFormSchema }) => {
     createRecipe(value.ingredients, {
-      onSuccess: (data) => {
+      onSuccess: (data: AskRecipeResponse) => {
         setRecipeData(data);
 
         if (data.answer.error?.code === 'INVALID_INPUT') {
@@ -29,8 +30,12 @@ const useAIRecipeFormActions = () => {
           toast.error('Failed to generate recipe. Please try again.');
         }
       },
-      onError: (error) => {
-        toast.error(error.message);
+      onError: (error: unknown) => {
+        if (error instanceof AxiosError) {
+          toast.error(error.response?.data.error?.message);
+        } else {
+          toast.error('An unknown error occurred. Please try again later.');
+        }
       },
     });
   };

@@ -1,7 +1,7 @@
 export type Role = {
   id: string;
   name: string;
-  description: string | null;
+  description: string;
   created_at: string;
   updated_at: string;
 };
@@ -18,4 +18,14 @@ export type RolesResponse = {
   page: number;
   limit: number;
   totalPages: number;
+};
+
+export type RoleDetailsSettingsFormSchema = {
+  name: string;
+  description: string;
+};
+
+export type UpdateRoleRequest = {
+  id: string;
+  data: RoleDetailsSettingsFormSchema;
 };
