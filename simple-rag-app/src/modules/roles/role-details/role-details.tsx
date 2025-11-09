@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
 import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
-import { useRole } from '@/queries/roles';
+import { useRole, useRoleUsers } from '@/queries/roles';
 import { useParams } from '@tanstack/react-router';
 import { ArrowLeftIcon } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
@@ -23,14 +23,25 @@ const RoleDetails = () => {
     isLoading: isGroupedPermissionsLoading,
     error: groupedPermissionsError,
   } = usePermissions();
+  const {
+    data: roleUsersData,
+    isLoading: isRoleUsersLoading,
+    error: roleUsersError,
+  } = useRoleUsers({ roleId, page: 1, limit: 10, search: undefined });
 
-  if (isRoleLoading || isGroupedPermissionsLoading)
+  if (isRoleLoading || isGroupedPermissionsLoading || isRoleUsersLoading)
     return <div>Loading...</div>;
-  if (roleError || groupedPermissionsError)
+  if (roleError || groupedPermissionsError || roleUsersError)
     return (
-      <div>Error: {roleError?.message || groupedPermissionsError?.message}</div>
+      <div>
+        Error:{' '}
+        {roleError?.message ||
+          groupedPermissionsError?.message ||
+          roleUsersError?.message}
+      </div>
     );
-  if (!roleData || !groupedPermissionsData) return <div>No data</div>;
+  if (!roleData || !groupedPermissionsData || !roleUsersData)
+    return <div>No data</div>;
 
   return (
     <div>
@@ -72,7 +83,12 @@ const RoleDetails = () => {
               />
             </TabsContent>
             <TabsContent value="users">
-              <RoleDetailsUsers />
+              <RoleDetailsUsers
+                roleId={roleId as string}
+                roleName={roleData.name}
+                roleUsers={roleUsersData.data}
+                totalPages={roleUsersData.totalPages}
+              />
             </TabsContent>
           </Tabs>
         </div>

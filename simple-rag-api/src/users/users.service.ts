@@ -4,6 +4,7 @@ import { User } from 'src/entities/user.entity';
 import { Like, Repository } from 'typeorm';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { Pagination } from 'src/common/interfaces/pagination.interface';
+import { GetUsersByRoleQueryDto } from 'src/roles/dto/get-users-by-role.dto';
 
 @Injectable()
 export class UsersService {
@@ -83,6 +84,55 @@ export class UsersService {
       return user;
     } catch (error) {
       this.logger.error('Error fetching user', error);
+      throw error;
+    }
+  }
+
+  async getUsersByRole(
+    query: GetUsersByRoleQueryDto,
+  ): Promise<Pagination<User>> {
+    try {
+      const { roleId, search, page = 1, limit = 10 } = query;
+      const skip = (page - 1) * limit;
+
+      // Build where clause for search
+      const where: Record<string, unknown> = {
+        userRoles: {
+          role: {
+            id: roleId,
+          },
+        },
+      };
+
+      if (search) {
+        where.name = Like(`%${search}%`);
+      }
+
+      // Get total count for pagination
+      const total = await this.usersRepository.count({ where });
+
+      // Get paginated results with roles
+      const data = await this.usersRepository.find({
+        where,
+        relations: ['userRoles', 'userRoles.role'],
+        order: {
+          created_at: 'DESC',
+        },
+        skip,
+        take: limit,
+      });
+
+      const totalPages = Math.ceil(total / limit);
+
+      return {
+        data,
+        total,
+        page,
+        limit,
+        totalPages,
+      };
+    } catch (error) {
+      this.logger.error('Error fetching users', error);
       throw error;
     }
   }

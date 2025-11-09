@@ -3,6 +3,8 @@ import {
   Role,
   RolesRequest,
   RolesResponse,
+  RoleUsersRequest,
+  RoleUsersResponse,
   UpdateRoleRequest,
 } from './roles.types';
 
@@ -25,5 +27,22 @@ export const updateRole = async ({ id, data }: UpdateRoleRequest) => {
 
 export const deleteRole = async (id: string) => {
   const response = await apiClient.delete<Role>(`/roles/${id}`);
+  return response.data;
+};
+
+export const getRoleUsers = async ({ roleId, ...params }: RoleUsersRequest) => {
+  const response = await apiClient.get<RoleUsersResponse>(
+    `/roles/${roleId}/users`,
+    {
+      params,
+    }
+  );
+  return response.data;
+};
+
+export const removeUserFromRole = async (roleId: string, userId: string) => {
+  const response = await apiClient.delete<Role>(
+    `/roles/${roleId}/remove-user/${userId}`
+  );
   return response.data;
 };
