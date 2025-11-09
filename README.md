@@ -270,16 +270,19 @@ Database migrations are handled automatically by the application on startup. The
 
 ### Users (Admin only)
 
-- `GET /users` - Get paginated list of users (requires `users:all` permission)
-- `GET /users/:id` - Get user details by ID (requires `users:read` permission)
+- `GET /users` - Get paginated list of users with search and pagination (requires `users:view_list` permission)
+- `GET /users/:id` - Get user details including assigned roles (requires `users:view_detail` permission)
 
 ### Roles (Admin only)
 
-- `GET /roles` - Get paginated list of roles (requires `roles:all` permission)
-- `GET /roles/:id` - Get role details by ID (requires `roles:read` permission)
-- `POST /roles` - Create a new role (requires `roles:create` permission)
-- `PUT /roles/:id` - Update a role (requires `roles:update` permission)
-- `DELETE /roles/:id` - Delete a role (requires `roles:delete` permission)
+- `GET /roles` - Get paginated list of roles with search and pagination (requires `roles:view_list` permission)
+- `GET /roles/:id` - Get role details including permissions (requires `roles:view_detail` permission)
+- `POST /roles` - Create a new role with permissions (requires `roles:create` permission)
+- `PUT /roles/:id` - Update role name, description, or permissions (requires `roles:update` permission)
+- `DELETE /roles/:id` - Delete a role (prevents deletion if users are assigned) (requires `roles:delete` permission)
+- `GET /roles/:id/users` - Get paginated list of users assigned to this role (requires `roles:view_detail` and `users:view_list` permissions)
+- `POST /roles/:id/assign-users` - Assign multiple users to a role (requires `roles:view_detail` and `users:update` permissions)
+- `DELETE /roles/:id/remove-user/:userId` - Remove user from role (ensures users retain at least one role) (requires `roles:view_detail` and `users:update` permissions)
 
 ### Recipes
 
@@ -300,9 +303,9 @@ The application includes a comprehensive Role-Based Access Control (RBAC) system
 ### Default Roles
 
 - **viewer**: Can view recipes and users (default role for new users)
-  - Permissions: `recipes:read`, `users:read`
+  - Permissions: `recipes:read`, `recipes:create`, `users:view_list`, `users:view_detail`
 - **admin**: Full access to all features
-  - Permissions: All recipe, user, and role permissions (`recipes:all`, `users:all`, `roles:all`)
+  - Permissions: All recipe, user, role, and permission permissions (`recipes:all`, `users:all`, `roles:all`, `permissions:view_list`)
 
 ### Permission Categories
 
@@ -316,19 +319,25 @@ The application includes a comprehensive Role-Based Access Control (RBAC) system
 
 **User Permissions:**
 
-- `users:read` - Can read users
+- `users:view_list` - Can view list of users
+- `users:view_detail` - Can view user details
 - `users:create` - Can create users
-- `users:update` - Can update users
+- `users:update` - Can update users (including role assignment)
 - `users:delete` - Can delete users
 - `users:all` - Full access to all user operations
 
 **Role Permissions:**
 
-- `roles:read` - Can read roles
+- `roles:view_list` - Can view list of roles
+- `roles:view_detail` - Can view role details and assigned users
 - `roles:create` - Can create roles
-- `roles:update` - Can update roles
+- `roles:update` - Can update role settings and permissions
 - `roles:delete` - Can delete roles
 - `roles:all` - Full access to all role operations
+
+**Permission Management:**
+
+- `permissions:view_list` - Can view available permissions
 
 ### How It Works
 
@@ -338,6 +347,52 @@ The application includes a comprehensive Role-Based Access Control (RBAC) system
 4. **Auto-Discovery**: New permissions are automatically added to the database when controllers use the `@Permissions()` decorator
 
 New users are automatically assigned the `viewer` role upon first authentication.
+
+## Role Management Interface
+
+The application includes a comprehensive role management interface for administrators:
+
+### Roles List Page
+
+- View all roles with pagination and search functionality
+- Quick navigation to role details
+- Create new roles with custom permissions
+
+### Role Details Page
+
+The role details page includes three tabs for complete role management:
+
+#### Settings Tab
+
+- Update role name and description
+- Delete role with confirmation dialog
+- Built-in admin role is protected from modifications
+
+#### Permissions Tab
+
+- View and manage role permissions grouped by resource (recipes, users, roles, permissions)
+- Quick action buttons: "Select All", "Select None", "Reset"
+- Bulk permission assignment with checkbox interface
+- Real-time permission updates
+- Admin role permissions are locked and cannot be modified
+
+#### Users Tab
+
+- View paginated list of users assigned to the role
+- Add users to the role via searchable dialog
+- Remove users from role with one-click actions
+- Protection against removing the current user's role
+- Safeguard ensures users always have at least one role
+- Admin role user assignments are protected
+
+### Role Management Features & Safeguards
+
+- **Admin Role Protection**: The built-in 'admin' role cannot be modified or deleted
+- **User Role Requirement**: Users must have at least one role; system prevents removing the last role
+- **Transaction Safety**: Role assignment/removal operations use database transactions
+- **Delete Prevention**: Cannot delete roles that are currently assigned to users
+- **Permission Auto-Discovery**: New permissions are automatically discovered from controller decorators
+- **Comprehensive Validation**: All role operations are validated using Zod schemas
 
 ## Troubleshooting
 
@@ -357,4 +412,7 @@ New users are automatically assigned the `viewer` role upon first authentication
 - Health check endpoints are useful for monitoring and debugging
 - RBAC permissions are auto-discovered from controller decorators - just add `@Permissions()` decorator to new endpoints
 - Use the `/roles` API endpoints to manage roles and permissions dynamically
-- Test different permission levels by creating custom roles through the admin interface
+- Test different permission levels by creating custom roles through the role management interface
+- The role management UI provides a complete interface for managing roles, permissions, and user assignments
+- Admin role is protected from modifications to maintain system integrity
+- All role operations include validation and safeguards to prevent data inconsistency
