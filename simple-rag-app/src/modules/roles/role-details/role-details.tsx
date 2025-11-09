@@ -42,6 +42,7 @@ const RoleDetails = () => {
             </TabsList>
             <TabsContent value="settings">
               <RoleDetailsSettings
+                roleId={roleId as string}
                 data={{
                   name: data.name,
                   description: data.description,

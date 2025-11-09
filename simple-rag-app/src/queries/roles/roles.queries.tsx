@@ -12,7 +12,7 @@ export const useRoles = (request: RolesRequest = { page: 1, limit: 10 }) => {
 
 export const useRole = (id: string) => {
   return useQuery({
-    queryKey: rolesKeys.detail(id),
+    queryKey: rolesKeys.details(id),
     queryFn: () => getRole(id),
   });
 };

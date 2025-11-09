@@ -1,4 +1,4 @@
-import { FormEvent } from 'react';
+import { FormEvent, useMemo } from 'react';
 import useRoleDetailsSettingsFormActions from './role-details-settings.actions';
 import {
   Field,
@@ -6,21 +6,37 @@ import {
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
-import { Card, CardTitle, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
+import { type RoleDetailsSettingsFormSchema } from '@/schemas/role-details-form.shema';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface RoleDetailsSettingsProps {
-  data: {
-    name: string;
-    description: string;
-  };
+  data: RoleDetailsSettingsFormSchema;
+  roleId: string;
 }
 
-const RoleDetailsSettings = ({ data }: RoleDetailsSettingsProps) => {
-  const { form, isSubmitting } = useRoleDetailsSettingsFormActions({ data });
+const RoleDetailsSettings = ({ data, roleId }: RoleDetailsSettingsProps) => {
+  const { form, isSubmitting } = useRoleDetailsSettingsFormActions({ data, roleId });
+
+  const isDisabled = useMemo(
+    () => data.name === 'admin' || isSubmitting,
+    [data.name, isSubmitting]
+  );
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,11 +45,8 @@ const RoleDetailsSettings = ({ data }: RoleDetailsSettingsProps) => {
   };
 
   return (
-    <div className="w-1/2">
-      <Card>
-        <CardHeader>
-          <CardTitle>Role Details</CardTitle>
-        </CardHeader>
+    <>
+      <Card className="mb-12 w-1/2">
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <FieldGroup>
@@ -49,7 +62,7 @@ const RoleDetailsSettings = ({ data }: RoleDetailsSettingsProps) => {
                         id={field.name}
                         placeholder="Enter name"
                         value={field.state.value}
-                        disabled={true}
+                        disabled={isDisabled}
                         onChange={(e) => field.handleChange(e.target.value)}
                       />
                       {isInvalid && (
@@ -87,13 +100,49 @@ const RoleDetailsSettings = ({ data }: RoleDetailsSettingsProps) => {
             <div className="flex justify-end">
               <Button variant="default" type="submit" disabled={isSubmitting}>
                 {isSubmitting && <Spinner />}
-                Submit
+                Save
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
-    </div>
+
+      <h2 className="mb-4">Danger zone</h2>
+
+      <Card className="w-full">
+        <CardContent className="space-between flex items-center">
+          <Alert variant="destructive" className="border-none p-0">
+            <AlertTitle>Delete Role</AlertTitle>
+            <AlertDescription>
+              Once confirmed, this operation can't be undone!
+            </AlertDescription>
+          </Alert>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" type="button" disabled={isDisabled}>
+                Delete this role
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Role</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete role "{data.name}"?
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  className={buttonVariants({ variant: 'destructive' })}
+                >
+                  Delete role
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </CardContent>
+      </Card>
+    </>
   );
 };
 

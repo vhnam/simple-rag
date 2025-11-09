@@ -1,3 +1,5 @@
+import { RoleDetailsSettingsFormSchema } from '@/schemas/role-details-form.shema';
+
 export type Role = {
   id: string;
   name: string;
@@ -18,11 +20,6 @@ export type RolesResponse = {
   page: number;
   limit: number;
   totalPages: number;
-};
-
-export type RoleDetailsSettingsFormSchema = {
-  name: string;
-  description: string;
 };
 
 export type UpdateRoleRequest = {

@@ -22,3 +22,8 @@ export const updateRole = async ({ id, data }: UpdateRoleRequest) => {
   const response = await apiClient.put<Role>(`/roles/${id}`, data);
   return response.data;
 };
+
+export const deleteRole = async (id: string) => {
+  const response = await apiClient.delete<Role>(`/roles/${id}`);
+  return response.data;
+};
