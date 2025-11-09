@@ -7,12 +7,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from '@tanstack/react-router';
-import {
-  LogOutIcon,
-  ChevronDownIcon,
-  SettingsIcon,
-  ChevronsUpDownIcon,
-} from 'lucide-react';
+import { LogOutIcon, SettingsIcon, ChevronsUpDownIcon } from 'lucide-react';
 import {
   SidebarFooter,
   SidebarMenu,
@@ -20,9 +15,12 @@ import {
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import { useAuthContext } from '@/integrations/auth/auth-provider';
+import { useAuthStore } from '@/stores/auth.store';
+import { Badge } from '@/components/ui/badge';
 
 const ProtectedSidebarFooter = () => {
   const { user, logout } = useAuthContext();
+  const { role } = useAuthStore();
 
   return (
     <SidebarFooter>
@@ -38,13 +36,17 @@ const ProtectedSidebarFooter = () => {
                   <AvatarImage src={user?.picture} />
                   <AvatarFallback>{user?.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
-                <p>
+                <div className="space-y-2">
                   <span>{user?.name || user?.email}</span>
                   <br />
-                  <span className="text-muted-foreground text-xs">
-                    Super Admin
-                  </span>
-                </p>
+                  <div className="flex gap-2">
+                    {role.map((roleName) => (
+                      <Badge key={roleName} variant="outline">
+                        {roleName}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
                 <ChevronsUpDownIcon className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>

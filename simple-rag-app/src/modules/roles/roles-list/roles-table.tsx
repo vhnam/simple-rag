@@ -23,9 +23,9 @@ const columns: ColumnDef<Role>[] = [
     header: 'Description',
   },
   {
-    id: 'created_at',
-    header: 'Created At',
-    cell: ({ row }) => <span>{formatDate(row.original.created_at)}</span>,
+    id: 'updated_at',
+    header: 'Updated At',
+    cell: ({ row }) => <span>{formatDate(row.original.updated_at)}</span>,
   },
   {
     id: 'actions',

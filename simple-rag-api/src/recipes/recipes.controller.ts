@@ -31,7 +31,7 @@ export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.RECIPES_ALL)
+  @Permissions(PERMISSIONS.RECIPES_VIEW_LIST)
   @Get()
   async getRecipes(
     @Query() query: GetRecipesQueryDto,

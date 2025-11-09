@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DiscoveryModule } from '@nestjs/core';
 import { RbacService } from './rbac.service';
@@ -17,12 +17,4 @@ import { PermissionSyncService } from 'src/rbac/permission-sync.service';
   providers: [RbacService, PermissionsGuard, PermissionSyncService],
   exports: [RbacService, PermissionsGuard, PermissionSyncService],
 })
-export class RbacModule implements OnModuleInit {
-  constructor(private readonly permissionSyncService: PermissionSyncService) {}
-
-  async onModuleInit(): Promise<void> {
-    if (process.env.NODE_ENV !== 'production') {
-      await this.permissionSyncService.syncPermissionsFromControllers();
-    }
-  }
-}
+export class RbacModule {}

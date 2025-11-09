@@ -21,11 +21,33 @@ export class PermissionSyncService implements OnModuleInit {
 
   async onModuleInit() {
     try {
+      // Wait for migrations to complete before syncing permissions
+      await this.waitForTablesReady();
       await this.syncPermissionsFromControllers();
       this.logger.log('Permission sync completed successfully');
     } catch (error) {
       this.logger.error('Failed to sync permissions', error);
       // Don't throw - allow app to start even if sync fails
+    }
+  }
+
+  /**
+   * Wait for the permissions table to be ready (migrations to complete)
+   */
+  private async waitForTablesReady(maxRetries = 10, delay = 500): Promise<void> {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        // Try to query the permissions table
+        await this.permissionRepo.count();
+        this.logger.log('Permissions table is ready');
+        return;
+      } catch (error) {
+        if (i === maxRetries - 1) {
+          throw new Error('Timeout waiting for permissions table to be created');
+        }
+        this.logger.debug(`Waiting for permissions table... (attempt ${i + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
     }
   }
 

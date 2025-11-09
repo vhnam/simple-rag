@@ -11,6 +11,13 @@ export const roleDetailsSettingsFormSchema = z.object({
     .max(500, 'Description must be at most 500 characters'),
 });
 
+export const roleDetailsPermissionsFormSchema = z.object({
+  permissionIds: z.array(z.uuid('Invalid permission ID format')),
+});
+
 export type RoleDetailsSettingsFormSchema = z.infer<
   typeof roleDetailsSettingsFormSchema
+>;
+export type RoleDetailsPermissionsFormSchema = z.infer<
+  typeof roleDetailsPermissionsFormSchema
 >;

@@ -24,7 +24,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.USERS_ALL)
+  @Permissions(PERMISSIONS.USERS_VIEW_LIST)
   @Get()
   async getUsers(@Query() query: GetUsersQueryDto): Promise<Pagination<User>> {
     const validationResult = getUsersQuerySchema.safeParse(query);
@@ -47,7 +47,7 @@ export class UsersController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.USERS_READ)
+  @Permissions(PERMISSIONS.USERS_VIEW_DETAIL)
   @Get(':id')
   async getUser(@Param('id') id: string): Promise<User> {
     const validationResult = getUserSchema.safeParse({ id });

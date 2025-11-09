@@ -21,8 +21,8 @@ import {
   getRolesQuerySchema,
 } from './dto/get-roles-query.dto';
 import { getRoleSchema } from './dto/get-role.dto';
-import { createRoleSchema } from './dto/create-role.dto';
-import { updateRoleSchema } from './dto/update-role.dto';
+import { type CreateRoleDto, createRoleSchema } from './dto/create-role.dto';
+import { type UpdateRoleDto, updateRoleSchema } from './dto/update-role.dto';
 import { deleteRoleSchema } from './dto/delete-role.dto';
 import { PERMISSIONS } from 'src/rbac/rbac.constants';
 
@@ -31,7 +31,7 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.ROLES_ALL)
+  @Permissions(PERMISSIONS.ROLES_VIEW_LIST)
   @Get()
   async getRoles(@Query() query: GetRolesQueryDto): Promise<Pagination<Role>> {
     const validationResult = getRolesQuerySchema.safeParse(query);
@@ -54,7 +54,7 @@ export class RolesController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.ROLES_READ)
+  @Permissions(PERMISSIONS.ROLES_VIEW_DETAIL)
   @Get(':id')
   async getRole(@Param('id') id: string): Promise<Role> {
     const validationResult = getRoleSchema.safeParse({ id });
@@ -77,9 +77,14 @@ export class RolesController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.ROLES_CREATE)
+  @Permissions(
+    PERMISSIONS.ROLES_CREATE,
+    PERMISSIONS.ROLES_VIEW_DETAIL,
+    PERMISSIONS.PERMISSIONS_VIEW_LIST,
+    PERMISSIONS.USERS_VIEW_LIST,
+  )
   @Post()
-  async createRole(@Body() body: unknown): Promise<Role> {
+  async createRole(@Body() body: CreateRoleDto): Promise<Role> {
     const validationResult = createRoleSchema.safeParse(body);
     if (!validationResult.success) {
       const errors = validationResult.error.issues
@@ -100,11 +105,16 @@ export class RolesController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.ROLES_UPDATE)
+  @Permissions(
+    PERMISSIONS.ROLES_UPDATE,
+    PERMISSIONS.ROLES_VIEW_DETAIL,
+    PERMISSIONS.PERMISSIONS_VIEW_LIST,
+    PERMISSIONS.USERS_VIEW_LIST,
+  )
   @Put(':id')
   async updateRole(
     @Param('id') id: string,
-    @Body() body: unknown,
+    @Body() body: UpdateRoleDto,
   ): Promise<Role> {
     const validationResult = updateRoleSchema.safeParse({
       id,
@@ -129,7 +139,7 @@ export class RolesController {
   }
 
   @UseGuards(JwtGuard, PermissionsGuard)
-  @Permissions(PERMISSIONS.ROLES_DELETE)
+  @Permissions(PERMISSIONS.ROLES_DELETE, PERMISSIONS.ROLES_VIEW_DETAIL)
   @Delete(':id')
   async deleteRole(@Param('id') id: string): Promise<{ message: string }> {
     const validationResult = deleteRoleSchema.safeParse({ id });

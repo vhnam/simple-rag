@@ -1,9 +1,21 @@
-import { RoleDetailsSettingsFormSchema } from '@/schemas/role-details-form.shema';
+import {
+  RoleDetailsPermissionsFormSchema,
+  RoleDetailsSettingsFormSchema,
+} from '@/schemas/role-details-form.shema';
+import { Permission } from '../permissions/permissions.types';
+
+export type RolePermission = {
+  id: string;
+  permission: Permission;
+  created_at: string;
+  updated_at: string;
+};
 
 export type Role = {
   id: string;
   name: string;
   description: string;
+  rolePermissions: Array<RolePermission>;
   created_at: string;
   updated_at: string;
 };
@@ -24,5 +36,5 @@ export type RolesResponse = {
 
 export type UpdateRoleRequest = {
   id: string;
-  data: RoleDetailsSettingsFormSchema;
+  data: RoleDetailsSettingsFormSchema | RoleDetailsPermissionsFormSchema;
 };

@@ -18,11 +18,40 @@ export class SeedService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     try {
+      // Wait for migrations to complete before seeding
+      await this.waitForTablesReady();
       await this.seedDatabase();
       this.logger.log('Database seeding completed successfully');
     } catch (error) {
       this.logger.error('Failed to seed database', error);
       // Don't throw - allow app to start even if seeding fails
+    }
+  }
+
+  /**
+   * Wait for the roles table to be ready (migrations to complete)
+   */
+  private async waitForTablesReady(maxRetries = 20, delay = 500): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          // Try to query the roles table
+          await queryRunner.query('SELECT COUNT(*) FROM roles;');
+          this.logger.log('Tables are ready for seeding');
+          return;
+        } catch (error) {
+          if (i === maxRetries - 1) {
+            throw new Error('Timeout waiting for tables to be created');
+          }
+          this.logger.debug(`Waiting for tables... (attempt ${i + 1}/${maxRetries})`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
+    } finally {
+      await queryRunner.release();
     }
   }
 

@@ -17,6 +17,7 @@ import { RecipesModule } from './recipes/recipes.module';
 import { UsersModule } from './users/users.module';
 import { RbacModule } from './rbac/rbac.module';
 import { RolesModule } from './roles/roles.module';
+import { PermissionsModule } from './permissions/permissions.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { RolesModule } from './roles/roles.module';
     UsersModule,
     RbacModule,
     RolesModule,
+    PermissionsModule,
   ],
   controllers: [AppController],
   providers: [

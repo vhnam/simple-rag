@@ -10,25 +10,27 @@ export const ROLES = {
 
 export const PERMISSIONS = {
   // Recipe permissions
-  RECIPES_READ: 'recipes:read',
+  RECIPES_VIEW_LIST: 'recipes:view_list',
+  RECIPES_VIEW_DETAIL: 'recipes:view_detail',
   RECIPES_CREATE: 'recipes:create',
   RECIPES_UPDATE: 'recipes:update',
   RECIPES_DELETE: 'recipes:delete',
-  RECIPES_ALL: 'recipes:all',
 
   // User permissions
-  USERS_READ: 'users:read',
+  USERS_VIEW_LIST: 'users:view_list',
+  USERS_VIEW_DETAIL: 'users:view_detail',
   USERS_CREATE: 'users:create',
   USERS_UPDATE: 'users:update',
   USERS_DELETE: 'users:delete',
-  USERS_ALL: 'users:all',
 
   // Role permissions
-  ROLES_READ: 'roles:read',
+  ROLES_VIEW_LIST: 'roles:view_list',
+  ROLES_VIEW_DETAIL: 'roles:view_detail',
   ROLES_CREATE: 'roles:create',
   ROLES_UPDATE: 'roles:update',
   ROLES_DELETE: 'roles:delete',
-  ROLES_ALL: 'roles:all',
+
+  PERMISSIONS_VIEW_LIST: 'permissions:view_list',
 } as const;
 
 export type RoleName = (typeof ROLES)[keyof typeof ROLES];
@@ -57,8 +59,12 @@ export const ROLE_DEFINITIONS = [
 export const PERMISSION_DEFINITIONS = [
   // Recipe permissions
   {
-    name: PERMISSIONS.RECIPES_READ,
-    description: 'Can read recipes',
+    name: PERMISSIONS.RECIPES_VIEW_LIST,
+    description: 'Can view list of recipes',
+  },
+  {
+    name: PERMISSIONS.RECIPES_VIEW_DETAIL,
+    description: 'Can view details of a recipe',
   },
   {
     name: PERMISSIONS.RECIPES_CREATE,
@@ -72,15 +78,15 @@ export const PERMISSION_DEFINITIONS = [
     name: PERMISSIONS.RECIPES_DELETE,
     description: 'Can delete recipes',
   },
-  {
-    name: PERMISSIONS.RECIPES_ALL,
-    description: 'Full access to all recipe operations',
-  },
 
   // User permissions
   {
-    name: PERMISSIONS.USERS_READ,
-    description: 'Can read users',
+    name: PERMISSIONS.USERS_VIEW_LIST,
+    description: 'Can view list of users',
+  },
+  {
+    name: PERMISSIONS.USERS_VIEW_DETAIL,
+    description: 'Can view details of a user',
   },
   {
     name: PERMISSIONS.USERS_CREATE,
@@ -94,15 +100,15 @@ export const PERMISSION_DEFINITIONS = [
     name: PERMISSIONS.USERS_DELETE,
     description: 'Can delete users',
   },
-  {
-    name: PERMISSIONS.USERS_ALL,
-    description: 'Full access to all user operations',
-  },
 
   // Role permissions
   {
-    name: PERMISSIONS.ROLES_READ,
-    description: 'Can read roles',
+    name: PERMISSIONS.ROLES_VIEW_LIST,
+    description: 'Can view list of roles',
+  },
+  {
+    name: PERMISSIONS.ROLES_VIEW_DETAIL,
+    description: 'Can view details of a role',
   },
   {
     name: PERMISSIONS.ROLES_CREATE,
@@ -116,9 +122,11 @@ export const PERMISSION_DEFINITIONS = [
     name: PERMISSIONS.ROLES_DELETE,
     description: 'Can delete roles',
   },
+
+  // Permission permissions
   {
-    name: PERMISSIONS.ROLES_ALL,
-    description: 'Full access to all role operations',
+    name: PERMISSIONS.PERMISSIONS_VIEW_LIST,
+    description: 'Can view list of permissions',
   },
 ] as const;
 
@@ -127,22 +135,27 @@ export const PERMISSION_DEFINITIONS = [
  * Defines which permissions are assigned to each role
  */
 export const ROLE_PERMISSIONS = {
-  [ROLES.VIEWER]: [PERMISSIONS.RECIPES_READ, PERMISSIONS.USERS_READ],
+  [ROLES.VIEWER]: [
+    PERMISSIONS.RECIPES_VIEW_LIST,
+    PERMISSIONS.RECIPES_VIEW_DETAIL,
+  ],
   [ROLES.ADMIN]: [
-    PERMISSIONS.RECIPES_READ,
+    PERMISSIONS.RECIPES_VIEW_LIST,
+    PERMISSIONS.RECIPES_VIEW_DETAIL,
     PERMISSIONS.RECIPES_CREATE,
     PERMISSIONS.RECIPES_UPDATE,
     PERMISSIONS.RECIPES_DELETE,
-    PERMISSIONS.RECIPES_ALL,
-    PERMISSIONS.USERS_READ,
+    PERMISSIONS.USERS_VIEW_LIST,
+    PERMISSIONS.USERS_VIEW_DETAIL,
     PERMISSIONS.USERS_CREATE,
     PERMISSIONS.USERS_UPDATE,
     PERMISSIONS.USERS_DELETE,
-    PERMISSIONS.USERS_ALL,
-    PERMISSIONS.ROLES_READ,
+    PERMISSIONS.ROLES_VIEW_LIST,
+    PERMISSIONS.ROLES_VIEW_DETAIL,
     PERMISSIONS.ROLES_CREATE,
     PERMISSIONS.ROLES_UPDATE,
     PERMISSIONS.ROLES_DELETE,
-    PERMISSIONS.ROLES_ALL,
+    PERMISSIONS.ROLES_VIEW_LIST,
+    PERMISSIONS.PERMISSIONS_VIEW_LIST,
   ],
 } as const;

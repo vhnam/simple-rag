@@ -9,21 +9,35 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import RoleDetailsSettings from './role-details-settings';
 import RoleDetailsPermissions from './role-details-permissions';
 import RoleDetailsUsers from './role-details-users';
+import { usePermissions } from '@/queries/permissions';
 
 const RoleDetails = () => {
   const { roleId } = useParams({ from: '/dashboard/roles/$roleId' });
-  const { data, isLoading, error } = useRole(roleId);
+  const {
+    data: roleData,
+    isLoading: isRoleLoading,
+    error: roleError,
+  } = useRole(roleId);
+  const {
+    data: groupedPermissionsData,
+    isLoading: isGroupedPermissionsLoading,
+    error: groupedPermissionsError,
+  } = usePermissions();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!data) return <div>No data</div>;
+  if (isRoleLoading || isGroupedPermissionsLoading)
+    return <div>Loading...</div>;
+  if (roleError || groupedPermissionsError)
+    return (
+      <div>Error: {roleError?.message || groupedPermissionsError?.message}</div>
+    );
+  if (!roleData || !groupedPermissionsData) return <div>No data</div>;
 
   return (
     <div>
       <ProtectedLayoutHeader title="Role Details" />
 
       <ProtectedLayoutContent>
-        <div className="mx-auto w-full max-w-5xl">
+        <div className="mx-auto w-full max-w-5xl pb-10">
           <div className="mb-12 flex flex-col gap-4">
             <Link to="/dashboard/roles">
               <Button variant="ghost" size="sm">
@@ -31,7 +45,7 @@ const RoleDetails = () => {
                 <span className="text-sm font-normal">Back to Roles</span>
               </Button>
             </Link>
-            <h1 className="text-3xl font-medium">{data.name}</h1>
+            <h1 className="text-3xl font-medium">{roleData.name}</h1>
           </div>
 
           <Tabs defaultValue="settings">
@@ -44,13 +58,18 @@ const RoleDetails = () => {
               <RoleDetailsSettings
                 roleId={roleId as string}
                 data={{
-                  name: data.name,
-                  description: data.description,
+                  name: roleData.name,
+                  description: roleData.description,
                 }}
               />
             </TabsContent>
             <TabsContent value="permissions">
-              <RoleDetailsPermissions />
+              <RoleDetailsPermissions
+                roleId={roleId as string}
+                roleName={roleData.name}
+                rolePermissions={roleData.rolePermissions}
+                groupedPermissions={groupedPermissionsData}
+              />
             </TabsContent>
             <TabsContent value="users">
               <RoleDetailsUsers />
