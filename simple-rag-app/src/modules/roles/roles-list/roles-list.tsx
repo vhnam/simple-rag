@@ -6,6 +6,8 @@ import { AlertCircleIcon } from 'lucide-react';
 import RolesTable from './roles-table';
 import { useRoles } from '@/queries/roles';
 import { RoleCreateDialog } from '../role-create-dialog';
+import { Can } from '@/components/can';
+import { PERMISSIONS } from '@/constants/permissions.constants';
 
 const RolesList = () => {
   const { data, isLoading, error } = useRoles();
@@ -13,7 +15,9 @@ const RolesList = () => {
   return (
     <div>
       <ProtectedLayoutHeader title="Roles">
-        <RoleCreateDialog />
+        <Can permission={PERMISSIONS.ROLES_CREATE}>
+          <RoleCreateDialog />
+        </Can>
       </ProtectedLayoutHeader>
 
       <ProtectedLayoutContent>

@@ -1,5 +1,7 @@
+import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
+import { PERMISSIONS } from '@/constants/permissions.constants';
 import { formatDate } from '@/lib/date';
 import { type Role } from '@/queries/roles';
 import { Link, redirect } from '@tanstack/react-router';
@@ -31,14 +33,16 @@ const columns: ColumnDef<Role>[] = [
     id: 'actions',
     header: '',
     cell: ({ row }) => (
-      <div className="flex justify-end">
-        <Link
-          to="/dashboard/roles/$roleId"
-          params={{ roleId: row.original.id }}
-        >
-          <Button variant="outline">View</Button>
-        </Link>
-      </div>
+      <Can permission={PERMISSIONS.ROLES_VIEW_DETAIL}>
+        <div className="flex justify-end">
+          <Link
+            to="/dashboard/roles/$roleId"
+            params={{ roleId: row.original.id }}
+          >
+            <Button variant="outline">View</Button>
+          </Link>
+        </div>
+      </Can>
     ),
   },
 ];

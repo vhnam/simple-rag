@@ -87,7 +87,7 @@ const renderMenuItemWithoutSubItems = (item: SidebarItem) => (
   </SidebarMenuItem>
 );
 
-const ProtectSidebarContent = () => {
+const ProtectedSidebarContent = () => {
   return (
     <SidebarContent>
       <SidebarGroup>
@@ -106,4 +106,4 @@ const ProtectSidebarContent = () => {
   );
 };
 
-export default ProtectSidebarContent;
+export default ProtectedSidebarContent;

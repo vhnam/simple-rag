@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { type RoleSettingsFormSchema } from '@/schemas/role-form.schema';
 import RoleDetailsDeleteDialog from './role-details-delete-dialog';
+import { Can } from '@/components/can';
+import { PERMISSIONS } from '@/constants/permissions.constants';
 
 interface RoleDetailsSettingsProps {
   data: RoleSettingsFormSchema;
@@ -90,10 +92,12 @@ const RoleDetailsSettings = ({ data, roleId }: RoleDetailsSettingsProps) => {
               />
             </FieldGroup>
             <div className="flex justify-end">
-              <Button variant="default" type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Spinner />}
-                Save
-              </Button>
+              <Can permission={PERMISSIONS.ROLES_UPDATE}>
+                <Button variant="default" type="submit" disabled={isSubmitting}>
+                  {isSubmitting && <Spinner />}
+                  Save
+                </Button>
+              </Can>
             </div>
           </form>
         </CardContent>

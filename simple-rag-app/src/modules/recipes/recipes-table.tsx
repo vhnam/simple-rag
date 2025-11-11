@@ -1,5 +1,7 @@
+import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
+import { PERMISSIONS } from '@/constants/permissions.constants';
 import { Recipe } from '@/queries/recipes/recipes.types';
 import { Link, redirect } from '@tanstack/react-router';
 import { ColumnDef } from '@tanstack/react-table';
@@ -30,12 +32,14 @@ const columns: ColumnDef<Recipe>[] = [
     header: '',
     cell: ({ row }) => {
       return (
-        <Link
-          to="/dashboard/recipes/$recipeId"
-          params={{ recipeId: row.original.id }}
-        >
-          <Button variant="outline">View</Button>
-        </Link>
+        <Can permission={PERMISSIONS.RECIPES_VIEW_DETAIL}>
+          <Link
+            to="/dashboard/recipes/$recipeId"
+            params={{ recipeId: row.original.id }}
+          >
+            <Button variant="outline">View</Button>
+          </Link>
+        </Can>
       );
     },
   },
