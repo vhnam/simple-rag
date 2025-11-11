@@ -46,7 +46,7 @@ const RoleCreateDialog = () => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='space-y-6'>
           <DialogHeader>
             <DialogTitle>Create role</DialogTitle>
             <DialogDescription>

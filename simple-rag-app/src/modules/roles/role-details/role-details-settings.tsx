@@ -9,21 +9,10 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { type RoleSettingsFormSchema } from '@/schemas/role-form.schema';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import RoleDetailsDeleteDialog from './role-details-delete-dialog';
 
 interface RoleDetailsSettingsProps {
   data: RoleSettingsFormSchema;
@@ -31,7 +20,7 @@ interface RoleDetailsSettingsProps {
 }
 
 const RoleDetailsSettings = ({ data, roleId }: RoleDetailsSettingsProps) => {
-  const { form, isSubmitting } = useRoleDetailsSettingsFormActions({
+  const { form, isSubmitting, onDelete } = useRoleDetailsSettingsFormActions({
     data,
     roleId,
   });
@@ -112,39 +101,12 @@ const RoleDetailsSettings = ({ data, roleId }: RoleDetailsSettingsProps) => {
 
       <h2 className="mb-4">Danger zone</h2>
 
-      <Card className="w-full">
-        <CardContent className="space-between flex items-center">
-          <Alert variant="destructive" className="border-none p-0">
-            <AlertTitle>Delete Role</AlertTitle>
-            <AlertDescription>
-              Once confirmed, this operation can't be undone!
-            </AlertDescription>
-          </Alert>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive" type="button" disabled={isDisabled}>
-                Delete this role
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete Role</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to delete role "{data.name}"?
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  className={buttonVariants({ variant: 'destructive' })}
-                >
-                  Delete role
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </CardContent>
-      </Card>
+      <RoleDetailsDeleteDialog
+        roleName={data.name}
+        roleId={roleId}
+        isDisabled={isDisabled}
+        onDelete={onDelete}
+      />
     </>
   );
 };
