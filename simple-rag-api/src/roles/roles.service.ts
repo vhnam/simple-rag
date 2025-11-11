@@ -80,7 +80,7 @@ export class RolesService {
 
   async createRole(createRoleDto: CreateRoleDto): Promise<Role> {
     try {
-      const { name, description, permissionIds } = createRoleDto;
+      const { name, description } = createRoleDto;
 
       // Check if role with same name already exists
       const existingRole = await this.rolesRepository.findOne({
@@ -90,29 +90,12 @@ export class RolesService {
         throw new Error(`Role with name "${name}" already exists`);
       }
 
-      // Verify all permissions exist
-      const permissions = await this.permissionsRepository.find({
-        where: { id: In(permissionIds) },
-      });
-      if (permissions.length !== permissionIds.length) {
-        throw new Error('One or more permission IDs are invalid');
-      }
-
       // Create the role
       const role = this.rolesRepository.create({
         name,
         description,
       });
       const savedRole = await this.rolesRepository.save(role);
-
-      // Create role-permission associations
-      const rolePermissions = permissions.map((permission) =>
-        this.rolePermissionsRepository.create({
-          role: savedRole,
-          permission,
-        }),
-      );
-      await this.rolePermissionsRepository.save(rolePermissions);
 
       // Return the role with permissions
       return this.getRole(savedRole.id);

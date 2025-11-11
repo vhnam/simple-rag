@@ -1,14 +1,14 @@
 import { useUpdateRoleMutation } from '@/queries/roles/roles.mutations';
 import {
-  type RoleDetailsSettingsFormSchema,
-  roleDetailsSettingsFormSchema,
-} from '@/schemas/role-details-form.shema';
+  type RoleSettingsFormSchema,
+  roleSettingsFormSchema,
+} from '@/schemas/role-form.schema';
 import { useForm } from '@tanstack/react-form';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 interface RoleDetailsSettingsFormActionsProps {
-  data: RoleDetailsSettingsFormSchema;
+  data: RoleSettingsFormSchema;
   roleId: string;
 }
 
@@ -19,11 +19,7 @@ const useRoleDetailsSettingsFormActions = ({
   const { mutate: updateRole, isPending: isSubmitting } =
     useUpdateRoleMutation();
 
-  const handleSubmit = ({
-    value,
-  }: {
-    value: RoleDetailsSettingsFormSchema;
-  }) => {
+  const handleSubmit = ({ value }: { value: RoleSettingsFormSchema }) => {
     updateRole(
       {
         id: roleId as string,
@@ -50,7 +46,7 @@ const useRoleDetailsSettingsFormActions = ({
   const form = useForm({
     defaultValues: data,
     validators: {
-      onSubmit: roleDetailsSettingsFormSchema,
+      onSubmit: roleSettingsFormSchema,
     },
     onSubmit: handleSubmit,
   });

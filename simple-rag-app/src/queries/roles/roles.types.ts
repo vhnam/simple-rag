@@ -1,7 +1,7 @@
 import {
-  RoleDetailsPermissionsFormSchema,
-  RoleDetailsSettingsFormSchema,
-} from '@/schemas/role-details-form.shema';
+  RolePermissionsFormSchema,
+  RoleSettingsFormSchema,
+} from '@/schemas/role-form.schema';
 import { Permission } from '../permissions/permissions.types';
 import { User } from '../users/users.types';
 
@@ -35,9 +35,13 @@ export type RolesResponse = {
   totalPages: number;
 };
 
+export type CreateRoleRequest = {
+  data: RoleSettingsFormSchema;
+};
+
 export type UpdateRoleRequest = {
   id: string;
-  data: RoleDetailsSettingsFormSchema | RoleDetailsPermissionsFormSchema;
+  data: RoleSettingsFormSchema | RolePermissionsFormSchema;
 };
 
 export type RoleUsersRequest = {

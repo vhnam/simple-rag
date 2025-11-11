@@ -1,9 +1,9 @@
 import { useUpdateRoleMutation } from '@/queries/roles/roles.mutations';
 import { RolePermission } from '@/queries/roles/roles.types';
 import {
-  roleDetailsPermissionsFormSchema,
-  type RoleDetailsPermissionsFormSchema,
-} from '@/schemas/role-details-form.shema';
+  rolePermissionsFormSchema,
+  type RolePermissionsFormSchema,
+} from '@/schemas/role-form.schema';
 import { useForm } from '@tanstack/react-form';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
@@ -20,11 +20,7 @@ export const useRoleDetailsPermissionsFormActions = ({
   const { mutate: updateRole, isPending: isSubmitting } =
     useUpdateRoleMutation();
 
-  const handleSubmit = ({
-    value,
-  }: {
-    value: RoleDetailsPermissionsFormSchema;
-  }) => {
+  const handleSubmit = ({ value }: { value: RolePermissionsFormSchema }) => {
     updateRole(
       { id: roleId as string, data: value },
       {
@@ -47,7 +43,7 @@ export const useRoleDetailsPermissionsFormActions = ({
       permissionIds: data.map((permission) => permission.permission.id),
     },
     validators: {
-      onSubmit: roleDetailsPermissionsFormSchema,
+      onSubmit: rolePermissionsFormSchema,
     },
     onSubmit: handleSubmit,
   });

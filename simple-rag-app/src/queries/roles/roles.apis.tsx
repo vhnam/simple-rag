@@ -1,5 +1,6 @@
 import { apiClient } from '@/lib/axios';
 import {
+  CreateRoleRequest,
   Role,
   RolesRequest,
   RolesResponse,
@@ -17,6 +18,11 @@ export const getRoles = async (request: RolesRequest) => {
 
 export const getRole = async (id: string) => {
   const response = await apiClient.get<Role>(`/roles/${id}`);
+  return response.data;
+};
+
+export const createRole = async ({ data }: CreateRoleRequest) => {
+  const response = await apiClient.post<Role>(`/roles`, data);
   return response.data;
 };
 

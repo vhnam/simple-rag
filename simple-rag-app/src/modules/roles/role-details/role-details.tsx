@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
-import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
+import {
+  ProtectedLayoutHeader,
+  ProtectedLayoutContent,
+} from '@/layouts/protected-layout';
 import { useRole, useRoleUsers } from '@/queries/roles';
 import { useParams } from '@tanstack/react-router';
 import { ArrowLeftIcon } from 'lucide-react';

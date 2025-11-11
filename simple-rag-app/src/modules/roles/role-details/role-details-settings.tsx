@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { type RoleDetailsSettingsFormSchema } from '@/schemas/role-details-form.shema';
+import { type RoleSettingsFormSchema } from '@/schemas/role-form.schema';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   AlertDialog,
@@ -26,12 +26,15 @@ import {
 } from '@/components/ui/alert-dialog';
 
 interface RoleDetailsSettingsProps {
-  data: RoleDetailsSettingsFormSchema;
+  data: RoleSettingsFormSchema;
   roleId: string;
 }
 
 const RoleDetailsSettings = ({ data, roleId }: RoleDetailsSettingsProps) => {
-  const { form, isSubmitting } = useRoleDetailsSettingsFormActions({ data, roleId });
+  const { form, isSubmitting } = useRoleDetailsSettingsFormActions({
+    data,
+    roleId,
+  });
 
   const isDisabled = useMemo(
     () => data.name === 'admin' || isSubmitting,

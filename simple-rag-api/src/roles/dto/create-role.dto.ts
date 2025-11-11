@@ -9,9 +9,6 @@ export const createRoleSchema = z.object({
     .string()
     .max(500, { message: 'Description must be at most 500 characters' })
     .optional(),
-  permissionIds: z
-    .array(z.uuid({ message: 'Invalid permission ID format' }))
-    .min(1, { message: 'At least one permission is required' }),
 });
 
 export type CreateRoleDto = z.infer<typeof createRoleSchema>;

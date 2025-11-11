@@ -95,7 +95,6 @@ export class RolesController {
   @UseGuards(JwtGuard, PermissionsGuard)
   @Permissions(
     PERMISSIONS.ROLES_CREATE,
-    PERMISSIONS.ROLES_VIEW_DETAIL,
     PERMISSIONS.PERMISSIONS_VIEW_LIST,
     PERMISSIONS.USERS_VIEW_LIST,
   )
