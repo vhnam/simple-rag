@@ -346,60 +346,119 @@ The application includes a comprehensive Role-Based Access Control (RBAC) system
 
 - `permissions:view_list` - Can view available permissions
 
-### How It Works
 
-1. **User Authentication**: Users authenticate via Auth0 JWT
-2. **User Sync**: On first login, `/auth/sync` creates a user record and assigns the default `viewer` role
-3. **Permission Check**: The `PermissionsGuard` checks if the user has the required permissions for each endpoint
-4. **Auto-Discovery**: New permissions are automatically added to the database when controllers use the `@Permissions()` decorator
+## Technical Debt
 
-New users are automatically assigned the `viewer` role upon first authentication.
+This section documents known technical debt items that should be addressed to improve code quality, maintainability, and reliability.
 
-## Role Management Interface
+### TypeScript Configuration
 
-The application includes a comprehensive role management interface for administrators:
+- **Loose Type Checking**: `tsconfig.json` has several strict mode options disabled:
+  - `noImplicitAny: false` - Allows implicit `any` types, reducing type safety
+  - `strictBindCallApply: false` - Less strict checking for `bind`, `call`, and `apply`
+  - `noFallthroughCasesInSwitch: false` - Allows fallthrough cases in switch statements
+  - **Recommendation**: Enable strict mode gradually to improve type safety
 
-### Roles List Page
+### ESLint Configuration
 
-- View all roles with pagination and search functionality
-- Quick navigation to role details
-- Create new roles with custom permissions
+- **Type Safety Rules Disabled**: ESLint config has type safety rules set to warnings or disabled:
+  - `@typescript-eslint/no-explicit-any: 'off'` - Allows explicit `any` types
+  - `@typescript-eslint/no-floating-promises: 'warn'` - Should be 'error' to catch unhandled promises
+  - Multiple `eslint-disable` comments in `rag.service.ts` for unsafe type operations
+  - **Recommendation**: Enable stricter rules and fix type issues incrementally
 
-### Role Details Page
+### Type Safety Issues
 
-The role details page includes three tabs for complete role management:
+- **Extensive Use of `any` Types**:
+  - Frontend: `search-input.tsx` and `ai-recipe-form.tsx` use `any` types extensively
+  - Backend: `rag.service.ts` has multiple unsafe type assertions and operations with LangChain responses
+  - Raw SQL queries with type assertions (`as unknown as Array<{ id: string }>`)
+  - **Recommendation**: Create proper type definitions for LangChain responses and replace `any` with specific types
 
-#### Settings Tab
+### Testing
 
-- Update role name and description
-- Delete role with confirmation dialog
-- Built-in admin role is protected from modifications
+- **Minimal Test Coverage**: Test files exist but only contain basic "should be defined" tests:
+  - No unit tests for business logic
+  - No integration tests for API endpoints
+  - No frontend tests
+  - E2E test only covers basic health check
+  - **Recommendation**: Add comprehensive unit tests, integration tests, and frontend tests with meaningful coverage
 
-#### Permissions Tab
+### Database Migrations
 
-- View and manage role permissions grouped by resource (recipes, users, roles, permissions)
-- Quick action buttons: "Select All", "Select None", "Reset"
-- Bulk permission assignment with checkbox interface
-- Real-time permission updates
-- Admin role permissions are locked and cannot be modified
+- **Custom Migration System**: Uses a custom `MigrationService` instead of TypeORM's built-in migration system:
+  - No migration versioning or rollback capability
+  - Migrations run on every startup (idempotent but not versioned)
+  - Hard to track schema changes over time
+  - **Recommendation**: Migrate to TypeORM migrations for proper versioning and rollback support
 
-#### Users Tab
+### Error Handling
 
-- View paginated list of users assigned to the role
-- Add users to the role via searchable dialog
-- Remove users from role with one-click actions
-- Protection against removing the current user's role
-- Safeguard ensures users always have at least one role
-- Admin role user assignments are protected
+- **Inconsistent Error Handling Patterns**:
+  - Some controllers catch errors and throw `BadRequestException`, others let errors bubble up
+  - Migration service swallows errors on startup (logs but doesn't fail)
+  - Some services throw generic `Error` instead of domain-specific exceptions
+  - **Recommendation**: Standardize error handling with custom exception classes and consistent error response format
 
-### Role Management Features & Safeguards
+### Code Quality
 
-- **Admin Role Protection**: The built-in 'admin' role cannot be modified or deleted
-- **User Role Requirement**: Users must have at least one role; system prevents removing the last role
-- **Transaction Safety**: Role assignment/removal operations use database transactions
-- **Delete Prevention**: Cannot delete roles that are currently assigned to users
-- **Permission Auto-Discovery**: New permissions are automatically discovered from controller decorators
-- **Comprehensive Validation**: All role operations are validated using Zod schemas
+- **Console Statements**: Several `console.log`, `console.error`, and `console.debug` statements instead of proper logging:
+  - `simple-rag-app/src/integrations/auth/auth-provider.tsx`
+  - `simple-rag-app/src/lib/axios.ts`
+  - `simple-rag-api/src/main.ts`
+  - **Recommendation**: Replace with proper logger instances
+
+### Database Operations
+
+- **Mixed Query Patterns**: Mix of TypeORM repositories and raw SQL queries:
+  - `recipes.service.ts` uses raw SQL for inserts
+  - `rbac.service.ts` uses raw SQL for role assignments
+  - Inconsistent approach makes code harder to maintain
+  - **Recommendation**: Standardize on TypeORM query builder or repositories where possible
+
+### Transaction Management
+
+- **Inconsistent Transaction Usage**: Some operations use transactions (e.g., `role-assignment.service.ts`) while others don't:
+  - `recipes.service.ts` creates recipes without transactions
+  - `rbac.service.ts` assigns roles without transactions in some paths
+  - **Recommendation**: Use transactions for all multi-step database operations to ensure data consistency
+
+### Performance
+
+- **No Caching**: No caching mechanisms for:
+  - User permissions (queried on every request)
+  - Recipe embeddings (regenerated on every query)
+  - Permission lists
+  - **Recommendation**: Add Redis or in-memory caching for frequently accessed data
+
+### Security
+
+- **Input Validation**: While Zod schemas are used, need to verify:
+  - SQL injection protection (currently using parameterized queries, but should audit all raw SQL)
+  - XSS protection in frontend
+  - Rate limiting coverage (currently only on RAG endpoint)
+  - **Recommendation**: Security audit and add input sanitization where needed
+
+### Documentation
+
+- **Missing Documentation**:
+  - No API documentation (OpenAPI/Swagger)
+  - Limited inline documentation for complex business logic
+  - No architecture decision records (ADRs)
+  - **Recommendation**: Add Swagger/OpenAPI documentation and improve inline documentation
+
+### Frontend
+
+- **Type Safety**: Frontend has several `any` types that reduce type safety:
+  - `search-input.tsx` uses `any` for generic items
+  - `ai-recipe-form.tsx` has multiple `any` types
+  - `health.types.ts` uses `[key: string]: any`
+  - **Recommendation**: Create proper TypeScript interfaces and replace `any` types
+
+### Environment Configuration
+
+- **Typo in Filename**: `env.shema.ts` should be `env.schema.ts` (typo: "shema" instead of "schema")
+  - **Recommendation**: Rename file and update imports
 
 ## Troubleshooting
 
