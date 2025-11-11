@@ -43,6 +43,21 @@ export class AuthService {
       if (!user) {
         throw new Error('Failed to reload user after role assignment');
       }
+    } else {
+      // If user exists but has no roles, assign default 'viewer' role
+      if (!user.userRoles || user.userRoles.length === 0) {
+        await this.rbacService.assignRoleToUser(user.id, 'viewer');
+
+        // Reload user with relations after assigning role
+        user = await this.userRepository.findOne({
+          where: { id: user.id },
+          relations: ['userRoles', 'userRoles.role'],
+        });
+
+        if (!user) {
+          throw new Error('Failed to reload user after role assignment');
+        }
+      }
     }
 
     const role = user.userRoles?.map((userRole) => userRole.role.name) || [];

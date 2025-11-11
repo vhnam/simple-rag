@@ -28,6 +28,7 @@ export const AuthWrapper = ({ children }: PropsWithChildren) => {
       authorizationParams={{
         audience: import.meta.env.VITE_AUTH0_AUDIENCE,
         redirect_uri: `${redirectUri}/auth/callback`,
+        scope: 'openid profile email offline_access',
       }}
       useRefreshTokens={true}
       cacheLocation="localstorage"

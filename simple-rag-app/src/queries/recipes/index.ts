@@ -1,1 +1,1 @@
-export { useCreateRecipeMutation } from './recipes.mutations';
+export { useRecipes } from './recipes.queries';
