@@ -1,11 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
+  assignUsersToRole,
   createRole,
   deleteRole,
   removeUserFromRole,
   updateRole,
 } from './roles.apis';
 import type {
+  AssignUsersToRoleRequest,
   CreateRoleRequest,
   RemoveUserFromRoleRequest,
   UpdateRoleRequest,
@@ -47,6 +49,17 @@ export const useRemoveUserFromRoleMutation = () => {
   return useMutation({
     mutationFn: ({ roleId, userId }: RemoveUserFromRoleRequest) =>
       removeUserFromRole(roleId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: rolesKeys.all });
+    },
+  });
+};
+
+export const useAssignUsersToRoleMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ roleId, userIds }: AssignUsersToRoleRequest) =>
+      assignUsersToRole(roleId, userIds),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rolesKeys.all });
     },

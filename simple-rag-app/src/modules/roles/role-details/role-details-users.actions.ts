@@ -1,10 +1,15 @@
-import { useRemoveUserFromRoleMutation } from '@/queries/roles';
+import {
+  useAssignUsersToRoleMutation,
+  useRemoveUserFromRoleMutation,
+} from '@/queries/roles';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 export const useRoleDetailsUsersActions = () => {
   const { mutate: removeUserFromRole, isPending: isRemovingUser } =
     useRemoveUserFromRoleMutation();
+  const { mutate: assignUsers, isPending: isAssigningUsers } =
+    useAssignUsersToRoleMutation();
 
   const handleRemoveUserFromRole = (roleId: string, userId: string) => {
     removeUserFromRole(
@@ -24,8 +29,28 @@ export const useRoleDetailsUsersActions = () => {
     );
   };
 
+  const handleAssignUsers = (roleId: string, userIds: string[]) => {
+    assignUsers(
+      { roleId, userIds },
+      {
+        onSuccess: () => {
+          toast.success('Users assigned to role successfully');
+        },
+        onError: (error) => {
+          if (error instanceof AxiosError) {
+            toast.error(error.response?.data?.message);
+          } else {
+            toast.error('Failed to assign users to role');
+          }
+        },
+      }
+    );
+  };
+
   return {
+    isAssigningUsers,
     isRemovingUser,
+    onAssignUsers: handleAssignUsers,
     onRemoveUserFromRole: handleRemoveUserFromRole,
   };
 };

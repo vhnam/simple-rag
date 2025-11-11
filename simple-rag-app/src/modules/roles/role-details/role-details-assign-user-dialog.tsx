@@ -13,10 +13,12 @@ import SearchInput from '@/components/search-input';
 
 interface RoleDetailsAssignUserDialogProps {
   roleName: string;
+  onAssignUsers: (userIds: string[]) => void;
 }
 
 const RoleDetailsAssignUserDialog = ({
   roleName,
+  onAssignUsers,
 }: RoleDetailsAssignUserDialogProps) => {
   const [search, setSearch] = useState<string>('');
   const [selectedUsers, setSelectedUsers] = useState<Array<User>>([]);
@@ -38,6 +40,10 @@ const RoleDetailsAssignUserDialog = ({
 
   const handleRemoveUser = (userId: string | number) => {
     setSelectedUsers(selectedUsers.filter((u) => u.id !== userId));
+  };
+
+  const handleAssignUsers = () => {
+    onAssignUsers(selectedUsers.map((user) => user.id));
   };
 
   const filteredResults = useMemo(
@@ -76,12 +82,15 @@ const RoleDetailsAssignUserDialog = ({
       />
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline" type="button">
+            Cancel
+          </Button>
         </DialogClose>
         <Button
           variant="default"
-          type="submit"
+          type="button"
           disabled={selectedUsers.length === 0}
+          onClick={handleAssignUsers}
         >
           Assign
         </Button>

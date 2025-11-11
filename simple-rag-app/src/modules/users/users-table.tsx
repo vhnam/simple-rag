@@ -27,7 +27,7 @@ const columns: ColumnDef<User>[] = [
     id: 'role',
     header: 'Role',
     cell: ({ row }) => (
-      <span>
+      <span className="space-x-2">
         {row.original.userRoles.map((userRole) => (
           <Badge key={userRole.id}>{userRole.role.name}</Badge>
         ))}

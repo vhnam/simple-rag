@@ -25,7 +25,8 @@ const RoleDetailsUsers = ({
   const { id } = useAuthStore();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { onRemoveUserFromRole, isRemovingUser } = useRoleDetailsUsersActions();
+  const { onRemoveUserFromRole, isRemovingUser, onAssignUsers } =
+    useRoleDetailsUsersActions();
 
   const isDisabled = useMemo(() => {
     return roleName === 'admin' || isRemovingUser;
@@ -61,6 +62,11 @@ const RoleDetailsUsers = ({
     },
   ];
 
+  const handleAssignUsers = (userIds: string[]) => {
+    onAssignUsers(roleId, userIds);
+    setIsDialogOpen(false);
+  };
+
   const handlePageChange = (page: number) => {
     redirect({
       href: `/dashboard/roles/${roleId}/users?page=${page}`,
@@ -79,7 +85,12 @@ const RoleDetailsUsers = ({
               Add User
             </Button>
           </DialogTrigger>
-          {isDialogOpen && <RoleDetailsAssignUserDialog roleName={roleName} />}
+          {isDialogOpen && (
+            <RoleDetailsAssignUserDialog
+              roleName={roleName}
+              onAssignUsers={handleAssignUsers}
+            />
+          )}
         </Dialog>
       </div>
 

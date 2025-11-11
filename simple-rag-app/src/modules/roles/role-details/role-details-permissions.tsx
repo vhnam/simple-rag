@@ -117,7 +117,7 @@ const RoleDetailsPermissions = ({
                             name="permissionIds[]"
                             checked={isChecked}
                             disabled={isDisabled}
-                            onCheckedChange={(checked) => {
+                            onCheckedChange={(checked: boolean) => {
                               if (checked) {
                                 field.pushValue(permission.id);
                               } else {
