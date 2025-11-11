@@ -4,17 +4,17 @@ A simple Retrieval-Augmented Generation (RAG) application built with NestJS and 
 
 ## Features
 
-- **AI Recipe Suggestions**: Get personalized recipe recommendations based on ingredients you have
+- **AI Recipe Suggestions**: Get personalized recipe recommendations based on ingredients you have (with rate limiting for cost control)
 - **Vector Search**: Fast semantic search using PostgreSQL with pgvector extension
 - **Authentication**: Secure JWT-based authentication with Auth0
 - **Role-Based Access Control (RBAC)**: Comprehensive permissions system with auto-discovery of permissions from decorators
-- **User Management**: Full CRUD operations for managing users with role-based access
+- **User Management**: Full CRUD operations for managing users with role-based access, plus user profile management
 - **Role Management**: Create, update, and delete roles with customizable permissions
 - **Recipe Management**: Browse and create recipes with permission-based access control
 - **Health Monitoring**: Built-in health check endpoints for database, memory, and disk monitoring
 - **Rate Limiting**: API rate limiting to prevent abuse
 - **Structured Logging**: Winston-based logging for better observability
-- **Modern UI**: Beautiful, responsive interface built with React 19, TanStack Router, and Tailwind CSS
+- **Modern UI**: Beautiful, responsive interface built with React 19, Shadcn UI, TanStack Router, TanStack Table, and Tailwind CSS
 - **Type-Safe**: End-to-end type safety with TypeScript and Zod validation
 
 ## Architecture
@@ -266,12 +266,15 @@ Database migrations are handled automatically by the application on startup. The
 
 ### RAG
 
-- `POST /rag/query` - Query recipes using RAG (requires authentication and appropriate permissions)
+- `POST /rag/ask` - Query recipes using RAG based on ingredients (rate limited: 3 requests/second, 10 requests/minute)
+- `GET /rag/status` - Get RAG service status including readiness and recipe count (requires authentication)
 
-### Users (Admin only)
+### Users
 
 - `GET /users` - Get paginated list of users with search and pagination (requires `users:view_list` permission)
 - `GET /users/:id` - Get user details including assigned roles (requires `users:view_detail` permission)
+- `GET /users/me/profile` - Get current user's profile with preferences (requires authentication)
+- `PATCH /users/me/profile` - Update current user's profile and preferences (requires authentication)
 
 ### Roles (Admin only)
 
@@ -286,8 +289,12 @@ Database migrations are handled automatically by the application on startup. The
 
 ### Recipes
 
-- `GET /recipes` - Get paginated list of recipes (requires `recipes:all` permission)
+- `GET /recipes` - Get paginated list of recipes with search and pagination (requires `recipes:view_list` permission)
 - `POST /recipes` - Create a new recipe (requires `recipes:create` permission)
+
+### Permissions
+
+- `GET /permissions` - Get all available permissions grouped by resource (requires `permissions:view_list` permission)
 
 ## RBAC System
 
