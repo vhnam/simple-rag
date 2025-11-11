@@ -7,6 +7,7 @@ import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Permission } from '../entities/permission.entity';
 import { RolePermission } from '../entities/role-permission.entity';
+import { UserPreference } from '../entities/user-preference.entity';
 import { MigrationService } from './migration.service';
 import { SeedService } from './seed.service';
 
@@ -23,7 +24,15 @@ import { SeedService } from './seed.service';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Recipe, User, Role, UserRole, Permission, RolePermission],
+        entities: [
+          Recipe,
+          User,
+          Role,
+          UserRole,
+          Permission,
+          RolePermission,
+          UserPreference,
+        ],
         synchronize: false, // We'll use migrations
         logging: ['query', 'error'],
         extra: {
@@ -33,7 +42,7 @@ import { SeedService } from './seed.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Recipe, User]),
+    TypeOrmModule.forFeature([Recipe, User, UserPreference]),
   ],
   providers: [MigrationService, SeedService],
   exports: [TypeOrmModule],

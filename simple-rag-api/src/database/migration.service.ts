@@ -92,6 +92,9 @@ export class MigrationService implements OnModuleInit {
       // Create RBAC tables
       await this.createRbacTables(queryRunner);
 
+      // Create user_preferences table
+      await this.createUserPreferencesTable(queryRunner);
+
       this.logger.log('Database schema initialized successfully');
     } finally {
       await queryRunner.release();
@@ -355,6 +358,36 @@ export class MigrationService implements OnModuleInit {
         );
       `);
       this.logger.log('Created user_roles table');
+    }
+  }
+
+  /**
+   * Creates the user_preferences table
+   */
+  private async createUserPreferencesTable(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
+    const userPreferencesTableExists = (await queryRunner.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_name = 'user_preferences'
+      );
+    `)) as Array<{ exists: boolean }>;
+
+    if (!userPreferencesTableExists[0]?.exists) {
+      await queryRunner.query(`
+        CREATE TABLE user_preferences (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          user_id UUID NOT NULL UNIQUE,
+          interface_theme VARCHAR(50) DEFAULT 'system',
+          interface_language VARCHAR(10) DEFAULT 'en-US',
+          ai_language VARCHAR(10) DEFAULT 'en-US',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+      `);
+      this.logger.log('Created user_preferences table');
     }
   }
 }

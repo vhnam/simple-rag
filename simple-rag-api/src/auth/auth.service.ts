@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { UserPreference } from '../entities/user-preference.entity';
 import { AuthSyncUserDto } from './dto/auth.dto';
 import { RbacService } from '../rbac/rbac.service';
 
@@ -10,6 +11,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(UserPreference)
+    private userPreferenceRepository: Repository<UserPreference>,
     private rbacService: RbacService,
   ) {}
 
@@ -32,7 +35,17 @@ export class AuthService {
       });
       user = await this.userRepository.save(user);
 
+      // Assign default role
       await this.rbacService.assignRoleToUser(user.id, 'viewer');
+
+      // Create default user preferences
+      const defaultPreferences = this.userPreferenceRepository.create({
+        user_id: user.id,
+        interface_theme: 'system',
+        interface_language: 'en-US',
+        ai_language: 'en-US',
+      });
+      await this.userPreferenceRepository.save(defaultPreferences);
 
       // Reload user with relations after assigning role
       user = await this.userRepository.findOne({
@@ -57,6 +70,21 @@ export class AuthService {
         if (!user) {
           throw new Error('Failed to reload user after role assignment');
         }
+      }
+
+      // Check if user has preferences, if not create default ones
+      const existingPreferences = await this.userPreferenceRepository.findOne({
+        where: { user_id: user.id },
+      });
+
+      if (!existingPreferences) {
+        const defaultPreferences = this.userPreferenceRepository.create({
+          user_id: user.id,
+          interface_theme: 'system',
+          interface_language: 'en-US',
+          ai_language: 'en-US',
+        });
+        await this.userPreferenceRepository.save(defaultPreferences);
       }
     }
 

@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
+import { UserPreference } from 'src/entities/user-preference.entity';
 import { Like, Repository } from 'typeorm';
 import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { Pagination } from 'src/common/interfaces/pagination.interface';
 import { GetUsersByRoleQueryDto } from 'src/roles/dto/get-users-by-role.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +15,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(UserPreference)
+    private userPreferencesRepository: Repository<UserPreference>,
   ) {}
 
   async getUserPermissions(userId: string): Promise<string[]> {
@@ -133,6 +137,89 @@ export class UsersService {
       };
     } catch (error) {
       this.logger.error('Error fetching users', error);
+      throw error;
+    }
+  }
+
+  async updateProfile(
+    userId: string,
+    updateProfileDto: UpdateProfileDto,
+  ): Promise<{ user: User; preferences: UserPreference }> {
+    try {
+      const {
+        name,
+        email,
+        avatar,
+        interface_theme,
+        interface_language,
+        ai_language,
+      } = updateProfileDto;
+
+      // Update user basic info
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new Error(`User with ID ${userId} not found`);
+      }
+
+      // Update user fields if provided
+      if (name !== undefined) user.name = name;
+      if (email !== undefined) user.email = email;
+      if (avatar !== undefined) user.avatar = avatar;
+
+      await this.usersRepository.save(user);
+
+      // Update or create user preferences
+      let preferences = await this.userPreferencesRepository.findOne({
+        where: { user_id: userId },
+      });
+
+      if (!preferences) {
+        // Create new preferences if they don't exist
+        preferences = this.userPreferencesRepository.create({
+          user_id: userId,
+          interface_theme: interface_theme || 'system',
+          interface_language: interface_language || 'en-US',
+          ai_language: ai_language || 'en-US',
+        });
+      } else {
+        // Update existing preferences if provided
+        if (interface_theme !== undefined)
+          preferences.interface_theme = interface_theme;
+        if (interface_language !== undefined)
+          preferences.interface_language = interface_language;
+        if (ai_language !== undefined) preferences.ai_language = ai_language;
+      }
+
+      await this.userPreferencesRepository.save(preferences);
+
+      return { user, preferences };
+    } catch (error) {
+      this.logger.error('Error updating user profile', error);
+      throw error;
+    }
+  }
+
+  async getUserWithPreferences(userId: string): Promise<{
+    user: User;
+    preferences: UserPreference | null;
+  }> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new Error(`User with ID ${userId} not found`);
+      }
+
+      const preferences = await this.userPreferencesRepository.findOne({
+        where: { user_id: userId },
+      });
+
+      return { user, preferences };
+    } catch (error) {
+      this.logger.error('Error fetching user with preferences', error);
       throw error;
     }
   }

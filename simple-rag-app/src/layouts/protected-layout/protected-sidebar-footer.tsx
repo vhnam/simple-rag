@@ -59,7 +59,7 @@ const ProtectedSidebarFooter = () => {
               <DropdownMenuItem asChild>
                 <Link to="/dashboard/profile">
                   <SettingsIcon className="size-4" />
-                  Account
+                  Your profile
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />

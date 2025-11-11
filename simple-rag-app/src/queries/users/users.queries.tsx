@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { UsersRequest } from './users.types';
 import { usersKeys } from './users.keys';
-import { getUsers } from './users.apis';
+import { getMyProfile, getUsers } from './users.apis';
 
-const useUsers = (
+export const useUsers = (
   request: UsersRequest = { page: 1, limit: 10 },
   options?: { enabled?: boolean }
 ) => {
@@ -14,4 +14,9 @@ const useUsers = (
   });
 };
 
-export default useUsers;
+export const useMyProfile = () => {
+  return useQuery({
+    queryKey: usersKeys.myProfile(),
+    queryFn: getMyProfile,
+  });
+};

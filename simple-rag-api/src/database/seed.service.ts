@@ -31,7 +31,10 @@ export class SeedService implements OnModuleInit {
   /**
    * Wait for the roles table to be ready (migrations to complete)
    */
-  private async waitForTablesReady(maxRetries = 20, delay = 500): Promise<void> {
+  private async waitForTablesReady(
+    maxRetries = 20,
+    delay = 500,
+  ): Promise<void> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
 
@@ -42,12 +45,15 @@ export class SeedService implements OnModuleInit {
           await queryRunner.query('SELECT COUNT(*) FROM roles;');
           this.logger.log('Tables are ready for seeding');
           return;
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           if (i === maxRetries - 1) {
             throw new Error('Timeout waiting for tables to be created');
           }
-          this.logger.debug(`Waiting for tables... (attempt ${i + 1}/${maxRetries})`);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          this.logger.debug(
+            `Waiting for tables... (attempt ${i + 1}/${maxRetries})`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     } finally {
@@ -73,15 +79,16 @@ export class SeedService implements OnModuleInit {
     try {
       // Create roles from constants
       for (const role of ROLE_DEFINITIONS) {
-        const roleExists = (await queryRunner.query(`
-          SELECT COUNT(*) as count FROM roles WHERE name = '${role.name}';
-        `)) as Array<{ count: string }>;
+        const roleExists = (await queryRunner.query(
+          `SELECT COUNT(*) as count FROM roles WHERE name = $1;`,
+          [role.name],
+        )) as Array<{ count: string }>;
 
         if (parseInt(roleExists[0].count, 10) === 0) {
-          await queryRunner.query(`
-            INSERT INTO roles (name, description)
-            VALUES ('${role.name}', '${role.description}');
-          `);
+          await queryRunner.query(
+            `INSERT INTO roles (name, description) VALUES ($1, $2);`,
+            [role.name, role.description],
+          );
           this.logger.log(`Created ${role.name} role`);
         }
       }
@@ -89,42 +96,46 @@ export class SeedService implements OnModuleInit {
       // Create permissions from constants
       for (const permission of PERMISSION_DEFINITIONS) {
         const permissionExists = (await queryRunner.query(
-          `SELECT COUNT(*) as count FROM permissions WHERE name = '${permission.name}';`,
+          `SELECT COUNT(*) as count FROM permissions WHERE name = $1;`,
+          [permission.name],
         )) as Array<{ count: string }>;
 
         if (parseInt(permissionExists[0].count, 10) === 0) {
-          await queryRunner.query(`
-            INSERT INTO permissions (name, description)
-            VALUES ('${permission.name}', '${permission.description}');
-          `);
+          await queryRunner.query(
+            `INSERT INTO permissions (name, description) VALUES ($1, $2);`,
+            [permission.name, permission.description],
+          );
         }
       }
 
       // Assign permissions to roles based on ROLE_PERMISSIONS mapping
       for (const [roleName, permissions] of Object.entries(ROLE_PERMISSIONS)) {
-        const role = (await queryRunner.query(`
-          SELECT id FROM roles WHERE name = '${roleName}';
-        `)) as Array<{ id: string }>;
+        const role = (await queryRunner.query(
+          `SELECT id FROM roles WHERE name = $1;`,
+          [roleName],
+        )) as Array<{ id: string }>;
 
         if (role.length === 0) continue;
 
         for (const permissionName of permissions) {
-          const permission = (await queryRunner.query(`
-            SELECT id FROM permissions WHERE name = '${permissionName}';
-          `)) as Array<{ id: string }>;
+          const permission = (await queryRunner.query(
+            `SELECT id FROM permissions WHERE name = $1;`,
+            [permissionName],
+          )) as Array<{ id: string }>;
 
           if (permission.length === 0) continue;
 
           const rolePermissionExists = (await queryRunner.query(
             `SELECT COUNT(*) as count FROM role_permissions
-            WHERE role_id = '${role[0].id}' AND permission_id = '${permission[0].id}';`,
+            WHERE role_id = $1 AND permission_id = $2;`,
+            [role[0].id, permission[0].id],
           )) as Array<{ count: string }>;
 
           if (parseInt(rolePermissionExists[0].count, 10) === 0) {
-            await queryRunner.query(`
-              INSERT INTO role_permissions (role_id, permission_id)
-              VALUES ('${role[0].id}', '${permission[0].id}');
-            `);
+            await queryRunner.query(
+              `INSERT INTO role_permissions (role_id, permission_id) VALUES ($1, $2);`,
+              [role[0].id, permission[0].id],
+            );
           }
         }
         this.logger.log(
