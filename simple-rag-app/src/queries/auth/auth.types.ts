@@ -1,3 +1,5 @@
+import { Role } from '@/queries/roles/roles.types';
+
 export interface SyncUserRequest {
   sub: string;
   email: string;
@@ -8,13 +10,7 @@ export interface SyncUserRequest {
 
 export type UserRole = {
   id: string;
-  role: {
-    id: string;
-    name: string;
-    description: string | null;
-    created_at: string;
-    updated_at: string;
-  };
+  role: Role;
   created_at: string;
   updated_at: string;
 };
@@ -25,9 +21,9 @@ export type SyncUserResponse = {
   email: string;
   name: string;
   avatar: string | null;
+  role: Array<string>;
   userRoles: Array<UserRole>;
+  permissions: Array<string>;
   created_at: string;
   updated_at: string;
-  role: Array<string>;
-  permissions: Array<string>;
 };

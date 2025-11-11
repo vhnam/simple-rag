@@ -8,11 +8,11 @@ const initialState: SyncUserResponse = {
   email: '',
   name: '',
   avatar: null,
+  role: [],
   userRoles: [],
+  permissions: [],
   created_at: '',
   updated_at: '',
-  role: [],
-  permissions: [],
 };
 
 export interface AuthStore extends SyncUserResponse {
