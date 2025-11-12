@@ -52,7 +52,6 @@ const useProfileActions = ({ data }: ProfileActionsProps) => {
         ai_language: data.preferences?.ai_language ?? 'en-US',
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   return {

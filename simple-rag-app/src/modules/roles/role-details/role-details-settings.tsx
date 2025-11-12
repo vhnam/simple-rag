@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import useRoleDetailsSettingsFormActions from './role-details-settings.actions';
 import RoleDetailsDeleteDialog from './role-details-delete-dialog';
-import type { FormEvent} from 'react';
-import type {RoleSettingsFormSchema} from '@/schemas/role-form.schema';
+import type { FormEvent } from 'react';
+import type { RoleSettingsFormSchema } from '@/schemas/role-form.schema';
 import {
   Field,
   FieldError,

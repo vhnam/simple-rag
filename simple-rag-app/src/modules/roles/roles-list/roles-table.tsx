@@ -1,6 +1,6 @@
 import { Link, redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
-import type {Role} from '@/queries/roles';
+import type { Role } from '@/queries/roles';
 import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';

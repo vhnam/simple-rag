@@ -53,7 +53,10 @@ export const removeUserFromRole = async (roleId: string, userId: string) => {
   return response.data;
 };
 
-export const assignUsersToRole = async (roleId: string, userIds: Array<string>) => {
+export const assignUsersToRole = async (
+  roleId: string,
+  userIds: Array<string>
+) => {
   const response = await apiClient.post<Role>(`/roles/${roleId}/assign-users`, {
     userIds,
   });

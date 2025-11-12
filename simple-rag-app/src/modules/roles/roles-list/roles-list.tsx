@@ -3,7 +3,10 @@ import { RoleCreateDialog } from '../role-create-dialog';
 import RolesTable from './roles-table';
 import TableSkeleton from '@/components/table-skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { ProtectedLayoutContent, ProtectedLayoutHeader  } from '@/layouts/protected-layout';
+import {
+  ProtectedLayoutContent,
+  ProtectedLayoutHeader,
+} from '@/layouts/protected-layout';
 import { useRoles } from '@/queries/roles';
 import { Can } from '@/components/can';
 import { PERMISSIONS } from '@/constants/permissions.constants';

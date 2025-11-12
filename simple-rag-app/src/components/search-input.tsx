@@ -52,7 +52,7 @@ const SearchInput = <T,>({
   const debouncedOnSearch = useMemo(
     () =>
       debounce((value: string) => {
-        onSearch(value?.toLowerCase() ?? '');
+        onSearch(value.toLowerCase());
         if (value && value.length > 0) {
           setOpen(true);
         }

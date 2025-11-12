@@ -6,7 +6,7 @@ import {
   MemoryStickIcon,
 } from 'lucide-react';
 import StatusBadge from './dashboard-status-badge';
-import type {HealthCheckResponse} from '@/queries/health';
+import type { HealthCheckResponse } from '@/queries/health';
 import {
   Card,
   CardContent,
@@ -50,9 +50,9 @@ const DashboardOverview = ({
             </div>
             {healthLoading ? (
               <Skeleton className="h-6 w-16" />
-            ) : healthData ? (
+            ) : (
               <StatusBadge status={healthData.status} />
-            ) : null}
+            )}
           </div>
           <CardDescription>Overall system health check</CardDescription>
         </CardHeader>
@@ -73,9 +73,9 @@ const DashboardOverview = ({
               <DatabaseIcon className="text-muted-foreground size-5" />
               {healthLoading ? (
                 <Skeleton className="h-6 w-12" />
-              ) : healthData?.details?.database ? (
+              ) : (
                 <StatusBadge status={healthData.details.database.status} />
-              ) : null}
+              )}
             </div>
           </CardHeader>
           <CardContent>
@@ -94,15 +94,15 @@ const DashboardOverview = ({
               <MemoryStickIcon className="text-muted-foreground size-5" />
               {healthLoading ? (
                 <Skeleton className="h-6 w-12" />
-              ) : healthData?.details?.memory_heap ? (
+              ) : (
                 <StatusBadge status={healthData.details.memory_heap.status} />
-              ) : null}
+              )}
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-1">
               <p className="text-sm font-medium">Memory Heap</p>
-              {healthData?.details?.memory_heap?.used && (
+              {healthData.details.memory_heap.used && (
                 <p className="text-muted-foreground text-xs">
                   {formatBytes(healthData.details.memory_heap.used)} used
                 </p>
@@ -117,15 +117,15 @@ const DashboardOverview = ({
               <MemoryStickIcon className="text-muted-foreground size-5" />
               {healthLoading ? (
                 <Skeleton className="h-6 w-12" />
-              ) : healthData?.details?.memory_rss ? (
+              ) : (
                 <StatusBadge status={healthData.details.memory_rss.status} />
-              ) : null}
+              )}
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-1">
               <p className="text-sm font-medium">Memory RSS</p>
-              {healthData?.details?.memory_rss?.rss && (
+              {healthData.details.memory_rss.rss && (
                 <p className="text-muted-foreground text-xs">
                   {formatBytes(healthData.details.memory_rss.rss)} resident
                 </p>
@@ -140,15 +140,15 @@ const DashboardOverview = ({
               <HardDriveIcon className="text-muted-foreground size-5" />
               {healthLoading ? (
                 <Skeleton className="h-6 w-12" />
-              ) : healthData?.details?.disk_storage ? (
+              ) : (
                 <StatusBadge status={healthData.details.disk_storage.status} />
-              ) : null}
+              )}
             </div>
           </CardHeader>
           <CardContent>
             <div className="space-y-1">
               <p className="text-sm font-medium">Disk Storage</p>
-              {healthData?.details?.disk_storage?.percentage !== undefined && (
+              {healthData.details.disk_storage.percentage !== undefined && (
                 <p className="text-muted-foreground text-xs">
                   {formatPercentage(healthData.details.disk_storage.percentage)}{' '}
                   used

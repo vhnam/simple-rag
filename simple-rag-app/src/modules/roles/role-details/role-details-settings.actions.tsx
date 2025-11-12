@@ -2,11 +2,8 @@ import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import type {RoleSettingsFormSchema} from '@/schemas/role-form.schema';
-import {
-  
-  roleSettingsFormSchema
-} from '@/schemas/role-form.schema';
+import type { RoleSettingsFormSchema } from '@/schemas/role-form.schema';
+import { roleSettingsFormSchema } from '@/schemas/role-form.schema';
 import {
   useDeleteRoleMutation,
   useUpdateRoleMutation,
@@ -25,8 +22,8 @@ const useRoleDetailsSettingsFormActions = ({
   const { mutate: updateRole, isPending: isUpdating } = useUpdateRoleMutation();
   const { mutate: deleteRole, isPending: isDeleting } = useDeleteRoleMutation();
 
-  const handleDelete = (roleId: string) => {
-    deleteRole(roleId, {
+  const handleDelete = (id: string) => {
+    deleteRole(id, {
       onSuccess: () => {
         toast.success('Role deleted successfully');
         navigate({ to: '/dashboard/roles', replace: true });

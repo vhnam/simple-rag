@@ -1,5 +1,5 @@
 import { BookmarkIcon, LinkIcon } from 'lucide-react';
-import type { AskRecipeResponse,Dish } from '@/queries/rag/rag.types';
+import type { AskRecipeResponse, Dish } from '@/queries/rag/rag.types';
 import { Button } from '@/components/ui/button';
 import {
   Card,

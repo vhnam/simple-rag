@@ -2,12 +2,9 @@ import { useForm } from '@tanstack/react-form';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 import type { RolePermission } from '@/queries/roles/roles.types';
-import type {RolePermissionsFormSchema} from '@/schemas/role-form.schema';
+import type { RolePermissionsFormSchema } from '@/schemas/role-form.schema';
 import { useUpdateRoleMutation } from '@/queries/roles/roles.mutations';
-import {
-  
-  rolePermissionsFormSchema
-} from '@/schemas/role-form.schema';
+import { rolePermissionsFormSchema } from '@/schemas/role-form.schema';
 
 interface RoleDetailsPermissionsFormActionsProps {
   data: Array<RolePermission>;

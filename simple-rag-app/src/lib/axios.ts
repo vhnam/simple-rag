@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type {InternalAxiosRequestConfig} from 'axios';
+import type { InternalAxiosRequestConfig } from 'axios';
 
 class AuthInterceptor {
   private getTokenCallback: (() => Promise<string | null>) | null = null;

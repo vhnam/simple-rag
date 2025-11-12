@@ -1,4 +1,4 @@
-import { Link, useParams  } from '@tanstack/react-router';
+import { Link, useParams } from '@tanstack/react-router';
 import { ArrowLeftIcon } from 'lucide-react';
 import RoleDetailsSettings from './role-details-settings';
 import RoleDetailsPermissions from './role-details-permissions';

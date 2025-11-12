@@ -31,11 +31,11 @@ const DashboardRagService = ({
           </div>
           {ragLoading ? (
             <Skeleton className="h-6 w-16" />
-          ) : ragData ? (
+          ) : (
             <Badge variant={ragData.ready ? 'default' : 'secondary'}>
               {ragData.ready ? 'READY' : 'NOT READY'}
             </Badge>
-          ) : null}
+          )}
         </div>
         <CardDescription>
           Recipe retrieval and AI generation service
@@ -47,7 +47,7 @@ const DashboardRagService = ({
             <AlertCircleIcon className="h-4 w-4" />
             <span>Failed to fetch RAG status</span>
           </div>
-        ) : ragData ? (
+        ) : (
           <div className="space-y-4">
             <div className="bg-muted/50 flex items-center justify-between rounded-lg p-4">
               <div>
@@ -74,7 +74,7 @@ const DashboardRagService = ({
               )}
             </div>
           </div>
-        ) : null}
+        )}
       </CardContent>
     </Card>
   );

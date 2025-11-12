@@ -1,6 +1,6 @@
 import { Link, redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
-import type {User} from '@/queries/users';
+import type { User } from '@/queries/users';
 import DataTable from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

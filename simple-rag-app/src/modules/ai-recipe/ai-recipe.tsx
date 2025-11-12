@@ -20,12 +20,12 @@ const AIRecipe = () => {
           {recipeData && recipeData.status === 'success' && (
             <AIRecipeResults results={recipeData} />
           )}
-          {recipeData && recipeData.answer.error?.code && (
+          {recipeData?.answer.error?.code && (
             <Alert variant="destructive">
               <AlertCircleIcon />
               <AlertTitle>Unable to generate recipe</AlertTitle>
               <AlertDescription>
-                {recipeData.answer.error?.message}
+                {recipeData.answer.error.message}
               </AlertDescription>
             </Alert>
           )}

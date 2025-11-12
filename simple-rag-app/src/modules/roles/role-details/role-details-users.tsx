@@ -51,9 +51,7 @@ const RoleDetailsUsers = ({
             type="button"
             size="sm"
             disabled={isDisabled || id === row.original.id}
-            onClick={() =>
-              onRemoveUserFromRole(roleId, row.original.id)
-            }
+            onClick={() => onRemoveUserFromRole(roleId, row.original.id)}
           >
             Remove
           </Button>

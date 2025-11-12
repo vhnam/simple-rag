@@ -13,6 +13,16 @@ interface TableSkeletonProps {
   rows?: number;
 }
 
+const renderSkeletonRow = (rowIndex: number, columns: number) => (
+  <TableRow key={rowIndex}>
+    {Array.from({ length: columns }).map((_, colIndex) => (
+      <TableCell key={colIndex}>
+        <Skeleton className="h-4 w-full" />
+      </TableCell>
+    ))}
+  </TableRow>
+);
+
 const TableSkeleton = ({ columns, rows = 5 }: TableSkeletonProps) => {
   return (
     <div className="overflow-hidden rounded-md border">
@@ -27,15 +37,9 @@ const TableSkeleton = ({ columns, rows = 5 }: TableSkeletonProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
-            <TableRow key={rowIndex}>
-              {Array.from({ length: columns }).map((_, colIndex) => (
-                <TableCell key={colIndex}>
-                  <Skeleton className="h-4 w-full" />
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {Array.from({ length: rows }).map((_, rowIndex) =>
+            renderSkeletonRow(rowIndex, columns)
+          )}
         </TableBody>
       </Table>
 

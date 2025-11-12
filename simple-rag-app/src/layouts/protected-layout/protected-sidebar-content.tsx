@@ -1,13 +1,12 @@
 import {
   ActivityIcon,
   CircleUserRoundIcon,
-  
   NotepadTextIcon,
   ShieldCheckIcon,
-  UserRoundCogIcon
+  UserRoundCogIcon,
 } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
-import type {LucideIcon} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import {
   SidebarContent,
   SidebarGroup,

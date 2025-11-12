@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import type {User} from '@/queries/users';
-import {  useUsers } from '@/queries/users';
+import type { User } from '@/queries/users';
+import { useUsers } from '@/queries/users';
 import { Button } from '@/components/ui/button';
 import {
   DialogClose,
