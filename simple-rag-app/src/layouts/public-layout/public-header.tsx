@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+import PublicMenuUser from './public-menu-user';
 import Logo from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import {
@@ -7,8 +9,6 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { useAuthContext } from '@/integrations/auth/auth-provider';
-import { Link } from '@tanstack/react-router';
-import PublicMenuUser from './public-menu-user';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const menu = [

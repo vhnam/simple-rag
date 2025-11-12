@@ -1,12 +1,4 @@
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
   ActivityIcon,
   AlertCircleIcon,
   DatabaseIcon,
@@ -14,7 +6,15 @@ import {
   MemoryStickIcon,
 } from 'lucide-react';
 import StatusBadge from './dashboard-status-badge';
-import { type HealthCheckResponse } from '@/queries/health';
+import type {HealthCheckResponse} from '@/queries/health';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DashboardOverviewProps {
   healthData: HealthCheckResponse;

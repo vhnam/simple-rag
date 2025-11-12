@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import type { RolesRequest, RoleUsersRequest } from './roles.types';
 import { rolesKeys } from './roles.keys';
-import { getRole, getRoles, getRoleUsers } from './roles.apis';
+import { getRole, getRoleUsers, getRoles } from './roles.apis';
+import type { RoleUsersRequest, RolesRequest } from './roles.types';
 
 export const useRoles = (request: RolesRequest = { page: 1, limit: 10 }) => {
   return useQuery({

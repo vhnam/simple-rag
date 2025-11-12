@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export const NotFound = () => {
   return (
     <div className="flex min-h-[60vh] items-center justify-center p-4">
-      <Card className="max-w-md w-full text-center">
+      <Card className="w-full max-w-md text-center">
         <CardHeader>
           <CardTitle className="text-4xl font-bold">404</CardTitle>
         </CardHeader>
@@ -21,4 +21,3 @@ export const NotFound = () => {
     </div>
   );
 };
-

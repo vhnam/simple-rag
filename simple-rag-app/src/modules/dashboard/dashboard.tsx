@@ -1,9 +1,9 @@
-import { useHealthCheck } from '@/queries/health/health.queries';
 import { RefreshCwIcon } from 'lucide-react';
 import DashboardAdditionalInfo from './dashboard-additional-info';
-import { useRagStatus } from '@/queries/rag';
 import DashboardRagService from './dashboard-rag-service';
 import DashboardOverview from './dashboard-overview';
+import { useRagStatus } from '@/queries/rag';
+import { useHealthCheck } from '@/queries/health/health.queries';
 import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
 import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
 import { Button } from '@/components/ui/button';

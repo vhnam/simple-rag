@@ -1,5 +1,8 @@
-import { FormEvent, useMemo } from 'react';
+import { useMemo } from 'react';
 import useRoleDetailsSettingsFormActions from './role-details-settings.actions';
+import RoleDetailsDeleteDialog from './role-details-delete-dialog';
+import type { FormEvent} from 'react';
+import type {RoleSettingsFormSchema} from '@/schemas/role-form.schema';
 import {
   Field,
   FieldError,
@@ -11,8 +14,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { type RoleSettingsFormSchema } from '@/schemas/role-form.schema';
-import RoleDetailsDeleteDialog from './role-details-delete-dialog';
 import { Can } from '@/components/can';
 import { PERMISSIONS } from '@/constants/permissions.constants';
 

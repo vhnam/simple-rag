@@ -1,6 +1,6 @@
 import ProtectedSidebar from './protected-sidebar';
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import type { PropsWithChildren } from 'react';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 const ProtectedLayout = ({ children }: PropsWithChildren) => {
   return (

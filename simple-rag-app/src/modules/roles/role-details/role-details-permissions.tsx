@@ -1,13 +1,14 @@
+import {  useMemo } from 'react';
+import { useRoleDetailsPermissionsFormActions } from './role-details-permissions.actions';
+import type {FormEvent} from 'react';
+import type { GroupedPermission } from '@/queries/permissions/permissions.types';
+import type {RolePermission} from '@/queries/roles/roles.types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { useRoleDetailsPermissionsFormActions } from './role-details-permissions.actions';
-import { type RolePermission } from '@/queries/roles/roles.types';
-import { useMemo, type FormEvent } from 'react';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Spinner } from '@/components/ui/spinner';
-import { GroupedPermission } from '@/queries/permissions/permissions.types';
 import { capitalize } from '@/lib/utils';
 
 interface RoleDetailsPermissionsProps {

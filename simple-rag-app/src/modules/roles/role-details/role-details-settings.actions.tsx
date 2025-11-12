@@ -1,15 +1,16 @@
-import {
-  useDeleteRoleMutation,
-  useUpdateRoleMutation,
-} from '@/queries/roles/roles.mutations';
-import {
-  type RoleSettingsFormSchema,
-  roleSettingsFormSchema,
-} from '@/schemas/role-form.schema';
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import type {RoleSettingsFormSchema} from '@/schemas/role-form.schema';
+import {
+  
+  roleSettingsFormSchema
+} from '@/schemas/role-form.schema';
+import {
+  useDeleteRoleMutation,
+  useUpdateRoleMutation,
+} from '@/queries/roles/roles.mutations';
 
 interface RoleDetailsSettingsFormActionsProps {
   data: RoleSettingsFormSchema;
@@ -43,7 +44,7 @@ const useRoleDetailsSettingsFormActions = ({
   const handleSubmit = ({ value }: { value: RoleSettingsFormSchema }) => {
     updateRole(
       {
-        id: roleId as string,
+        id: roleId,
         data: {
           name: value.name,
           description: value.description,

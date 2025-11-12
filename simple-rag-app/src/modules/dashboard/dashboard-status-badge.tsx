@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge';
 import { CheckCircle2Icon, XCircleIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface StatusBadgeProps {
   status: 'up' | 'down' | 'ok' | 'error' | 'shutting_down' | 'unknown';

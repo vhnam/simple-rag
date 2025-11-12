@@ -1,4 +1,4 @@
-import { Role } from '@/queries/roles/roles.types';
+import type { Role } from '@/queries/roles/roles.types';
 
 export interface SyncUserRequest {
   sub: string;

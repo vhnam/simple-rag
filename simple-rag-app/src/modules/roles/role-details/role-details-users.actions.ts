@@ -1,9 +1,9 @@
+import { AxiosError } from 'axios';
+import { toast } from 'sonner';
 import {
   useAssignUsersToRoleMutation,
   useRemoveUserFromRoleMutation,
 } from '@/queries/roles';
-import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 
 export const useRoleDetailsUsersActions = () => {
   const { mutate: removeUserFromRole, isPending: isRemovingUser } =
@@ -29,7 +29,7 @@ export const useRoleDetailsUsersActions = () => {
     );
   };
 
-  const handleAssignUsers = (roleId: string, userIds: string[]) => {
+  const handleAssignUsers = (roleId: string, userIds: Array<string>) => {
     assignUsers(
       { roleId, userIds },
       {

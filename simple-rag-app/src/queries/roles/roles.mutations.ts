@@ -6,13 +6,13 @@ import {
   removeUserFromRole,
   updateRole,
 } from './roles.apis';
+import { rolesKeys } from './roles.keys';
 import type {
   AssignUsersToRoleRequest,
   CreateRoleRequest,
   RemoveUserFromRoleRequest,
   UpdateRoleRequest,
 } from './roles.types';
-import { rolesKeys } from './roles.keys';
 
 export const useCreateRoleMutation = () => {
   const queryClient = useQueryClient();

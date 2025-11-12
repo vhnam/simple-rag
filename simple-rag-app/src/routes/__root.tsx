@@ -3,12 +3,12 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router';
+import { Toaster } from 'sonner';
 import type { PropsWithChildren } from 'react';
 import type { QueryClient } from '@tanstack/react-query';
 import appCss from '@/styles.css?url';
 import { Layout } from '@/layouts';
 import { NotFound } from '@/components/not-found';
-import { Toaster } from 'sonner';
 
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/600.css';

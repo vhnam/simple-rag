@@ -1,13 +1,13 @@
-import { apiClient } from '@/lib/axios';
-import {
+import type {
   CreateRoleRequest,
   Role,
-  RolesRequest,
-  RolesResponse,
   RoleUsersRequest,
   RoleUsersResponse,
+  RolesRequest,
+  RolesResponse,
   UpdateRoleRequest,
 } from './roles.types';
+import { apiClient } from '@/lib/axios';
 
 export const getRoles = async (request: RolesRequest) => {
   const response = await apiClient.get<RolesResponse>('/roles', {
@@ -53,7 +53,7 @@ export const removeUserFromRole = async (roleId: string, userId: string) => {
   return response.data;
 };
 
-export const assignUsersToRole = async (roleId: string, userIds: string[]) => {
+export const assignUsersToRole = async (roleId: string, userIds: Array<string>) => {
   const response = await apiClient.post<Role>(`/roles/${roleId}/assign-users`, {
     userIds,
   });

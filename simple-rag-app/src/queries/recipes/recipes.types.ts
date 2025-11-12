@@ -12,7 +12,7 @@ export type RecipesRequest = {
 };
 
 export type RecipesResponse = {
-  data: Recipe[];
+  data: Array<Recipe>;
   total: number;
   page: number;
   limit: number;

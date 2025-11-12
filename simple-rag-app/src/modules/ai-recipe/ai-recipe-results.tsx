@@ -1,3 +1,5 @@
+import { BookmarkIcon, LinkIcon } from 'lucide-react';
+import type { AskRecipeResponse,Dish } from '@/queries/rag/rag.types';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,9 +14,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Dish } from '@/queries/rag/rag.types';
-import { type AskRecipeResponse } from '@/queries/rag/rag.types';
-import { BookmarkIcon, LinkIcon } from 'lucide-react';
 
 interface AIRecipeResultsProps {
   results: AskRecipeResponse;

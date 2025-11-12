@@ -1,20 +1,20 @@
+import { Link, redirect } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
+import type {User} from '@/queries/users';
 import DataTable from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { formatDate } from '@/lib/date';
-import { type User } from '@/queries/users';
-import { Link, redirect } from '@tanstack/react-router';
-import { ColumnDef } from '@tanstack/react-table';
 
 interface UsersTableProps {
-  data: User[];
+  data: Array<User>;
   total: number;
   page: number;
   limit: number;
   totalPages: number;
 }
 
-const columns: ColumnDef<User>[] = [
+const columns: Array<ColumnDef<User>> = [
   {
     accessorKey: 'name',
     header: 'Name',

@@ -1,12 +1,14 @@
 'use client';
 
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 
+import TablePagination from './table-pagination';
+import type {
+  ColumnDef} from '@tanstack/react-table';
 import {
   Table,
   TableBody,
@@ -15,11 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import TablePagination from './table-pagination';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: Array<ColumnDef<TData, TValue>>;
+  data: Array<TData>;
   totalPages: number;
   onPageChange: (page: number) => void;
 }

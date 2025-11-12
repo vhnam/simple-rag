@@ -1,11 +1,11 @@
-import { useCreateRecipeMutation } from '@/queries/recipes';
-import { type AskRecipeResponse } from '@/queries/rag/rag.types';
-import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
-import { aiRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
 import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import type { AskRecipeResponse } from '@/queries/rag/rag.types';
+import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+import { aiRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+import { useAskRecipeMutation } from '@/queries/rag';
 
 const defaultValues: AIRecipeFormSchema = {
   ingredients: '',
@@ -14,11 +14,11 @@ const defaultValues: AIRecipeFormSchema = {
 const useAIRecipeFormActions = () => {
   const [recipeData, setRecipeData] = useState<AskRecipeResponse>();
 
-  const { mutate: createRecipe, isPending: isCreatingRecipe } =
-    useCreateRecipeMutation();
+  const { mutate: askRecipe, isPending: isCreatingRecipe } =
+    useAskRecipeMutation();
 
   const handleSubmit = ({ value }: { value: AIRecipeFormSchema }) => {
-    createRecipe(value.ingredients, {
+    askRecipe(value.ingredients, {
       onSuccess: (data: AskRecipeResponse) => {
         setRecipeData(data);
 

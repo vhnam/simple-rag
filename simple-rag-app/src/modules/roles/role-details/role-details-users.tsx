@@ -1,18 +1,18 @@
-import DataTable from '@/components/data-table';
-import { Button } from '@/components/ui/button';
-import { User } from '@/queries/users';
-import { ColumnDef } from '@tanstack/react-table';
 import { redirect } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
-import { useAuthStore } from '@/stores/auth.store';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import RoleDetailsAssignUserDialog from './role-details-assign-user-dialog';
 import { useRoleDetailsUsersActions } from './role-details-users.actions';
+import type { ColumnDef } from '@tanstack/react-table';
+import type { User } from '@/queries/users';
+import DataTable from '@/components/data-table';
+import { Button } from '@/components/ui/button';
+import { useAuthStore } from '@/stores/auth.store';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 
 interface RoleDetailsUsersProps {
   roleId: string;
   roleName: string;
-  roleUsers: User[];
+  roleUsers: Array<User>;
   totalPages: number;
 }
 
@@ -32,7 +32,7 @@ const RoleDetailsUsers = ({
     return roleName === 'admin' || isRemovingUser;
   }, [roleName, isRemovingUser]);
 
-  const columns: ColumnDef<User>[] = [
+  const columns: Array<ColumnDef<User>> = [
     {
       accessorKey: 'name',
       header: 'Name',
@@ -52,7 +52,7 @@ const RoleDetailsUsers = ({
             size="sm"
             disabled={isDisabled || id === row.original.id}
             onClick={() =>
-              onRemoveUserFromRole(roleId, row.original.id as string)
+              onRemoveUserFromRole(roleId, row.original.id)
             }
           >
             Remove
@@ -62,7 +62,7 @@ const RoleDetailsUsers = ({
     },
   ];
 
-  const handleAssignUsers = (userIds: string[]) => {
+  const handleAssignUsers = (userIds: Array<string>) => {
     onAssignUsers(roleId, userIds);
     setIsDialogOpen(false);
   };

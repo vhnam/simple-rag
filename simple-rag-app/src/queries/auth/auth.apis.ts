@@ -1,5 +1,5 @@
-import { apiClient } from '@/lib/axios';
 import type { SyncUserRequest, SyncUserResponse } from './auth.types';
+import { apiClient } from '@/lib/axios';
 
 export const syncUser = async ({
   accessToken,

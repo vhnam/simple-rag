@@ -1,11 +1,11 @@
-import { apiClient } from '@/lib/axios';
-import {
-  UsersRequest,
-  UsersResponse,
+import type {
   ProfileResponse,
   UpdateProfileRequest,
   UpdateProfileResponse,
+  UsersRequest,
+  UsersResponse,
 } from './users.types';
+import { apiClient } from '@/lib/axios';
 
 export const getUsers = async (request: UsersRequest) => {
   const response = await apiClient.get<UsersResponse>('/users', {

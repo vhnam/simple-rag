@@ -1,9 +1,9 @@
-import {
+import type { Permission } from '../permissions/permissions.types';
+import type { User } from '../users/users.types';
+import type {
   RolePermissionsFormSchema,
   RoleSettingsFormSchema,
 } from '@/schemas/role-form.schema';
-import { Permission } from '../permissions/permissions.types';
-import { User } from '../users/users.types';
 
 export type RolePermission = {
   id: string;
@@ -66,5 +66,5 @@ export type RemoveUserFromRoleRequest = {
 
 export type AssignUsersToRoleRequest = {
   roleId: string;
-  userIds: string[];
+  userIds: Array<string>;
 };

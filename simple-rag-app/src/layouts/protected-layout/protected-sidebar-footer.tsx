@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+import { ChevronsUpDownIcon, LogOutIcon, SettingsIcon } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,13 +8,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Link } from '@tanstack/react-router';
-import { LogOutIcon, SettingsIcon, ChevronsUpDownIcon } from 'lucide-react';
 import {
   SidebarFooter,
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAuthContext } from '@/integrations/auth/auth-provider';
 import { useAuthStore } from '@/stores/auth.store';

@@ -1,20 +1,20 @@
+import { Link, redirect } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
+import type { Recipe } from '@/queries/recipes/recipes.types';
 import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import { PERMISSIONS } from '@/constants/permissions.constants';
-import { Recipe } from '@/queries/recipes/recipes.types';
-import { Link, redirect } from '@tanstack/react-router';
-import { ColumnDef } from '@tanstack/react-table';
 
 interface RecipesTableProps {
-  data: Recipe[];
+  data: Array<Recipe>;
   total: number;
   page: number;
   limit: number;
   totalPages: number;
 }
 
-const columns: ColumnDef<Recipe>[] = [
+const columns: Array<ColumnDef<Recipe>> = [
   {
     accessorKey: 'name',
     header: 'Name',

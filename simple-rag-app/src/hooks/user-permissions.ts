@@ -4,7 +4,7 @@ export const usePermissions = () => {
   const { permissions, role } = useAuthStore();
 
   const hasPermission = (key: string) => permissions.includes(key);
-  const hasAny = (keys: string[]) =>
+  const hasAny = (keys: Array<string>) =>
     keys.some((key) => permissions.includes(key));
   const hasRole = (role: string) => role.includes(role);
 

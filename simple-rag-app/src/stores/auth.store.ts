@@ -1,6 +1,6 @@
-import { SyncUserResponse } from '@/queries/auth/auth.types';
 import { create, useStore } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { createJSONStorage, persist } from 'zustand/middleware';
+import type { SyncUserResponse } from '@/queries/auth/auth.types';
 
 const initialState: SyncUserResponse = {
   id: '',

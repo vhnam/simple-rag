@@ -1,4 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { LogOutIcon, SettingsIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import type { User } from '@auth0/auth0-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,9 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOutIcon, SettingsIcon } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
-import { User } from '@auth0/auth0-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface PublicMenuUserProps {
   user: User;

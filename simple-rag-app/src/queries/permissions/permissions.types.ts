@@ -6,7 +6,7 @@ export type Permission = {
 
 export type GroupedPermission = {
   resource: string;
-  permissions: Permission[];
+  permissions: Array<Permission>;
 };
 
-export type PermissionsResponse = GroupedPermission[];
+export type PermissionsResponse = Array<GroupedPermission>;

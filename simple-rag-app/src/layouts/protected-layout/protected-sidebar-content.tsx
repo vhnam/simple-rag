@@ -1,4 +1,14 @@
 import {
+  ActivityIcon,
+  CircleUserRoundIcon,
+  
+  NotepadTextIcon,
+  ShieldCheckIcon,
+  UserRoundCogIcon
+} from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import type {LucideIcon} from 'lucide-react';
+import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -8,24 +18,15 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import {
-  ActivityIcon,
-  NotepadTextIcon,
-  CircleUserRoundIcon,
-  ShieldCheckIcon,
-  UserRoundCogIcon,
-  type LucideIcon,
-} from 'lucide-react';
-import { Link } from '@tanstack/react-router';
 
 interface SidebarItem {
   title: string;
   url: string;
   icon: LucideIcon;
-  items?: SidebarItem[];
+  items?: Array<SidebarItem>;
 }
 
-const items: SidebarItem[] = [
+const items: Array<SidebarItem> = [
   {
     title: 'Dashboard',
     url: '/dashboard',

@@ -1,5 +1,5 @@
+import type { PropsWithChildren, ReactNode } from 'react';
 import { usePermissions } from '@/hooks/user-permissions';
-import type { ReactNode, PropsWithChildren } from 'react';
 
 interface CanProps extends PropsWithChildren {
   permission?: string;

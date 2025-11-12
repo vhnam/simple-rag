@@ -1,21 +1,21 @@
+import { Link, redirect } from '@tanstack/react-router';
+import type { ColumnDef } from '@tanstack/react-table';
+import type {Role} from '@/queries/roles';
 import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import { PERMISSIONS } from '@/constants/permissions.constants';
 import { formatDate } from '@/lib/date';
-import { type Role } from '@/queries/roles';
-import { Link, redirect } from '@tanstack/react-router';
-import { ColumnDef } from '@tanstack/react-table';
 
 interface RolesTableProps {
-  data: Role[];
+  data: Array<Role>;
   total: number;
   page: number;
   limit: number;
   totalPages: number;
 }
 
-const columns: ColumnDef<Role>[] = [
+const columns: Array<ColumnDef<Role>> = [
   {
     accessorKey: 'name',
     header: 'Name',

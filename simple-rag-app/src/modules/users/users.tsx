@@ -1,10 +1,10 @@
+import { AlertCircleIcon } from 'lucide-react';
+import UsersTable from './users-table';
 import TableSkeleton from '@/components/table-skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ProtectedLayoutHeader } from '@/layouts/protected-layout';
 import ProtectedLayoutContent from '@/layouts/protected-layout/protected-layout-content';
 import { useUsers } from '@/queries/users';
-import { AlertCircleIcon } from 'lucide-react';
-import UsersTable from './users-table';
 
 const Users = () => {
   const { data, isLoading, error } = useUsers();

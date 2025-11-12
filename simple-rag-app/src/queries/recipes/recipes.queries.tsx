@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { recipesKeys } from './recipes.keys';
 import { getRecipes } from './recipes.apis';
-import { RecipesRequest } from './recipes.types';
+import type { RecipesRequest } from './recipes.types';
 
 export const useRecipes = (
   request: RecipesRequest = { page: 1, limit: 10 }

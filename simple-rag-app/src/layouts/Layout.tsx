@@ -1,7 +1,7 @@
-import { useAuthContext } from '@/integrations/auth/auth-provider';
 import { PublicLayout } from './public-layout';
-import type { PropsWithChildren } from 'react';
 import { ProtectedLayout } from './protected-layout';
+import type { PropsWithChildren } from 'react';
+import { useAuthContext } from '@/integrations/auth/auth-provider';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuthStore } from '@/stores/auth.store';
 

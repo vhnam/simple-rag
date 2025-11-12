@@ -1,9 +1,13 @@
+import crypto from 'node:crypto';
+import { useMemo } from 'react';
+import { AvatarImage } from '@radix-ui/react-avatar';
+import useProfileActions from './profile.actions';
+import type { FormEvent} from 'react';
 import { Button } from '@/components/ui/button';
 import {
   ProtectedLayoutContent,
   ProtectedLayoutHeader,
 } from '@/layouts/protected-layout';
-import useProfileActions from './profile.actions';
 import {
   Card,
   CardContent,
@@ -11,7 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { FormEvent, useMemo } from 'react';
 import {
   Field,
   FieldError,
@@ -28,11 +31,8 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { useMyProfile } from '@/queries/users';
-import { Avatar } from '@/components/ui/avatar';
-import { AvatarImage } from '@radix-ui/react-avatar';
-import { AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback  } from '@/components/ui/avatar';
 import { useAuthContext } from '@/integrations/auth/auth-provider';
-import crypto from 'crypto';
 
 const Profile = () => {
   const { user } = useAuthContext();

@@ -1,16 +1,15 @@
-import { Button } from '@/components/ui/button';
-import {
-  ProtectedLayoutHeader,
-  ProtectedLayoutContent,
-} from '@/layouts/protected-layout';
-import { useRole, useRoleUsers } from '@/queries/roles';
-import { useParams } from '@tanstack/react-router';
+import { Link, useParams  } from '@tanstack/react-router';
 import { ArrowLeftIcon } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import RoleDetailsSettings from './role-details-settings';
 import RoleDetailsPermissions from './role-details-permissions';
 import RoleDetailsUsers from './role-details-users';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useRole, useRoleUsers } from '@/queries/roles';
+import {
+  ProtectedLayoutContent,
+  ProtectedLayoutHeader,
+} from '@/layouts/protected-layout';
+import { Button } from '@/components/ui/button';
 import { usePermissions } from '@/queries/permissions';
 
 const RoleDetails = () => {
@@ -69,7 +68,7 @@ const RoleDetails = () => {
             </TabsList>
             <TabsContent value="settings">
               <RoleDetailsSettings
-                roleId={roleId as string}
+                roleId={roleId}
                 data={{
                   name: roleData.name,
                   description: roleData.description,
@@ -78,7 +77,7 @@ const RoleDetails = () => {
             </TabsContent>
             <TabsContent value="permissions">
               <RoleDetailsPermissions
-                roleId={roleId as string}
+                roleId={roleId}
                 roleName={roleData.name}
                 rolePermissions={roleData.rolePermissions}
                 groupedPermissions={groupedPermissionsData}
@@ -86,7 +85,7 @@ const RoleDetails = () => {
             </TabsContent>
             <TabsContent value="users">
               <RoleDetailsUsers
-                roleId={roleId as string}
+                roleId={roleId}
                 roleName={roleData.name}
                 roleUsers={roleUsersData.data}
                 totalPages={roleUsersData.totalPages}

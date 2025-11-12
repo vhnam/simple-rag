@@ -1,4 +1,4 @@
-import { UserRole } from '../auth/auth.types';
+import type { UserRole } from '../auth/auth.types';
 
 export type User = {
   id: string;
@@ -25,7 +25,7 @@ export type UsersRequest = {
 };
 
 export type UsersResponse = {
-  data: User[];
+  data: Array<User>;
   total: number;
   page: number;
   limit: number;

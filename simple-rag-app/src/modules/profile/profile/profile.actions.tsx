@@ -1,13 +1,11 @@
-import { useUpdateMyProfile } from '@/queries/users';
 import { useForm } from '@tanstack/react-form';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
-import {
-  type ProfileFormSchema,
-  profileFormSchema,
-} from '@/schemas/profile-form.schema';
-import { type ProfileResponse } from '@/queries/users/users.types';
 import { useEffect } from 'react';
+import type { ProfileFormSchema } from '@/schemas/profile-form.schema';
+import type { ProfileResponse } from '@/queries/users/users.types';
+import { profileFormSchema } from '@/schemas/profile-form.schema';
+import { useUpdateMyProfile } from '@/queries/users';
 
 interface ProfileActionsProps {
   data?: ProfileResponse;

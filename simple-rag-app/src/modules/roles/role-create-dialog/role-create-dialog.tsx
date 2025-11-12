@@ -1,3 +1,7 @@
+import { PlusIcon } from 'lucide-react';
+import { useState } from 'react';
+import useRoleCreateDialogActions from './role-create-dialog.actions';
+import type { FormEvent} from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -9,9 +13,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { PlusIcon } from 'lucide-react';
-import useRoleCreateDialogActions from './role-create-dialog.actions';
-import { FormEvent, useState } from 'react';
 import {
   Field,
   FieldError,
@@ -46,7 +47,7 @@ const RoleCreateDialog = () => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit} className='space-y-6'>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <DialogHeader>
             <DialogTitle>Create role</DialogTitle>
             <DialogDescription>
