@@ -1,0 +1,334 @@
+# Simple RAG Project - Cursor Rules
+
+## Project Overview
+
+This is a full-stack Retrieval-Augmented Generation (RAG) application using:
+
+- Backend: NestJS 11 + LangChain + PostgreSQL with pgvector
+- Frontend: React 19 + TanStack Router + Tailwind CSS + Shadcn UI
+- Auth: Auth0 with JWT
+- Database: PostgreSQL with pgvector extension
+- Monorepo: pnpm workspaces
+
+## Code Style and Quality
+
+### General Principles
+
+- Write clean, maintainable, and self-documenting code
+- Follow SOLID principles and design patterns
+- Prefer composition over inheritance
+- Keep functions small and focused (single responsibility)
+- Use descriptive variable and function names
+- Add comments only when the code cannot be self-explanatory
+
+### TypeScript
+
+- Use strict TypeScript - avoid `any` types (this is critical technical debt to address)
+- Prefer interfaces over types for object shapes
+- Use type inference where possible
+- Always define return types for functions
+- Use const assertions where appropriate
+- Enable strict mode in tsconfig.json (currently disabled, needs gradual migration)
+
+### Naming Conventions
+
+- Use PascalCase for classes, interfaces, types, and components
+- Use camelCase for variables, functions, and methods
+- Use UPPER_SNAKE_CASE for constants
+- Use kebab-case for file names (except React components)
+- Prefix interfaces with descriptive nouns (e.g., `User`, not `IUser`)
+- Prefix boolean variables with is/has/should (e.g., `isActive`, `hasPermission`)
+- Never use single-character variable names (except in very short loops where context is obvious, like `i`, `j` for array indices)
+- Use descriptive names that reveal intent (e.g., `userId` not `id`, `recipeList` not `list`, `totalCount` not `count`)
+- Avoid abbreviations unless they are well-known (e.g., `url`, `api`, `dto` are acceptable)
+- Use meaningful names for function parameters (e.g., `getUserById(userId: string)` not `getUserById(id: string)`)
+
+## Backend (NestJS)
+
+### Architecture
+
+- Follow NestJS module pattern - keep modules cohesive
+- Use dependency injection for all services
+- Implement DTOs with Zod validation for all endpoints
+- Use TypeORM entities for database models
+- Keep controllers thin - business logic belongs in services
+- Use proper HTTP status codes and exceptions
+
+### Services
+
+- Services should contain business logic
+- Use transactions for multi-step database operations
+- Handle errors gracefully with custom exceptions
+- Log important operations with Winston logger (avoid console.log)
+- Keep services testable and mockable
+
+### Database
+
+- Use TypeORM query builder or repositories (avoid raw SQL where possible)
+- Use transactions for operations that modify multiple tables
+- Use parameterized queries to prevent SQL injection
+- Add proper indexes for performance
+- Use migrations for schema changes (migrate to TypeORM migrations from custom MigrationService)
+
+### Security
+
+- Validate all inputs with Zod schemas
+- Use JWT authentication with Auth0
+- Implement RBAC with @Permissions decorator
+- Sanitize user inputs to prevent XSS and injection attacks
+- Use rate limiting for expensive operations (like RAG queries)
+- Never log sensitive information (tokens, passwords, API keys)
+
+### Error Handling
+
+- Use NestJS built-in exceptions (BadRequestException, NotFoundException, etc.)
+- Create custom exception classes for domain-specific errors
+- Always catch and handle errors in services
+- Return meaningful error messages to clients
+- Log errors with appropriate severity levels
+
+### Testing
+
+- Write unit tests for all services and complex logic
+- Write integration tests for controllers and database operations
+- Use mocking for external dependencies
+- Aim for meaningful test coverage (not just "should be defined")
+- Test error paths and edge cases
+
+## Frontend (React + TanStack)
+
+### Components
+
+- Use functional components with hooks
+- Keep components small and focused
+- Use proper TypeScript types (avoid `any`)
+- Extract reusable logic into custom hooks
+- Use Shadcn UI components for consistent UI
+- Prefer composition over prop drilling
+
+### State Management
+
+- Use TanStack Query for server state
+- Use Zustand for client-side global state
+- Keep state as local as possible
+- Use React Context sparingly
+
+### Routing
+
+- Use TanStack Router for type-safe routing
+- Define routes in the routes directory
+- Use route loaders for data fetching
+- Implement proper loading and error states
+
+### Data Fetching
+
+- Use TanStack Query hooks (useQuery, useMutation)
+- Handle loading, error, and success states
+- Implement proper error boundaries
+- Use optimistic updates where appropriate
+- Cache data appropriately
+
+### Styling
+
+- Use Tailwind CSS utility classes
+- Follow mobile-first responsive design
+- Use CSS variables for theming
+- Keep styles consistent with design system
+- Use Shadcn UI component variants
+
+### Forms
+
+- Use TanStack Form for form management
+- Validate with Zod schemas
+- Show clear error messages
+- Provide loading states for submissions
+- Handle API errors gracefully
+
+### Performance
+
+- Use React.memo for expensive components
+- Implement virtualization for long lists
+- Lazy load routes and components
+- Optimize images and assets
+- Avoid unnecessary re-renders
+
+## API Design
+
+### REST Endpoints
+
+- Use RESTful conventions (GET, POST, PUT, DELETE)
+- Use plural nouns for resources (e.g., `/users`, `/recipes`)
+- Use proper HTTP status codes
+- Implement pagination for list endpoints
+- Use query parameters for filtering and sorting
+
+### Request/Response
+
+- Validate all request bodies with Zod DTOs
+- Return consistent response formats
+- Include proper error messages
+- Use camelCase for JSON keys
+- Document endpoints with JSDoc comments (add Swagger/OpenAPI)
+
+### Authentication
+
+- Protect endpoints with @UseGuards(JwtAuthGuard)
+- Implement RBAC with @Permissions decorator
+- Validate JWT tokens properly
+- Handle expired tokens gracefully
+- Use @CurrentUser decorator for user context
+
+## Git Workflow
+
+### Commits
+
+- Write clear, descriptive commit messages
+- Use conventional commits format (feat, fix, chore, docs, etc.)
+- Keep commits atomic and focused
+- Reference issue numbers where applicable
+
+### Branches
+
+- Use feature branches for new development
+- Use descriptive branch names (e.g., `feature/user-management`, `fix/auth-bug`)
+- Keep branches short-lived
+- Rebase on main before merging
+
+### Code Review
+
+- Request reviews for all changes
+- Address review comments promptly
+- Keep PRs small and focused
+- Include tests with code changes
+- Update documentation as needed
+
+## Documentation
+
+### Code Documentation
+
+- Add JSDoc comments for public APIs
+- Document complex algorithms and business logic
+- Keep documentation up-to-date with code changes
+- Document environment variables and configuration
+- Add README files for new modules
+
+### API Documentation
+
+- Add Swagger/OpenAPI documentation (currently missing)
+- Document request/response schemas
+- Include example requests and responses
+- Document authentication requirements
+- Document rate limiting and quotas
+
+## Environment and Configuration
+
+### Environment Variables
+
+- Never commit sensitive data (.env files)
+- Use Zod schemas for environment validation (env.shema.ts - fix typo)
+- Document required environment variables in README
+- Use different configs for dev/staging/prod
+- Use .env.example for reference
+
+## Technical Debt Priority
+
+When making changes, prioritize addressing these technical debt items:
+
+1. **High Priority**
+
+   - Replace `any` types with proper TypeScript types
+   - Enable strict mode in TypeScript configuration
+   - Replace console.log with proper Winston logging
+   - Add comprehensive test coverage
+   - Standardize error handling patterns
+
+2. **Medium Priority**
+
+   - Migrate to TypeORM migrations from custom MigrationService
+   - Standardize database query patterns (prefer TypeORM over raw SQL)
+   - Add caching layer (Redis) for permissions and frequently accessed data
+   - Add Swagger/OpenAPI documentation
+   - Use transactions consistently for multi-step operations
+
+3. **Low Priority**
+   - Fix filename typo: env.shema.ts � env.schema.ts
+   - Remove eslint-disable comments after fixing type issues
+   - Add architecture decision records (ADRs)
+   - Improve inline documentation
+
+## Security Guidelines
+
+- Never expose sensitive data in API responses
+- Validate and sanitize all user inputs
+- Use parameterized queries to prevent SQL injection
+- Implement proper CORS configuration
+- Use rate limiting for expensive operations
+- Keep dependencies up-to-date
+- Use environment variables for secrets
+- Implement proper session management
+- Log security events for monitoring
+
+## Performance Guidelines
+
+- Use database indexes for frequently queried fields
+- Implement pagination for large datasets
+- Use lazy loading and code splitting
+- Optimize images and assets
+- Use caching for frequently accessed data
+- Monitor and optimize slow queries
+- Use connection pooling for databases
+- Implement proper error handling to prevent cascading failures
+
+## Accessibility
+
+- Use semantic HTML elements
+- Add proper ARIA labels
+- Ensure keyboard navigation works
+- Use sufficient color contrast
+- Add alt text for images
+- Support screen readers
+- Test with accessibility tools
+
+## Monitoring and Logging
+
+- Use Winston for structured logging
+- Log important events and errors
+- Include request IDs for tracing
+- Monitor application health with /health endpoints
+- Track API performance metrics
+- Set up alerts for critical errors
+- Use appropriate log levels (error, warn, info, debug)
+
+## Dependencies
+
+- Keep dependencies up-to-date
+- Review security advisories regularly
+- Avoid unnecessary dependencies
+- Use exact versions in package.json for production
+- Document why each major dependency is needed
+
+## When Adding New Features
+
+1. Plan the architecture and data models
+2. Write tests first (TDD where appropriate)
+3. Implement with proper error handling
+4. Add proper TypeScript types (no `any`)
+5. Add logging for important operations
+6. Update documentation
+7. Add API documentation (Swagger)
+8. Test edge cases and error scenarios
+9. Perform security review
+10. Update relevant README sections
+
+## AI Assistant Guidelines
+
+When using AI assistants (like Cursor AI):
+
+- Request proper TypeScript types, not `any`
+- Ask for error handling and validation
+- Request tests along with implementation
+- Verify security implications
+- Request documentation updates
+- Ask about performance considerations
+- Ensure accessibility is considered
+- Follow existing patterns in the codebase

@@ -6,6 +6,8 @@ import {
   MemoryStickIcon,
 } from 'lucide-react';
 
+import { get } from '@/lib/utils';
+
 import type { HealthCheckResponse } from '@/queries/health';
 
 import {
@@ -27,10 +29,14 @@ interface DashboardOverviewProps {
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+  const bytesPerKilobyte = 1024;
+  const sizeUnits = ['Bytes', 'KB', 'MB', 'GB'];
+  const unitIndex = Math.floor(Math.log(bytes) / Math.log(bytesPerKilobyte));
+  return (
+    Math.round((bytes / Math.pow(bytesPerKilobyte, unitIndex)) * 100) / 100 +
+    ' ' +
+    sizeUnits[unitIndex]
+  );
 };
 
 const formatPercentage = (value: number): string => {
@@ -105,7 +111,7 @@ const DashboardOverview = ({
           <CardContent>
             <div className="space-y-1">
               <p className="text-sm font-medium">Memory Heap</p>
-              {healthData.details.memory_heap.used && (
+              {get(healthData, 'details.memory_heap.used') && (
                 <p className="text-muted-foreground text-xs">
                   {formatBytes(healthData.details.memory_heap.used)} used
                 </p>
@@ -128,7 +134,7 @@ const DashboardOverview = ({
           <CardContent>
             <div className="space-y-1">
               <p className="text-sm font-medium">Memory RSS</p>
-              {healthData.details.memory_rss.rss && (
+              {get(healthData, 'details.memory_rss.rss') && (
                 <p className="text-muted-foreground text-xs">
                   {formatBytes(healthData.details.memory_rss.rss)} resident
                 </p>
@@ -151,7 +157,8 @@ const DashboardOverview = ({
           <CardContent>
             <div className="space-y-1">
               <p className="text-sm font-medium">Disk Storage</p>
-              {healthData.details.disk_storage.percentage !== undefined && (
+              {get(healthData, 'details.disk_storage.percentage') !==
+                undefined && (
                 <p className="text-muted-foreground text-xs">
                   {formatPercentage(healthData.details.disk_storage.percentage)}{' '}
                   used

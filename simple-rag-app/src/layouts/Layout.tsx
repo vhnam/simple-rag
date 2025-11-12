@@ -21,8 +21,7 @@ const Layout = ({ children }: PropsWithChildren) => {
     );
   }
 
-  // return isAuthenticated && role.includes('admin') ? (
-  return isAuthenticated ? (
+  return isAuthenticated && role.includes('admin') ? (
     <ProtectedLayout>{children}</ProtectedLayout>
   ) : (
     <PublicLayout>{children}</PublicLayout>
