@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+
 import {
   ActivityIcon,
   CircleUserRoundIcon,
@@ -5,8 +7,8 @@ import {
   ShieldCheckIcon,
   UserRoundCogIcon,
 } from 'lucide-react';
-import { Link } from '@tanstack/react-router';
 import type { LucideIcon } from 'lucide-react';
+
 import {
   SidebarContent,
   SidebarGroup,

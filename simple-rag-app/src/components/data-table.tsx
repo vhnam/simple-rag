@@ -5,8 +5,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import TablePagination from './table-pagination';
 import type { ColumnDef } from '@tanstack/react-table';
+
 import {
   Table,
   TableBody,
@@ -15,6 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
+import TablePagination from './table-pagination';
 
 interface DataTableProps<TData, TValue> {
   columns: Array<ColumnDef<TData, TValue>>;

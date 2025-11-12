@@ -1,11 +1,12 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { PropsWithChildren } from 'react';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 interface ReactQueryContext extends PropsWithChildren {
   queryClient: QueryClient;
 }
 
-export function getContext() {
+export const getContext = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -16,10 +17,10 @@ export function getContext() {
   return {
     queryClient,
   };
-}
+};
 
-export function Provider({ children, queryClient }: ReactQueryContext) {
+export const QueryProvider = ({ children, queryClient }: ReactQueryContext) => {
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
-}
+};

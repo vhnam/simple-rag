@@ -1,7 +1,9 @@
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
 import { createContext, useContext, useEffect } from 'react';
-import type { User } from '@auth0/auth0-react';
 import type { PropsWithChildren } from 'react';
+
+import { Auth0Provider, useAuth0 } from '@auth0/auth0-react';
+import type { User } from '@auth0/auth0-react';
+
 import { authInterceptor } from '@/lib/axios';
 
 export type Auth0User = User;

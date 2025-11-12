@@ -1,11 +1,15 @@
 import { Link, redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+
+import { PERMISSIONS } from '@/constants/permissions.constants';
+
+import { formatDate } from '@/lib/date';
+
 import type { Role } from '@/queries/roles';
+
 import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { PERMISSIONS } from '@/constants/permissions.constants';
-import { formatDate } from '@/lib/date';
 
 interface RolesTableProps {
   data: Array<Role>;

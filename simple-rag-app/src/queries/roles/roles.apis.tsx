@@ -1,3 +1,5 @@
+import { apiClient } from '@/lib/axios';
+
 import type {
   CreateRoleRequest,
   Role,
@@ -7,7 +9,6 @@ import type {
   RolesResponse,
   UpdateRoleRequest,
 } from './roles.types';
-import { apiClient } from '@/lib/axios';
 
 export const getRoles = async (request: RolesRequest) => {
   const response = await apiClient.get<RolesResponse>('/roles', {

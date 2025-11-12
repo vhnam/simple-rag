@@ -1,10 +1,13 @@
 import { Link, redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+
+import { formatDate } from '@/lib/date';
+
 import type { User } from '@/queries/users';
+
 import DataTable from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { formatDate } from '@/lib/date';
 
 interface UsersTableProps {
   data: Array<User>;

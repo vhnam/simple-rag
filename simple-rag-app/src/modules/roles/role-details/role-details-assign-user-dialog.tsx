@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
+
 import type { User } from '@/queries/users';
 import { useUsers } from '@/queries/users';
+
+import SearchInput from '@/components/search-input';
 import { Button } from '@/components/ui/button';
 import {
   DialogClose,
@@ -10,7 +13,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import SearchInput from '@/components/search-input';
 
 interface RoleDetailsAssignUserDialogProps {
   roleName: string;

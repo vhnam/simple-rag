@@ -1,10 +1,13 @@
 import { Link, redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+
+import { PERMISSIONS } from '@/constants/permissions.constants';
+
 import type { Recipe } from '@/queries/recipes/recipes.types';
+
 import { Can } from '@/components/can';
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { PERMISSIONS } from '@/constants/permissions.constants';
 
 interface RecipesTableProps {
   data: Array<Recipe>;

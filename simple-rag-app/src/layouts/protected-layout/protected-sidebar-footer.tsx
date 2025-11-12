@@ -1,5 +1,13 @@
 import { Link } from '@tanstack/react-router';
+
 import { ChevronsUpDownIcon, LogOutIcon, SettingsIcon } from 'lucide-react';
+
+import { useAuthContext } from '@/integrations/auth/auth-provider';
+
+import { useAuthStore } from '@/stores/auth.store';
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,16 +15,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { useAuthContext } from '@/integrations/auth/auth-provider';
-import { useAuthStore } from '@/stores/auth.store';
-import { Badge } from '@/components/ui/badge';
 
 const ProtectedSidebarFooter = () => {
   const { user, logout } = useAuthContext();

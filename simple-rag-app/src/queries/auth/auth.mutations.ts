@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+
 import { syncUser } from './auth.apis';
 
 export const useSyncUserMutation = () => {

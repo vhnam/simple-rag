@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { usersKeys } from './users.keys';
+
 import { getMyProfile, getUsers } from './users.apis';
+import { usersKeys } from './users.keys';
 import type { UsersRequest } from './users.types';
 
 export const useUsers = (

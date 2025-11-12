@@ -1,21 +1,25 @@
 import { useMemo } from 'react';
-import useRoleDetailsSettingsFormActions from './role-details-settings.actions';
-import RoleDetailsDeleteDialog from './role-details-delete-dialog';
 import type { FormEvent } from 'react';
+
+import { PERMISSIONS } from '@/constants/permissions.constants';
+
 import type { RoleSettingsFormSchema } from '@/schemas/role-form.schema';
+
+import { Can } from '@/components/can';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
 } from '@/components/ui/field';
-import { Card, CardContent } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { Can } from '@/components/can';
-import { PERMISSIONS } from '@/constants/permissions.constants';
+import { Textarea } from '@/components/ui/textarea';
+
+import RoleDetailsDeleteDialog from './role-details-delete-dialog';
+import useRoleDetailsSettingsFormActions from './role-details-settings.actions';
 
 interface RoleDetailsSettingsProps {
   data: RoleSettingsFormSchema;

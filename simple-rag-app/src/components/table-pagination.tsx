@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
-import type { Table } from '@tanstack/react-table';
 import type { MouseEvent } from 'react';
-import { cn } from '@/lib/utils';
+
+import type { Table } from '@tanstack/react-table';
+
 import { getVisiblePages } from '@/lib/table';
+import { cn } from '@/lib/utils';
 
 import {
   Pagination,

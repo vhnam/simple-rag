@@ -1,5 +1,6 @@
 import { create, useStore } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+
 import type { SyncUserResponse } from '@/queries/auth/auth.types';
 
 const initialState: SyncUserResponse = {

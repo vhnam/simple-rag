@@ -1,7 +1,8 @@
-import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
-import useRoleCreateDialogActions from './role-create-dialog.actions';
 import type { FormEvent } from 'react';
+
+import { PlusIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -20,8 +21,10 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Spinner } from '@/components/ui/spinner';
+import { Textarea } from '@/components/ui/textarea';
+
+import useRoleCreateDialogActions from './role-create-dialog.actions';
 
 const RoleCreateDialog = () => {
   const [open, setOpen] = useState(false);

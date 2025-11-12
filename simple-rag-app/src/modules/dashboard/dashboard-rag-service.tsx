@@ -1,5 +1,7 @@
 import { AlertCircleIcon, BookOpenIcon, CheckCircle2Icon } from 'lucide-react';
+
 import type { RagStatusResponse } from '@/queries/rag/rag.types';
+
 import { Badge } from '@/components/ui/badge';
 import {
   Card,

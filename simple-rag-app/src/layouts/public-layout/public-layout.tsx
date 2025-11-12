@@ -1,5 +1,6 @@
-import Header from './public-header';
 import type { PropsWithChildren } from 'react';
+
+import Header from './public-header';
 
 const PublicLayout = ({ children }: PropsWithChildren) => {
   return (

@@ -1,13 +1,18 @@
-import { redirect } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
-import RoleDetailsAssignUserDialog from './role-details-assign-user-dialog';
-import { useRoleDetailsUsersActions } from './role-details-users.actions';
+
+import { redirect } from '@tanstack/react-router';
 import type { ColumnDef } from '@tanstack/react-table';
+
 import type { User } from '@/queries/users';
+
+import { useAuthStore } from '@/stores/auth.store';
+
 import DataTable from '@/components/data-table';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/stores/auth.store';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+
+import RoleDetailsAssignUserDialog from './role-details-assign-user-dialog';
+import { useRoleDetailsUsersActions } from './role-details-users.actions';
 
 interface RoleDetailsUsersProps {
   roleId: string;

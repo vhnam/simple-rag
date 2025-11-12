@@ -1,9 +1,10 @@
-import type { Permission } from '../permissions/permissions.types';
-import type { User } from '../users/users.types';
 import type {
   RolePermissionsFormSchema,
   RoleSettingsFormSchema,
 } from '@/schemas/role-form.schema';
+
+import type { Permission } from '../permissions/permissions.types';
+import type { User } from '../users/users.types';
 
 export type RolePermission = {
   id: string;

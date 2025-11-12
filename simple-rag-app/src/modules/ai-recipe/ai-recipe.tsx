@@ -1,8 +1,10 @@
 import { AlertCircleIcon } from 'lucide-react';
+
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
 import AIRecipeForm from './ai-recipe-form';
 import useAIRecipeFormActions from './ai-recipe-form.actions';
 import AIRecipeResults from './ai-recipe-results';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const AIRecipe = () => {
   const { form, isCreatingRecipe, recipeData, onReset } =

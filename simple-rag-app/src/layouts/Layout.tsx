@@ -1,9 +1,13 @@
-import { PublicLayout } from './public-layout';
-import { ProtectedLayout } from './protected-layout';
 import type { PropsWithChildren } from 'react';
+
 import { useAuthContext } from '@/integrations/auth/auth-provider';
-import { Spinner } from '@/components/ui/spinner';
+
 import { useAuthStore } from '@/stores/auth.store';
+
+import { Spinner } from '@/components/ui/spinner';
+
+import { ProtectedLayout } from './protected-layout';
+import { PublicLayout } from './public-layout';
 
 const Layout = ({ children }: PropsWithChildren) => {
   const { isAuthenticated, isLoading } = useAuthContext();

@@ -1,6 +1,9 @@
-import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
-import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import type { FormEvent } from 'react';
+
+import type { ReactFormExtendedApi } from '@tanstack/react-form';
+
+import type { AIRecipeFormSchema } from '@/schemas/ai-recipe-form.schema';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,

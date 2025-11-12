@@ -1,11 +1,17 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+
 import isEmail from 'validator/lib/isEmail';
-import type { SyncUserRequest } from '@/queries/auth/auth.types';
-import { Spinner } from '@/components/ui/spinner';
+
 import { useAuthContext } from '@/integrations/auth/auth-provider';
+
 import { useSyncUserMutation } from '@/queries/auth';
+import type { SyncUserRequest } from '@/queries/auth/auth.types';
+
 import { authStore } from '@/stores/auth.store';
+
+import { Spinner } from '@/components/ui/spinner';
 
 export const Route = createFileRoute('/auth/callback')({
   component: CallbackPage,

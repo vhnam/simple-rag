@@ -1,7 +1,12 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+
 import { XIcon } from 'lucide-react';
+
+import { cn, debounce } from '@/lib/utils';
+
+import { Badge } from '@/components/ui/badge';
 import {
   Command,
   CommandEmpty,
@@ -10,9 +15,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
-import { Badge } from '@/components/ui/badge';
 import { Spinner } from '@/components/ui/spinner';
-import { cn, debounce } from '@/lib/utils';
 
 interface SearchInputProps<T> {
   className?: string;

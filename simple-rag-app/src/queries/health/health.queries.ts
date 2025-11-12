@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { healthKeys } from './health.keys';
+
 import { fetchHealthCheck } from './health.apis';
+import { healthKeys } from './health.keys';
 
 export const useHealthCheck = () => {
   return useQuery({

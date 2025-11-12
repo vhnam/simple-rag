@@ -5,8 +5,9 @@ import {
   HardDriveIcon,
   MemoryStickIcon,
 } from 'lucide-react';
-import StatusBadge from './dashboard-status-badge';
+
 import type { HealthCheckResponse } from '@/queries/health';
+
 import {
   Card,
   CardContent,
@@ -15,6 +16,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+
+import StatusBadge from './dashboard-status-badge';
 
 interface DashboardOverviewProps {
   healthData: HealthCheckResponse;

@@ -1,5 +1,7 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
+
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
+
 import { useAuthContext } from '@/integrations/auth/auth-provider';
 
 export const Route = createFileRoute('/auth/register')({

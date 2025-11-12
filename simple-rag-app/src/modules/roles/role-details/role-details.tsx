@@ -1,16 +1,21 @@
 import { Link, useParams } from '@tanstack/react-router';
+
 import { ArrowLeftIcon } from 'lucide-react';
-import RoleDetailsSettings from './role-details-settings';
-import RoleDetailsPermissions from './role-details-permissions';
-import RoleDetailsUsers from './role-details-users';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+import { usePermissions } from '@/queries/permissions';
 import { useRole, useRoleUsers } from '@/queries/roles';
+
 import {
   ProtectedLayoutContent,
   ProtectedLayoutHeader,
 } from '@/layouts/protected-layout';
+
 import { Button } from '@/components/ui/button';
-import { usePermissions } from '@/queries/permissions';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+import RoleDetailsPermissions from './role-details-permissions';
+import RoleDetailsSettings from './role-details-settings';
+import RoleDetailsUsers from './role-details-users';
 
 const RoleDetails = () => {
   const { roleId } = useParams({ from: '/dashboard/roles/$roleId' });

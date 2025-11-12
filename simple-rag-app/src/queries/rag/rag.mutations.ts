@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { AskRecipeResponse } from './rag.types';
+
 import { apiClient } from '@/lib/axios';
+
+import type { AskRecipeResponse } from './rag.types';
 
 export const useAskRecipeMutation = () => {
   const queryClient = useQueryClient();

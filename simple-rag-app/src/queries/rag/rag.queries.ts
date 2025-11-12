@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { ragKeys } from './rag.keys';
+
 import { fetchRagStatus } from './rag.apis';
+import { ragKeys } from './rag.keys';
 
 export const useRagStatus = () => {
   return useQuery({
