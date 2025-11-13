@@ -13,11 +13,11 @@ import { HealthModule } from './health/health.module';
 import { createThrottlerConfig } from './config/throttler.config';
 import { createLoggerConfig } from './config/logger.config';
 import { HttpLoggerMiddleware } from './common/middleware/http-logger.middleware';
-import { RecipesModule } from './recipes/recipes.module';
 import { UsersModule } from './users/users.module';
 import { RbacModule } from './rbac/rbac.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { InstrumentsModule } from './instruments/instruments.module';
 
 @Module({
   imports: [
@@ -39,11 +39,11 @@ import { PermissionsModule } from './permissions/permissions.module';
     RagModule,
     AuthModule,
     HealthModule,
-    RecipesModule,
     UsersModule,
     RbacModule,
     RolesModule,
     PermissionsModule,
+    InstrumentsModule,
   ],
   controllers: [AppController],
   providers: [

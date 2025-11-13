@@ -95,6 +95,9 @@ export class MigrationService implements OnModuleInit {
       // Create user_preferences table
       await this.createUserPreferencesTable(queryRunner);
 
+      // Create instruments table
+      await this.createInstrumentsTable(queryRunner);
+
       this.logger.log('Database schema initialized successfully');
     } finally {
       await queryRunner.release();
@@ -388,6 +391,120 @@ export class MigrationService implements OnModuleInit {
         );
       `);
       this.logger.log('Created user_preferences table');
+    }
+  }
+
+  /**
+   * Creates the instruments table
+   */
+  private async createInstrumentsTable(
+    queryRunner: QueryRunner,
+  ): Promise<void> {
+    const instrumentsTableExists = (await queryRunner.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_name = 'instruments'
+      );
+    `)) as Array<{ exists: boolean }>;
+
+    if (!instrumentsTableExists[0]?.exists) {
+      await queryRunner.query(`
+        DO $$ BEGIN
+          CREATE TYPE instrument_family_enum AS ENUM ('woodwind', 'brass');
+        EXCEPTION
+          WHEN duplicate_object THEN null;
+        END $$;
+      `);
+
+      await queryRunner.query(`
+        DO $$ BEGIN
+          CREATE TYPE difficulty_level_enum AS ENUM ('beginner', 'intermediate', 'advanced');
+        EXCEPTION
+          WHEN duplicate_object THEN null;
+        END $$;
+      `);
+
+      await queryRunner.query(`
+        DO $$ BEGIN
+          CREATE TYPE weight_category_enum AS ENUM ('light', 'medium', 'heavy');
+        EXCEPTION
+          WHEN duplicate_object THEN null;
+        END $$;
+      `);
+
+      await queryRunner.query(`
+        DO $$ BEGIN
+          CREATE TYPE volume_profile_enum AS ENUM ('soft', 'medium', 'loud');
+        EXCEPTION
+          WHEN duplicate_object THEN null;
+        END $$;
+      `);
+
+      await queryRunner.query(`
+        DO $$ BEGIN
+          CREATE TYPE airflow_requirement_enum AS ENUM ('low', 'medium', 'high');
+        EXCEPTION
+          WHEN duplicate_object THEN null;
+        END $$;
+      `);
+
+      await queryRunner.query(`
+        DO $$ BEGIN
+          CREATE TYPE embouchure_difficulty_enum AS ENUM ('easy', 'medium', 'hard');
+        EXCEPTION
+          WHEN duplicate_object THEN null;
+        END $$;
+      `);
+
+      // Create instruments table
+      await queryRunner.query(`
+        CREATE TABLE instruments (
+          id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+          name VARCHAR(255) NOT NULL,
+          instrument_family instrument_family_enum NOT NULL,
+          difficulty_level difficulty_level_enum NOT NULL,
+          weight_category weight_category_enum NOT NULL,
+          volume_profile volume_profile_enum NOT NULL,
+          airflow_requirement airflow_requirement_enum NOT NULL,
+          embouchure_difficulty embouchure_difficulty_enum NOT NULL,
+          typical_price_min INTEGER NOT NULL,
+          typical_price_max INTEGER NOT NULL,
+          description TEXT,
+          recommended_beginners BOOLEAN DEFAULT false,
+          embedding vector(1536),
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+
+      // Create index for vector similarity search
+      try {
+        await queryRunner.query(`
+          CREATE INDEX IF NOT EXISTS instruments_embedding_idx ON instruments 
+          USING ivfflat (embedding vector_cosine_ops)
+          WITH (lists = 100);
+        `);
+      } catch {
+        // Index might fail if table is empty, that's okay
+        this.logger.warn(
+          'Could not create vector index for instruments (table might be empty)',
+        );
+      }
+
+      // Create index for beginner recommendations
+      await queryRunner.query(`
+        CREATE INDEX IF NOT EXISTS instruments_recommended_beginners_idx 
+        ON instruments (recommended_beginners) 
+        WHERE recommended_beginners = true;
+      `);
+
+      // Create index for difficulty level
+      await queryRunner.query(`
+        CREATE INDEX IF NOT EXISTS instruments_difficulty_level_idx 
+        ON instruments (difficulty_level);
+      `);
+
+      this.logger.log('Created instruments table');
     }
   }
 }

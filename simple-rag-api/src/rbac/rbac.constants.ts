@@ -9,12 +9,12 @@ export const ROLES = {
 } as const;
 
 export const PERMISSIONS = {
-  // Recipe permissions
-  RECIPES_VIEW_LIST: 'recipes:view_list',
-  RECIPES_VIEW_DETAIL: 'recipes:view_detail',
-  RECIPES_CREATE: 'recipes:create',
-  RECIPES_UPDATE: 'recipes:update',
-  RECIPES_DELETE: 'recipes:delete',
+  // Instrument permissions
+  INSTRUMENTS_VIEW_LIST: 'instruments:view_list',
+  INSTRUMENTS_VIEW_DETAIL: 'instruments:view_detail',
+  INSTRUMENTS_CREATE: 'instruments:create',
+  INSTRUMENTS_UPDATE: 'instruments:update',
+  INSTRUMENTS_DELETE: 'instruments:delete',
 
   // User permissions
   USERS_VIEW_LIST: 'users:view_list',
@@ -42,7 +42,7 @@ export type PermissionName = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
 export const ROLE_DEFINITIONS = [
   {
     name: ROLES.VIEWER,
-    description: 'Can view recipes',
+    description: 'Can view basic information',
   },
   {
     name: ROLES.ADMIN,
@@ -57,28 +57,27 @@ export const ROLE_DEFINITIONS = [
  * by the PermissionSyncService
  */
 export const PERMISSION_DEFINITIONS = [
-  // Recipe permissions
+  // Instrument permissions
   {
-    name: PERMISSIONS.RECIPES_VIEW_LIST,
-    description: 'Can view list of recipes',
+    name: PERMISSIONS.INSTRUMENTS_VIEW_LIST,
+    description: 'Can view list of instruments',
   },
   {
-    name: PERMISSIONS.RECIPES_VIEW_DETAIL,
-    description: 'Can view details of a recipe',
+    name: PERMISSIONS.INSTRUMENTS_VIEW_DETAIL,
+    description: 'Can view details of an instrument',
   },
   {
-    name: PERMISSIONS.RECIPES_CREATE,
-    description: 'Can create recipes',
+    name: PERMISSIONS.INSTRUMENTS_CREATE,
+    description: 'Can create instruments',
   },
   {
-    name: PERMISSIONS.RECIPES_UPDATE,
-    description: 'Can update recipes',
+    name: PERMISSIONS.INSTRUMENTS_UPDATE,
+    description: 'Can update instruments',
   },
   {
-    name: PERMISSIONS.RECIPES_DELETE,
-    description: 'Can delete recipes',
+    name: PERMISSIONS.INSTRUMENTS_DELETE,
+    description: 'Can delete instruments',
   },
-
   // User permissions
   {
     name: PERMISSIONS.USERS_VIEW_LIST,
@@ -135,16 +134,8 @@ export const PERMISSION_DEFINITIONS = [
  * Defines which permissions are assigned to each role
  */
 export const ROLE_PERMISSIONS = {
-  [ROLES.VIEWER]: [
-    PERMISSIONS.RECIPES_VIEW_LIST,
-    PERMISSIONS.RECIPES_VIEW_DETAIL,
-  ],
+  [ROLES.VIEWER]: [],
   [ROLES.ADMIN]: [
-    PERMISSIONS.RECIPES_VIEW_LIST,
-    PERMISSIONS.RECIPES_VIEW_DETAIL,
-    PERMISSIONS.RECIPES_CREATE,
-    PERMISSIONS.RECIPES_UPDATE,
-    PERMISSIONS.RECIPES_DELETE,
     PERMISSIONS.USERS_VIEW_LIST,
     PERMISSIONS.USERS_VIEW_DETAIL,
     PERMISSIONS.USERS_CREATE,
@@ -155,7 +146,11 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.ROLES_CREATE,
     PERMISSIONS.ROLES_UPDATE,
     PERMISSIONS.ROLES_DELETE,
-    PERMISSIONS.ROLES_VIEW_LIST,
+    PERMISSIONS.INSTRUMENTS_VIEW_LIST,
+    PERMISSIONS.INSTRUMENTS_VIEW_DETAIL,
+    PERMISSIONS.INSTRUMENTS_CREATE,
+    PERMISSIONS.INSTRUMENTS_UPDATE,
+    PERMISSIONS.INSTRUMENTS_DELETE,
     PERMISSIONS.PERMISSIONS_VIEW_LIST,
   ],
 } as const;

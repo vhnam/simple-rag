@@ -1,11 +1,4 @@
 export const PERMISSIONS = {
-  // Recipe permissions
-  RECIPES_VIEW_LIST: 'recipes:view_list',
-  RECIPES_VIEW_DETAIL: 'recipes:view_detail',
-  RECIPES_CREATE: 'recipes:create',
-  RECIPES_UPDATE: 'recipes:update',
-  RECIPES_DELETE: 'recipes:delete',
-
   // User permissions
   USERS_VIEW_LIST: 'users:view_list',
   USERS_VIEW_DETAIL: 'users:view_detail',

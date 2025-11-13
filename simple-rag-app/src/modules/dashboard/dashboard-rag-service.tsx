@@ -40,7 +40,7 @@ const DashboardRagService = ({
           )}
         </div>
         <CardDescription>
-          Recipe retrieval and AI generation service
+          Instrument retrieval and AI generation service
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -53,9 +53,9 @@ const DashboardRagService = ({
           <div className="space-y-4">
             <div className="bg-muted/50 flex items-center justify-between rounded-lg p-4">
               <div>
-                <p className="text-sm font-medium">Recipes in Database</p>
+                <p className="text-sm font-medium">Instruments in Database</p>
                 <p className="text-muted-foreground text-xs">
-                  Total indexed recipes available for queries
+                  Total indexed instruments available for queries
                 </p>
               </div>
               <div className="text-2xl font-bold">{ragData.count}</div>
@@ -66,7 +66,7 @@ const DashboardRagService = ({
                 <p className="text-muted-foreground text-xs">
                   {ragData.ready
                     ? 'Service is operational and ready for queries'
-                    : 'Service requires recipes to be added to the database'}
+                    : 'Service requires instruments to be added to the database'}
                 </p>
               </div>
               {ragData.ready ? (

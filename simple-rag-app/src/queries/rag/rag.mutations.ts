@@ -2,19 +2,18 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { apiClient } from '@/lib/axios';
 
-import type { AskRecipeResponse } from './rag.types';
+import type { AskInstrumentResponse } from './rag.types';
+import type { InstrumentFormSchema } from '@/schemas/instrument-form.schema';
 
-export const useAskRecipeMutation = () => {
+export const useRecommendInstrumentsMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (ingredients: string) =>
+    mutationFn: (preferences: InstrumentFormSchema) =>
       apiClient
-        .post<AskRecipeResponse>('/rag/ask', {
-          ingredients,
-        })
+        .post<AskInstrumentResponse>('/rag/ask', preferences)
         .then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['recipes'] });
+      queryClient.invalidateQueries({ queryKey: ['instruments'] });
     },
   });
 };

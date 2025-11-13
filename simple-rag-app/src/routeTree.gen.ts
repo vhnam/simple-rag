@@ -10,9 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as InstrumentsRouteImport } from './routes/instruments'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ChatRouteImport } from './routes/chat'
-import { Route as AiRecipeRouteImport } from './routes/ai-recipe'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
@@ -21,14 +21,17 @@ import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
 import { Route as DashboardUsersIndexRouteImport } from './routes/dashboard/users/index'
 import { Route as DashboardRolesIndexRouteImport } from './routes/dashboard/roles/index'
-import { Route as DashboardRecipesIndexRouteImport } from './routes/dashboard/recipes/index'
 import { Route as DashboardUsersUserIdRouteImport } from './routes/dashboard/users/$userId'
 import { Route as DashboardRolesRoleIdRouteImport } from './routes/dashboard/roles/$roleId'
-import { Route as DashboardRecipesRecipeIdRouteImport } from './routes/dashboard/recipes/$recipeId'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstrumentsRoute = InstrumentsRouteImport.update({
+  id: '/instruments',
+  path: '/instruments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -39,11 +42,6 @@ const DashboardRoute = DashboardRouteImport.update({
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AiRecipeRoute = AiRecipeRouteImport.update({
-  id: '/ai-recipe',
-  path: '/ai-recipe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -86,11 +84,6 @@ const DashboardRolesIndexRoute = DashboardRolesIndexRouteImport.update({
   path: '/roles/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardRecipesIndexRoute = DashboardRecipesIndexRouteImport.update({
-  id: '/recipes/',
-  path: '/recipes/',
-  getParentRoute: () => DashboardRoute,
-} as any)
 const DashboardUsersUserIdRoute = DashboardUsersUserIdRouteImport.update({
   id: '/users/$userId',
   path: '/users/$userId',
@@ -101,64 +94,52 @@ const DashboardRolesRoleIdRoute = DashboardRolesRoleIdRouteImport.update({
   path: '/roles/$roleId',
   getParentRoute: () => DashboardRoute,
 } as any)
-const DashboardRecipesRecipeIdRoute =
-  DashboardRecipesRecipeIdRouteImport.update({
-    id: '/recipes/$recipeId',
-    path: '/recipes/$recipeId',
-    getParentRoute: () => DashboardRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/ai-recipe': typeof AiRecipeRoute
   '/chat': typeof ChatRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/instruments': typeof InstrumentsRoute
   '/profile': typeof ProfileRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
   '/dashboard/roles/$roleId': typeof DashboardRolesRoleIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
-  '/dashboard/recipes': typeof DashboardRecipesIndexRoute
   '/dashboard/roles': typeof DashboardRolesIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/ai-recipe': typeof AiRecipeRoute
   '/chat': typeof ChatRoute
+  '/instruments': typeof InstrumentsRoute
   '/profile': typeof ProfileRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard': typeof DashboardIndexRoute
-  '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
   '/dashboard/roles/$roleId': typeof DashboardRolesRoleIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
-  '/dashboard/recipes': typeof DashboardRecipesIndexRoute
   '/dashboard/roles': typeof DashboardRolesIndexRoute
   '/dashboard/users': typeof DashboardUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/ai-recipe': typeof AiRecipeRoute
   '/chat': typeof ChatRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/instruments': typeof InstrumentsRoute
   '/profile': typeof ProfileRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/': typeof DashboardIndexRoute
-  '/dashboard/recipes/$recipeId': typeof DashboardRecipesRecipeIdRoute
   '/dashboard/roles/$roleId': typeof DashboardRolesRoleIdRoute
   '/dashboard/users/$userId': typeof DashboardUsersUserIdRoute
-  '/dashboard/recipes/': typeof DashboardRecipesIndexRoute
   '/dashboard/roles/': typeof DashboardRolesIndexRoute
   '/dashboard/users/': typeof DashboardUsersIndexRoute
 }
@@ -166,63 +147,57 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/ai-recipe'
     | '/chat'
     | '/dashboard'
+    | '/instruments'
     | '/profile'
     | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
     | '/dashboard/profile'
     | '/dashboard/'
-    | '/dashboard/recipes/$recipeId'
     | '/dashboard/roles/$roleId'
     | '/dashboard/users/$userId'
-    | '/dashboard/recipes'
     | '/dashboard/roles'
     | '/dashboard/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/ai-recipe'
     | '/chat'
+    | '/instruments'
     | '/profile'
     | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
     | '/dashboard/profile'
     | '/dashboard'
-    | '/dashboard/recipes/$recipeId'
     | '/dashboard/roles/$roleId'
     | '/dashboard/users/$userId'
-    | '/dashboard/recipes'
     | '/dashboard/roles'
     | '/dashboard/users'
   id:
     | '__root__'
     | '/'
-    | '/ai-recipe'
     | '/chat'
     | '/dashboard'
+    | '/instruments'
     | '/profile'
     | '/auth/callback'
     | '/auth/login'
     | '/auth/register'
     | '/dashboard/profile'
     | '/dashboard/'
-    | '/dashboard/recipes/$recipeId'
     | '/dashboard/roles/$roleId'
     | '/dashboard/users/$userId'
-    | '/dashboard/recipes/'
     | '/dashboard/roles/'
     | '/dashboard/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AiRecipeRoute: typeof AiRecipeRoute
   ChatRoute: typeof ChatRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  InstrumentsRoute: typeof InstrumentsRoute
   ProfileRoute: typeof ProfileRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -238,6 +213,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/instruments': {
+      id: '/instruments'
+      path: '/instruments'
+      fullPath: '/instruments'
+      preLoaderRoute: typeof InstrumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -250,13 +232,6 @@ declare module '@tanstack/react-router' {
       path: '/chat'
       fullPath: '/chat'
       preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ai-recipe': {
-      id: '/ai-recipe'
-      path: '/ai-recipe'
-      fullPath: '/ai-recipe'
-      preLoaderRoute: typeof AiRecipeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -315,13 +290,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRolesIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/recipes/': {
-      id: '/dashboard/recipes/'
-      path: '/recipes'
-      fullPath: '/dashboard/recipes'
-      preLoaderRoute: typeof DashboardRecipesIndexRouteImport
-      parentRoute: typeof DashboardRoute
-    }
     '/dashboard/users/$userId': {
       id: '/dashboard/users/$userId'
       path: '/users/$userId'
@@ -336,23 +304,14 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRolesRoleIdRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/recipes/$recipeId': {
-      id: '/dashboard/recipes/$recipeId'
-      path: '/recipes/$recipeId'
-      fullPath: '/dashboard/recipes/$recipeId'
-      preLoaderRoute: typeof DashboardRecipesRecipeIdRouteImport
-      parentRoute: typeof DashboardRoute
-    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
-  DashboardRecipesRecipeIdRoute: typeof DashboardRecipesRecipeIdRoute
   DashboardRolesRoleIdRoute: typeof DashboardRolesRoleIdRoute
   DashboardUsersUserIdRoute: typeof DashboardUsersUserIdRoute
-  DashboardRecipesIndexRoute: typeof DashboardRecipesIndexRoute
   DashboardRolesIndexRoute: typeof DashboardRolesIndexRoute
   DashboardUsersIndexRoute: typeof DashboardUsersIndexRoute
 }
@@ -360,10 +319,8 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardIndexRoute: DashboardIndexRoute,
-  DashboardRecipesRecipeIdRoute: DashboardRecipesRecipeIdRoute,
   DashboardRolesRoleIdRoute: DashboardRolesRoleIdRoute,
   DashboardUsersUserIdRoute: DashboardUsersUserIdRoute,
-  DashboardRecipesIndexRoute: DashboardRecipesIndexRoute,
   DashboardRolesIndexRoute: DashboardRolesIndexRoute,
   DashboardUsersIndexRoute: DashboardUsersIndexRoute,
 }
@@ -374,9 +331,9 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AiRecipeRoute: AiRecipeRoute,
   ChatRoute: ChatRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  InstrumentsRoute: InstrumentsRoute,
   ProfileRoute: ProfileRoute,
   AuthCallbackRoute: AuthCallbackRoute,
   AuthLoginRoute: AuthLoginRoute,

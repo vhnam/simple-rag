@@ -27,7 +27,7 @@ const DashboardAdditionalInfo = () => {
             <strong>Disk Storage:</strong> Monitors disk usage (alert at 90%)
           </li>
           <li>
-            <strong>RAG Service:</strong> Shows recipe count and service
+            <strong>RAG Service:</strong> Shows instrument count and service
             readiness
           </li>
         </ul>

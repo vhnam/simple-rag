@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router';
 import {
   ActivityIcon,
   CircleUserRoundIcon,
-  NotepadTextIcon,
   ShieldCheckIcon,
   UserRoundCogIcon,
 } from 'lucide-react';
@@ -32,11 +31,6 @@ const items: Array<SidebarItem> = [
     title: 'Dashboard',
     url: '/dashboard',
     icon: ActivityIcon,
-  },
-  {
-    title: 'Recipes',
-    url: '/dashboard/recipes',
-    icon: NotepadTextIcon,
   },
   {
     title: 'User Management',

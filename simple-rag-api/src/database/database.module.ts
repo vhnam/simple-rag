@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Recipe } from '../entities/recipe.entity';
 import { User } from '../entities/user.entity';
 import { Role } from '../entities/role.entity';
 import { UserRole } from '../entities/user-role.entity';
 import { Permission } from '../entities/permission.entity';
 import { RolePermission } from '../entities/role-permission.entity';
 import { UserPreference } from '../entities/user-preference.entity';
+import { Instrument } from '../entities/instrument.entity';
 import { MigrationService } from './migration.service';
 import { SeedService } from './seed.service';
 
@@ -25,13 +25,13 @@ import { SeedService } from './seed.service';
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
         entities: [
-          Recipe,
           User,
           Role,
           UserRole,
           Permission,
           RolePermission,
           UserPreference,
+          Instrument,
         ],
         synchronize: false, // We'll use migrations
         logging: ['query', 'error'],
@@ -42,7 +42,7 @@ import { SeedService } from './seed.service';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Recipe, User, UserPreference]),
+    TypeOrmModule.forFeature([User, UserPreference, Instrument]),
   ],
   providers: [MigrationService, SeedService],
   exports: [TypeOrmModule],

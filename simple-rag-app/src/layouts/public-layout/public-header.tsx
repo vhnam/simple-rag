@@ -20,8 +20,8 @@ const menu = [
     to: '/chat',
   },
   {
-    label: 'AI Recipe',
-    to: '/ai-recipe',
+    label: 'Instruments',
+    to: '/instruments',
   },
 ];
 

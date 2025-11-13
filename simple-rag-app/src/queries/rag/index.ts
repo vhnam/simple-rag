@@ -1,2 +1,2 @@
 export { useRagStatus } from './rag.queries';
-export { useAskRecipeMutation } from './rag.mutations';
+export { useRecommendInstrumentsMutation } from './rag.mutations';
